@@ -1,4 +1,3 @@
-// pages/lanyards.js
 export function render() {
     return `
         <div class="min-h-screen bg-black text-white p-4 md:p-12 relative">

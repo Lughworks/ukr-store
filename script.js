@@ -1,6 +1,5 @@
 const studioState = { activeSessions: [], currentOpenPage: null };
 
-// 1. DIAGNOSTICS & CLOCK
 function initDiagnostics() {
     setInterval(() => {
         document.getElementById('system-clock').innerText = new Date().toLocaleTimeString('en-GB', { hour12: false });
@@ -10,7 +9,6 @@ function initDiagnostics() {
     }, 4000);
 }
 
-// 2. FUNCTIONAL QUEUE
 function addToQueue(name) {
     const hud = document.getElementById('hud-items');
     if (studioState.activeSessions.includes(name)) return;
@@ -32,14 +30,12 @@ window.clearQueue = () => {
     studioState.activeSessions = [];
 };
 
-// 3. CORE TRANSITION ENGINE
 async function openProduct(rawName) {
     const pageName = rawName.toLowerCase().replace(/\s/g, "").replace("-", "");
     const pivot = document.getElementById("expansion-pivot");
     const contentLayer = document.getElementById("content-layer");
     const pageOverlay = document.getElementById("page-overlay");
 
-    // expansion logic...
     pageOverlay.style.zIndex = "60";
     pageOverlay.classList.remove("pointer-events-none");
     pivot.style.opacity = "1";
