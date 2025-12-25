@@ -1,7 +1,3 @@
-/**
- * UC Studio Engine - STABLE PRODUCTION VERSION
- */
-
 const studioState = {
     productionQueue: JSON.parse(localStorage.getItem('uk_studio_queue_local')) || [],
     currentOpenPage: null,
@@ -41,8 +37,6 @@ window.sendToDiscord = async (item) => {
         timestamp: new Date().toISOString()
     };
 
-    // If there is an uploaded image, Discord can't see local Base64 strings.
-    // We notify the team if an asset is attached.
     if (config.image) {
         embed.description = "⚠️ **Custom Artwork Attached** (Check local studio log for asset)";
     }
@@ -65,7 +59,6 @@ window.sendToDiscord = async (item) => {
     }
 };
 
-// 1. SYSTEM INITIALIZATION
 function initDiagnostics() {
     setInterval(() => {
         const clock = document.getElementById('system-clock');
@@ -75,14 +68,12 @@ function initDiagnostics() {
     renderProductionLog();
 }
 
-// 2. SELECTION HELPER
 window.updateSelection = (element, className) => {
     const parent = element.parentElement;
     parent.querySelectorAll('.' + className).forEach(el => el.classList.remove(className));
     element.classList.add(className);
 };
 
-// Add this to your Selection Helpers section
 window.handleImageUpload = (input) => {
     const file = input.files[0];
     const previewContainer = input.parentElement;
@@ -90,10 +81,7 @@ window.handleImageUpload = (input) => {
     if (file) {
         const reader = new FileReader();
         reader.onload = (e) => {
-            // Save the base64 string to a data attribute on the container
             previewContainer.dataset.uploadedImage = e.target.result;
-            
-            // Visual feedback: Change the upload box text
             previewContainer.querySelector('span').innerText = "✅ " + file.name;
             previewContainer.classList.add('border-purple-500');
         };
@@ -101,11 +89,9 @@ window.handleImageUpload = (input) => {
     }
 };
 
-// 3. NAVIGATION & MODULE LOADING
 async function openProduct(rawName) {
     let pageName = rawName.toLowerCase().replace("custom", "").replace(/\s/g, "").trim();
     
-    // FIX: Standardizing "t-shirt" to match your actual filename "t-shirts.js"
     const fileMap = { 
         'hoodie': 'hoodies', 
         'tshirt': 't-shirts', 
@@ -150,7 +136,6 @@ async function openProduct(rawName) {
     }
 }
 
-// 4. REHYDRATION (Restoring Text, Color, Size, and Fonts)
 window.reopenDesign = async (e, index) => {
     if (e) { e.preventDefault(); e.stopPropagation(); }
 
@@ -162,28 +147,24 @@ window.reopenDesign = async (e, index) => {
     await openProduct(design.type);
 
     setTimeout(() => {
-        const config = design.config; // Defined here to fix the previous reference error
+        const config = design.config;
 
-        // Re-apply Text
         const fInput = document.querySelector('input[placeholder*="FRONT"], input[placeholder*="CONTENT"], input[placeholder*="SLOGAN"]');
         const bInput = document.querySelector('input[placeholder*="BACK"], input[placeholder*="REAR"]');
         if (fInput) fInput.value = config.front || config.text || "";
         if (bInput) bInput.value = config.back || "";
 
-        // Re-apply Size
         if (config.size) {
             const sizeBtns = Array.from(document.querySelectorAll('button'));
             const target = sizeBtns.find(b => b.innerText.trim() === config.size);
             if (target) window.updateSelection(target, 'active-size');
         }
 
-        // Re-apply Color
         if (config.color) {
             const swatch = document.querySelector(`[data-color="${config.color}"]`);
             if (swatch) window.updateSelection(swatch, 'active-color');
         }
 
-        // Re-apply Fonts (Targeting IDs in the HTML)
         const frontDropdown = document.getElementById('font-front') || document.getElementById('font-front-t');
         const backDropdown = document.getElementById('font-rear') || document.getElementById('font-rear-t');
         
@@ -201,8 +182,6 @@ window.reopenDesign = async (e, index) => {
     }, 850); 
 };
 
-// 5. GLOBAL STATE ACTIONS
-// Update this in your script.js
 window.saveDesignToQueue = (productType, config) => {
     const designId = "UK-" + Math.random().toString(36).substr(2, 5).toUpperCase();
     
@@ -210,7 +189,7 @@ window.saveDesignToQueue = (productType, config) => {
         id: designId,
         type: productType,
         timestamp: new Date().toISOString(),
-        status: 'PENDING', // New: Track production state
+        status: 'PENDING',
         priority: 'NORMAL',
         config: config 
     };
@@ -236,7 +215,6 @@ window.closePage = () => {
     }, 400);
 };
 
-// 6. UI RENDERING
 function renderHUD() {
     const hud = document.getElementById('hud-items');
     if (!hud) return;
@@ -344,7 +322,6 @@ window.expandIntelligence = (group) => {
 
     const info = data[group];
     
-    // Use your existing page transition style to open this
     const content = `
         <div class="min-h-screen bg-black text-white p-8 md:p-24 relative overflow-y-auto">
             <div class="max-w-4xl mx-auto">
@@ -380,7 +357,6 @@ window.expandIntelligence = (group) => {
         </div>
     `;
 
-    // Trigger the page load
     const studioSubpage = document.getElementById('studio-subpage');
     studioSubpage.innerHTML = content;
     studioSubpage.classList.remove('translate-y-full');
@@ -396,10 +372,8 @@ window.clearQueue = () => {
 };
 
 window.deleteLogItem = (index) => {
-    // Show a quick confirm before deleting
     if(!confirm("SYSTEM: Delete build log " + studioState.productionQueue[index]?.id + "?")) return;
     
-    // Reverse index logic to find actual item in queue
     const actualIndex = studioState.productionQueue.length - 1 - index;
     studioState.productionQueue.splice(actualIndex, 1);
     
@@ -412,7 +386,7 @@ let currentOrderingIndex = null;
 
 window.orderItem = (index) => {
     currentOrderingIndex = index;
-    window.checkSavedCustomer(); // Pre-fill data
+    window.checkSavedCustomer();
     
     const modal = document.getElementById('customer-modal');
     modal.classList.remove('opacity-0', 'pointer-events-none');
@@ -434,7 +408,6 @@ async function finalizeOrderWithCustomerData() {
 
     if (!name || !email) return alert("Missing Name or Email.");
 
-    // Save preferences to localStorage if checked
     if (shouldSave) {
         localStorage.setItem('uk_studio_saved_client', JSON.stringify({ name, email, address: addr }));
     } else {
@@ -450,7 +423,6 @@ async function finalizeOrderWithCustomerData() {
     const success = await window.sendToDiscord(itemWithCustomer);
     
     if (success) {
-        // REMOVE FROM QUEUE ON SUCCESS
         studioState.productionQueue.splice(queueIdx, 1);
         localStorage.setItem('uk_studio_queue_local', JSON.stringify(studioState.productionQueue));
         
@@ -464,9 +436,7 @@ window.orderAllItems = async () => {
     if (!confirm(`Confirm production of ${studioState.productionQueue.length} items?`)) return;
 
     for (let i = 0; i < studioState.productionQueue.length; i++) {
-        // Send each item one by one
         await window.sendToDiscord(studioState.productionQueue[i]);
-        // Update local status
         studioState.productionQueue[i].status = "ORDERED";
     }
 
@@ -512,7 +482,6 @@ window.handleContactSubmit = async (e) => {
     btn.innerText = "TRANSMITTING...";
     btn.disabled = true;
 
-    // Simulate sending or hook into your discord webhook
     setTimeout(() => {
         alert("MESSAGE RECEIVED. We will respond if necessary.");
         closeContactForm();

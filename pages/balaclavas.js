@@ -19,7 +19,7 @@ export function render() {
                         <div class="absolute inset-0 blueprint-grid opacity-30"></div>
                         <div id="balaclava-preview-target" class="relative z-10">
                              <div class="w-48 h-64 border-4 border-dashed border-zinc-800 rounded-full flex flex-col items-center justify-center">
-                                <span id="preview-text-display" class="text-xl font-black uppercase tracking-tighter text-zinc-700 italic">UNIT_READY</span>
+                                <span id="preview-text-display" class="text-xl font-black uppercase tracking-tighter text-zinc-700 italic">UNIT READY</span>
                              </div>
                         </div>
                     </div>

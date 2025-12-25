@@ -5,16 +5,16 @@ export function render() {
             role: 'Lead Architect', 
             alias: 'OVERSEER',
             bio: 'Specializing in technical outerwear and modular systems. Oversees the integration of Division 01 and 02 hardware.', 
-            specs: { clearance: 'LEVEL_05', sector: 'LONDON_CORE', sync: '98%' },
-            tags: ['SYSTEMS_DESIGN', 'TEXTILE_TECH'] 
+            specs: { clearance: 'LEVEL 05', sector: 'LONDON CORE', sync: '98%' },
+            tags: ['SYSTEMS DESIGN', 'TEXTILE TECH'] 
         },
         { 
             id: 'VIS-02', 
             role: 'Visual Director', 
-            alias: 'GHOST_02',
+            alias: 'GHOST 02',
             bio: 'Responsible for the visual language and digital presence of the collective. Managing the Archive and Log operations.', 
-            specs: { clearance: 'LEVEL_04', sector: 'NEON_DISTRICT', sync: '92%' },
-            tags: ['DIGITAL_ARTS', 'ARCHIVE_MGMT'] 
+            specs: { clearance: 'LEVEL 04', sector: 'NEON DISTRICT', sync: '92%' },
+            tags: ['DIGITAL ARTS', 'ARCHIVE MGMT'] 
         }
     ];
 
@@ -24,11 +24,12 @@ export function render() {
                 <div class="absolute top-0 left-0 w-full h-[1px] bg-purple-500/30 animate-pulse"></div>
                 <div class="flex justify-between items-end">
                     <div>
-                        <span class="text-[10px] text-purple-500 font-black tracking-[0.6em] uppercase italic">Personnel_Dossier / Unindexed</span>
-                        <h1 class="heading-font text-5xl md:text-8xl font-black uppercase tracking-tighter mt-4">The_Collective</h1>
+                        <span class="text-[10px] text-purple-500 font-black tracking-[0.6em] uppercase italic">Personnel Dossier / Unindexed</span>
+                        <h1 class="heading-font text-5xl md:text-8xl font-black uppercase tracking-tighter mt-4">The Collective</h1>
                     </div>
                     <button onclick="window.closePage()" class="group flex items-center gap-3 bg-zinc-900 border border-zinc-800 px-6 py-3 rounded-full hover:bg-white hover:text-black transition-all mb-2">
-                        <span class="text-[10px] font-black uppercase tracking-widest">Exit_Archive</span>
+                        <span class="text-[10px] font-black uppercase tracking-widest">Back to Studio</span>
+                        <span class="text-xl group-hover:rotate-90 transition-transform">×</span>
                     </button>
                 </div>
             </div>
@@ -51,7 +52,7 @@ export function render() {
 
                             <div class="flex items-center gap-6">
                                 <div class="hidden md:flex flex-col items-end">
-                                    <span class="text-[7px] text-zinc-600 font-black uppercase tracking-widest">Sync_Status</span>
+                                    <span class="text-[7px] text-zinc-600 font-black uppercase tracking-widest">Sync Status</span>
                                     <span class="text-xs font-mono text-purple-500">${member.specs.sync}</span>
                                 </div>
                                 <div class="w-10 h-10 rounded-full border border-zinc-800 flex items-center justify-center group-hover:bg-purple-500 group-hover:border-purple-500 group-hover:text-white transition-all">
@@ -66,7 +67,7 @@ export function render() {
                                 <div class="bg-zinc-900/50 border border-zinc-800 rounded-3xl p-6 relative overflow-hidden">
                                     <div class="absolute inset-0 blueprint-grid opacity-10"></div>
                                     <div class="aspect-[3/4] bg-zinc-800/30 rounded-xl mb-6 flex items-center justify-center border border-zinc-700/50 relative group/photo">
-                                        <span class="text-[8px] text-zinc-600 font-black uppercase rotate-90 absolute right-4">No_Visual_On_File</span>
+                                        <span class="text-[8px] text-zinc-600 font-black uppercase rotate-90 absolute right-4">No Visual On File</span>
                                         <div class="w-20 h-20 border-2 border-purple-500/20 rounded-full flex items-center justify-center">
                                             <span class="text-2xl font-black text-purple-500/40 italic">UC</span>
                                         </div>
@@ -86,7 +87,7 @@ export function render() {
 
                             <div class="lg:col-span-8 flex flex-col justify-between py-2">
                                 <div>
-                                    <h5 class="text-[10px] text-purple-500 font-black uppercase tracking-[0.4em] mb-6">// Operational_Summary</h5>
+                                    <h5 class="text-[10px] text-purple-500 font-black uppercase tracking-[0.4em] mb-6">// Operational Summary</h5>
                                     <p class="text-lg text-zinc-400 font-medium leading-relaxed uppercase tracking-tight">
                                         ${member.bio}
                                     </p>
@@ -100,11 +101,11 @@ export function render() {
                                     </div>
                                     <div class="pt-6 border-t border-zinc-800 flex gap-12">
                                         <div>
-                                            <span class="text-[7px] text-zinc-600 font-black uppercase block mb-1">Assigned_Projects</span>
-                                            <span class="text-[10px] text-white font-bold uppercase tracking-widest">ur_ud_CORE</span>
+                                            <span class="text-[7px] text-zinc-600 font-black uppercase block mb-1">Assigned Projects</span>
+                                            <span class="text-[10px] text-white font-bold uppercase tracking-widest">Unknown Collective CORE</span>
                                         </div>
                                         <div>
-                                            <span class="text-[7px] text-zinc-600 font-black uppercase block mb-1">Signal_Strength</span>
+                                            <span class="text-[7px] text-zinc-600 font-black uppercase block mb-1">Signal Strength</span>
                                             <span class="text-[10px] text-green-500 font-bold uppercase tracking-widest animate-pulse">Stable</span>
                                         </div>
                                     </div>

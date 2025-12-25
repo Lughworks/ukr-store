@@ -9,7 +9,7 @@ export function render() {
                 </div>
 
                 <button onclick="window.closePage()" class="group flex items-center gap-3 bg-zinc-900 hover:bg-white hover:text-black transition-all px-6 py-3 rounded-full border border-zinc-800">
-                    <span class="text-[10px] font-bold uppercase tracking-widest">Exit Archive</span>
+                    <span class="text-[10px] font-bold uppercase tracking-widest">Back to Studio</span>
                     <span class="text-xl group-hover:rotate-90 transition-transform">×</span>
                 </button>
             </div>
@@ -25,8 +25,8 @@ export function render() {
                         
                         <div class="absolute top-8 left-8 flex flex-col gap-2">
                             <div class="bg-black/60 backdrop-blur-md border border-purple-500/30 px-4 py-1 rounded-sm">
-                                <span class="text-[8px] font-mono text-purple-400">COORD_51.5074_N_0.1278_W</span>
-                            </div>
+                                <span class="text-[8px] font-mono text-purple-400">COORD 51.437852 N 0.1278 W</span>
+                            </div> 
                             <div class="bg-black/60 backdrop-blur-md border border-white/10 px-4 py-1 rounded-sm">
                                 <span class="text-[8px] font-mono text-zinc-400">SIGNAL: ENCRYPTED</span>
                             </div>
@@ -60,8 +60,8 @@ export function render() {
 
             <div class="pt-12 border-t border-zinc-900 flex justify-between items-center text-[8px] text-zinc-700 font-black uppercase tracking-[0.5em]">
                 <span>Status: Optimal</span>
-                <span>User_Access: Admin_Level_01</span>
-                <span>UC Archive © 2025</span>
+                <span>User Access: Admin Level 01</span>
+                <span>Unknown Collective © 2025</span>
             </div>
         </div>
     `;
