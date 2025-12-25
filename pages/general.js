@@ -53,7 +53,7 @@ export function render() {
                 <div class="bg-zinc-900/40 border border-zinc-800 p-8 rounded-[2rem]">
                     <h3 class="text-purple-500 font-black text-[10px] uppercase tracking-widest mb-4">03 / Connectivity</h3>
                     <p class="text-xs text-zinc-400 leading-relaxed font-medium uppercase tracking-wider">
-                        A decentralized network of riders, drivers, and creators. We are the ghost in the machine.
+                        A decentralized network of Riderz, Driverz, and creators. We are the ghost in the machine.
                     </p>
                 </div>
             </div>
@@ -61,7 +61,7 @@ export function render() {
             <div class="pt-12 border-t border-zinc-900 flex justify-between items-center text-[8px] text-zinc-700 font-black uppercase tracking-[0.5em]">
                 <span>Status: Optimal</span>
                 <span>User_Access: Admin_Level_01</span>
-                <span>UK? Archive © 2025</span>
+                <span>UC Archive © 2025</span>
             </div>
         </div>
     `;

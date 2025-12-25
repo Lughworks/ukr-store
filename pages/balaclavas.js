@@ -45,7 +45,7 @@ export function render() {
                     <div class="bg-zinc-900/40 border border-zinc-800 p-8 rounded-3xl">
                         <h3 class="text-xs font-black uppercase tracking-[0.2em] mb-6 text-zinc-400">Identity Presets</h3>
                         <div class="grid grid-cols-1 gap-2">
-                            ${['UnknownRiders', 'UnknownDrivers'].map((text, i) => `
+                            ${['UnknownRiderz', 'UnknownDriverz'].map((text, i) => `
                                 <button 
                                     onclick="window.updateBalaclavaPreview('${text}', this)" 
                                     class="py-4 bg-black border border-zinc-800 rounded-xl text-[10px] font-black uppercase tracking-widest hover:border-purple-500 transition ${i === 0 ? 'active-preset' : 'opacity-60'}">
@@ -89,7 +89,7 @@ window.saveBalaclavaConfig = () => {
     const activeColor = document.querySelector('.active-color');
 
     const config = {
-        front: activePresetBtn ? activePresetBtn.innerText.trim() : 'UnknownRiders',
+        front: activePresetBtn ? activePresetBtn.innerText.trim() : 'UnknownRiderz',
         frontFont: 'Impact Mono',
         color: activeColor ? activeColor.dataset.color : '#000000',
         size: 'One Size',

@@ -18,7 +18,7 @@ export function render() {
                     <div class="aspect-square bg-zinc-900/20 border border-zinc-800 rounded-3xl relative overflow-hidden flex items-center justify-center group">
                         <div class="absolute inset-0 blueprint-grid opacity-30"></div>
                         <div id="sticker-preview" class="relative w-64 h-64 bg-white rounded-lg shadow-2xl flex items-center justify-center overflow-hidden">
-                            <span id="sticker-text-target" class="text-black font-black uppercase text-2xl tracking-tighter">UK? STUDIO</span>
+                            <span id="sticker-text-target" class="text-black font-black uppercase text-2xl tracking-tighter">UC STUDIO</span>
                         </div>
                     </div>
                 </div>
@@ -106,7 +106,7 @@ window.saveStickerConfig = () => {
     const qty = document.querySelector('.active-size').innerText;
     
     const config = {
-        front: isLogo ? document.querySelector('#sticker-logo-config .active-color').dataset.pattern : document.getElementById('sticker-input').value || 'UK? STUDIO',
+        front: isLogo ? document.querySelector('#sticker-logo-config .active-color').dataset.pattern : document.getElementById('sticker-input').value || 'UC STUDIO',
         frontFont: isLogo ? 'Logo Preset' : 'Standard Sans',
         color: isLogo ? 'Multi-Pattern' : 'Black/White',
         size: qty + ' Units',

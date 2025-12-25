@@ -1,5 +1,5 @@
 /**
- * UK? Studio Engine - STABLE PRODUCTION VERSION
+ * UC Studio Engine - STABLE PRODUCTION VERSION
  */
 
 const studioState = {
@@ -37,7 +37,7 @@ window.sendToDiscord = async (item) => {
             { name: "Configurations", value: `Front: ${config.front || 'Standard'}\nRear: ${config.back || 'None'}` },
             { name: "Technical Build Specs", value: `_${config.specs || 'Custom Build'}_` }
         ],
-        footer: { text: "UK? Studio Engine • Auto-Fulfillment Mode" },
+        footer: { text: "UC Studio Engine • Auto-Fulfillment Mode" },
         timestamp: new Date().toISOString()
     };
 
@@ -113,11 +113,12 @@ async function openProduct(rawName) {
         'hat': 'hats', 
         'balaclava': 'balaclavas', 
         'sticker': 'stickers',
-        'ukr': 'ukr',
-        'ukd': 'ukd',
+        'ur': 'ur',
+        'ud': 'ud',
         'unknowncollective': 'general',
         'visual_log': 'gallery',
         'gallery': 'gallery',
+        'team': 'team',
     };
     
     if (fileMap[pageName]) pageName = fileMap[pageName];
@@ -321,11 +322,11 @@ function renderProductionLog() {
 
 window.expandIntelligence = (group) => {
     const data = {
-        ukr: {
-            title: "Division: Unknown Riders",
+        ur: {
+            title: "Division: Unknown Riderz",
             color: "#3b82f6",
             specs: ["High-Vis technicals", "Aerodynamic integration", "Urban resilience"],
-            bio: "Specialized in high-speed urban transit. Built for the chase, optimized for the night. Our riders operate in the dense urban core."
+            bio: "Specialized in high-speed urban transit. Built for the chase, optimized for the night. Our Riderz operate in the dense urban core."
         },
         general: {
             title: "The Unknown Collective",
@@ -333,8 +334,8 @@ window.expandIntelligence = (group) => {
             specs: ["Multi-disciplinary studio", "Subterranean Network", "Performance Hardware"],
             bio: "A collaborative effort between design, engineering, and culture. We build the tools for those who refuse to be tracked."
         },
-        ukd: {
-            title: "Division: Unknown Drivers",
+        ud: {
+            title: "Division: Unknown Driverz",
             color: "#ef4444",
             specs: ["Precision handling", "Thermal management", "Cockpit ergonomics"],
             bio: "Automotive division focusing on the bridge between man and machine. Aesthetics for the midnight run."
@@ -369,7 +370,7 @@ window.expandIntelligence = (group) => {
                     
                     <div class="bg-zinc-900/20 border border-zinc-800 rounded-3xl p-8 flex items-center justify-center relative group overflow-hidden">
                         <div class="absolute inset-0 blueprint-grid opacity-20"></div>
-                        <span class="text-[10px] font-black text-zinc-700 uppercase tracking-[0.8em] rotate-90">UK?_LOG_FILE</span>
+                        <span class="text-[10px] font-black text-zinc-700 uppercase tracking-[0.8em] rotate-90">UC_LOG_FILE</span>
                         <div class="w-full aspect-square border-2 border-dashed border-zinc-800 rounded-full flex items-center justify-center">
                              <span class="text-4xl font-black" style="color: ${info.color}">${group.toUpperCase()}</span>
                         </div>
