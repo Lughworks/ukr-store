@@ -25,6 +25,29 @@ body {
     transform: translateY(-2px);
 }
 
+/* Selection Indicators */
+.active-color {
+    border: 2px solid #9c3bf6 !important;
+    box-shadow: 0 0 15px rgba(156, 59, 246, 0.4);
+    transform: scale(1.1);
+}
+
+.active-size, .active-preset {
+    background-color: #9c3bf6 !important;
+    color: #fff !important;
+    border-color: #9c3bf6 !important;
+}
+
+/* Production Log Grid */
+#production-list {
+    transition: all 0.5s ease;
+}
+
+/* Add a smooth transition to all interactive elements */
+[onclick] {
+    transition: all 0.2s ease-in-out;
+}
+
 @keyframes scanline {
     0% {
         transform: translateY(-100%);

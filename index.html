@@ -19,15 +19,15 @@
             <div class="hidden lg:flex gap-8 text-[10px] uppercase tracking-[0.3em] font-bold">
                 <div class="flex items-center gap-2 opacity-60">
                     <div class="w-1 h-1 rounded-full bg-purple-500 shadow-[0_0_5px_#9c3bf6]"></div>
-                    <span class="text-purple-500">Apparel</span>
+                    <span class="text-purple-500">Community</span>
                 </div>
                 <div class="flex items-center gap-2 opacity-60">
                     <div class="w-1 h-1 rounded-full bg-purple-500 shadow-[0_0_5px_#9c3bf6]"></div>
-                    <span class="text-purple-500">Accessories</span>
+                    <span class="text-purple-500">Merch</span>
                 </div>
                 <div class="flex items-center gap-2 opacity-60">
                     <div class="w-1 h-1 rounded-full bg-purple-500 shadow-[0_0_5px_#9c3bf6]"></div>
-                    <span class="text-purple-500">Bulk Orders</span>
+                    <span class="text-purple-500">UK Based</span>
                 </div>
             </div>
         </div>
@@ -45,20 +45,174 @@
     </nav>
 
     <main class="flex-grow p-6 md:p-12">
+
+        <div class="px-4 md:px-12 mb-12">
+            <div class="h-[1px] w-full bg-gradient-to-r from-transparent via-zinc-800 to-transparent relative">
+                <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-black px-4">
+                    <span
+                        class="text-[8px] text-zinc-600 font-black uppercase tracking-[0.8em]">Core_Identity_Archive</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="px-4 md:px-12 grid grid-cols-1 lg:grid-cols-12 gap-4 mb-16">
+
+            <div onclick="openProduct('ukr')"
+                class="lg:col-span-3 bg-zinc-900/30 border border-zinc-800 rounded-[2rem] p-8 hover:border-blue-500 transition-all group cursor-pointer active:scale-95 relative overflow-hidden h-80 flex flex-col justify-between">
+                <div class="absolute top-0 right-0 p-6 opacity-10 group-hover:opacity-30 transition-opacity">
+                    <span class="text-5xl font-black italic">01</span>
+                </div>
+                <div class="relative z-10">
+                    <span class="text-[8px] text-blue-500 font-black uppercase tracking-[0.4em]">Division_Riders</span>
+                    <h3 class="heading-font text-3xl font-black uppercase tracking-tighter text-white mt-1">UKR</h3>
+                </div>
+                <div class="relative z-10">
+                    <p class="text-[11px] text-zinc-500 uppercase font-bold leading-relaxed tracking-wide">
+                        Technical mobility & urban transit. Specialized in high-speed intersection aesthetics.
+                    </p>
+                </div>
+            </div>
+
+            <div onclick="openProduct('unknowncollective')"
+                class="lg:col-span-6 bg-zinc-900/30 border border-zinc-800 rounded-[2rem] p-8 hover:border-purple-500 transition-all group cursor-pointer active:scale-95 relative overflow-hidden h-80 flex flex-col items-center justify-center text-center">
+                <div class="absolute inset-0 blueprint-grid opacity-20"></div>
+
+                <div class="relative z-10 flex flex-col items-center w-full">
+                    <h2 class="heading-font text-5xl font-black uppercase tracking-tight text-white">Unknown Collective
+                    </h2>
+
+                    <div class="h-1 w-16 bg-purple-500 my-6"></div>
+
+                    <p class="text-xs text-zinc-400 max-w-sm uppercase font-medium leading-relaxed tracking-wider">
+                        A multi-disciplinary studio bridging the gap between performance hardware and street-level
+                        culture.
+                    </p>
+
+                    <p class="text-[9px] text-zinc-600 uppercase font-black tracking-[0.6em] mt-8">Core_Archive_Protocol
+                    </p>
+                </div>
+            </div>
+
+            <div onclick="openProduct('ukd')"
+                class="lg:col-span-3 bg-zinc-900/30 border border-zinc-800 rounded-[2rem] p-8 hover:border-red-500 transition-all group cursor-pointer active:scale-95 relative overflow-hidden h-80 flex flex-col justify-between">
+                <div class="absolute top-0 right-0 p-6 opacity-10 group-hover:opacity-30 transition-opacity">
+                    <span class="text-5xl font-black italic">02</span>
+                </div>
+                <div class="relative z-10">
+                    <span class="text-[8px] text-red-500 font-black uppercase tracking-[0.4em]">Division_Drivers</span>
+                    <h3 class="heading-font text-3xl font-black uppercase tracking-tighter text-white mt-1">UKD</h3>
+                </div>
+                <div class="relative z-10">
+                    <p class="text-[11px] text-zinc-500 uppercase font-bold leading-relaxed tracking-wide">
+                        Automotive engineering & night drift culture. Focused on man-machine aesthetics.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <div class="px-4 md:px-12 mb-12">
+            <div class="h-[1px] w-full bg-gradient-to-r from-transparent via-zinc-800 to-transparent relative">
+                <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-black px-4">
+                    <span
+                        class="text-[8px] text-zinc-600 font-black uppercase tracking-[0.8em]">Operational_Media_Feed</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="px-4 md:px-12 grid grid-cols-1 lg:grid-cols-12 gap-4 mb-16">
+
+            <div onclick="openProduct('gallery')"
+                class="lg:col-span-8 bg-zinc-900/30 border border-zinc-800 rounded-[2rem] p-8 hover:border-white transition-all group cursor-pointer active:scale-95 relative overflow-hidden h-80 flex flex-col justify-between">
+                <div class="absolute inset-0 blueprint-grid opacity-10"></div>
+                <div
+                    class="absolute right-0 top-0 bottom-0 w-1/2 opacity-20 group-hover:opacity-60 transition-opacity pointer-events-none">
+                    <img src="./images/gallery/1.png"
+                        onerror="this.src='https://placehold.co/600x400/111/333?text=IMG_LOG'"
+                        class="w-full h-full object-cover">
+                </div>
+                <div class="relative z-10">
+                    <span class="text-[8px] text-zinc-500 font-black uppercase tracking-[0.4em]">Media_Archive /
+                        Log_04</span>
+                    <h3 class="heading-font text-4xl font-black uppercase tracking-tighter text-white mt-1 italic">
+                        Visual_Log</h3>
+                </div>
+                <div class="relative z-10 max-w-xs">
+                    <p class="text-[11px] text-zinc-500 uppercase font-black leading-relaxed tracking-widest">
+                        Chronological record of collective operations and field testing.
+                    </p>
+                </div>
+            </div>
+
+            <div
+                class="lg:col-span-4 bg-zinc-900/30 border border-zinc-800 rounded-[2rem] p-8 relative overflow-hidden h-80 flex flex-col">
+                <div class="mb-6">
+                    <span class="text-[8px] text-purple-500 font-black uppercase tracking-[0.4em]">Signal_Output</span>
+                    <h3 class="heading-font text-3xl font-black uppercase tracking-tighter text-white mt-1">Network</h3>
+                </div>
+
+                <div class="space-y-2 flex-grow">
+                    <a href="https://tiktok.com/@YOUR_USER" target="_blank"
+                        class="flex justify-between items-center p-4 bg-black/40 border border-zinc-800/50 rounded-2xl hover:border-white hover:bg-zinc-800/50 transition-all group">
+                        <span
+                            class="text-[10px] text-zinc-400 font-black uppercase group-hover:text-white">TikTok</span>
+                        <span class="text-[9px] text-zinc-600 font-mono">@USER_ID</span>
+                    </a>
+
+                    <a href="https://instagram.com/ACCOUNT_ONE" target="_blank"
+                        class="flex justify-between items-center p-4 bg-black/40 border border-zinc-800/50 rounded-2xl hover:border-purple-500 hover:bg-zinc-800/50 transition-all group">
+                        <span class="text-[10px] text-zinc-400 font-black uppercase group-hover:text-purple-400">Insta /
+                            01</span>
+                        <span class="text-[9px] text-zinc-600 font-mono">@UNKNOWN</span>
+                    </a>
+
+                    <a href="https://instagram.com/ACCOUNT_TWO" target="_blank"
+                        class="flex justify-between items-center p-4 bg-black/40 border border-zinc-800/50 rounded-2xl hover:border-zinc-400 hover:bg-zinc-800/50 transition-all group">
+                        <span class="text-[10px] text-zinc-400 font-black uppercase group-hover:text-white">Insta /
+                            02</span>
+                        <span class="text-[9px] text-zinc-600 font-mono">@UNKNOWN_DIV</span>
+                    </a>
+                </div>
+
+                <div class="mt-4 pt-4 border-t border-zinc-800/50">
+                    <div class="flex items-center gap-2">
+                        <div class="w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse"></div>
+                        <span class="text-[7px] text-zinc-600 font-black uppercase tracking-[0.2em]">All Systems
+                            Broadcast Ready</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="px-4 md:px-12 mb-12">
+            <div class="h-[1px] w-full bg-gradient-to-r from-transparent via-zinc-800 to-transparent relative">
+                <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-black px-4">
+                    <span
+                        class="text-[8px] text-zinc-600 font-black uppercase tracking-[0.8em]">Core_Merch_Archive</span>
+                </div>
+            </div>
+        </div>
+
         <div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-12 gap-4 auto-rows-[200px]">
             <div
                 class="md:col-span-8 md:row-span-2 bento-card rounded-2xl bg-zinc-900/40 p-10 flex flex-col justify-between group cursor-pointer border border-zinc-800">
                 <div
                     class="absolute top-0 right-0 p-6 text-[8px] font-mono text-zinc-700 uppercase tracking-widest text-right">
-                    Ref: TRK-S1<br>Spec: 420GSM</div>
+                    Ref: HUD-S1<br>Spec: 80/20 Cotton-Poly</div>
                 <div class="relative z-10">
                     <span class="text-[10px] text-purple-500 font-bold tracking-[0.4em] uppercase">Core Apparel</span>
                     <h3
                         class="heading-font text-5xl md:text-7xl font-black uppercase tracking-tighter mt-2 group-hover:italic transition-all">
-                        Full Tracksuits</h3>
+                        Hoodies</h3>
                 </div>
-                <p class="text-[10px] text-zinc-500 uppercase tracking-widest leading-relaxed max-w-xs">Heavyweight
-                    fleece construction with reinforced flatlock stitching.</p>
+
+                <div>
+                    <p class="text-[10px] text-zinc-500 uppercase mb-4 tracking-widest leading-relaxed max-w-xs">44
+                        Colors,
+                        XS-4XL.
+                        Double-lined hood with kangaroo pouch pocket.</p>
+                    <div class="w-full bg-white/20 h-[1px]"></div>
+                    <p class="text-[9px] text-white/80 mt-4 uppercase font-bold tracking-[0.2em]">Open Configurator</p>
+                </div>
             </div>
 
             <div
@@ -75,21 +229,31 @@
 
             <div
                 class="md:col-span-4 bento-card rounded-2xl bg-zinc-900/40 p-6 flex flex-col justify-between group cursor-pointer border border-zinc-800">
-                <h3 class="font-bold text-xl uppercase italic tracking-tighter text-zinc-300">Key Tags</h3>
-                <p class="text-[9px] text-zinc-600 uppercase mt-2 tracking-widest">Molded & Flight Styles</p>
+                <h3 class="font-bold text-xl uppercase italic tracking-tighter text-zinc-300">Hats</h3>
+                <p class="text-[9px] text-zinc-600 uppercase mt-2 tracking-widest">Logo Presets • 4 Core Colours</p>
             </div>
             <div
                 class="md:col-span-4 bento-card rounded-2xl bg-zinc-900/40 p-6 flex flex-col justify-between group cursor-pointer border border-zinc-800">
-                <h3 class="font-bold text-xl uppercase italic tracking-tighter text-zinc-300">Head Wear</h3>
-                <p class="text-[9px] text-zinc-600 uppercase mt-2 tracking-widest">Beanies & Balaclavas</p>
+                <h3 class="font-bold text-xl uppercase italic tracking-tighter text-zinc-300">Balaclavas</h3>
+                <p class="text-[9px] text-zinc-600 uppercase mt-2 tracking-widest">Text Presets • 5 Core Colours</p>
             </div>
             <div
                 class="md:col-span-4 bento-card rounded-2xl bg-zinc-900/40 p-6 flex flex-col justify-between group cursor-pointer border border-zinc-800">
-                <h3 class="font-bold text-xl uppercase italic tracking-tighter text-zinc-300">Lanyards</h3>
+                <h3 class="font-bold text-xl uppercase italic tracking-tighter text-zinc-300">Stickers</h3>
                 <p class="text-[9px] text-zinc-600 uppercase mt-2 tracking-widest">HD Sublimation</p>
             </div>
         </div>
+        <section class="mt-20 px-6 max-w-7xl mx-auto">
+            <div class="flex items-center gap-4 mb-8">
+                <h2 class="heading-font text-2xl font-black uppercase italic">Production Log</h2>
+                <div class="h-[1px] flex-grow bg-zinc-800"></div>
+            </div>
+
+            <div id="production-list" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            </div>
+        </section>
     </main>
+
 
     <footer class="p-4 border-t border-zinc-900 bg-black flex justify-between items-center font-mono">
         <div class="flex gap-8 items-center">
@@ -106,6 +270,121 @@
         <div id="expansion-pivot" class="fixed bg-zinc-900 w-0 h-0 opacity-0 pointer-events-none"></div>
         <div id="content-layer" class="fixed inset-0 opacity-0 pointer-events-none overflow-y-auto"></div>
     </div>
+
+    <div id="customer-modal"
+        class="fixed inset-0 z-[200] flex items-center justify-center bg-black/95 opacity-0 pointer-events-none transition-opacity duration-300 backdrop-blur-sm">
+        <div class="bg-zinc-900 border border-zinc-800 p-8 rounded-3xl w-full max-w-md shadow-2xl transform scale-95 transition-transform duration-300"
+            id="modal-content">
+            <div class="mb-6">
+                <h3 class="heading-font text-2xl font-black uppercase tracking-tighter text-white">Fulfillment Data</h3>
+                <p class="text-[9px] text-zinc-500 uppercase font-bold tracking-widest">Connect this build to a client
+                    profile</p>
+            </div>
+
+            <div class="space-y-4">
+                <div>
+                    <label class="text-[8px] text-purple-500 font-black uppercase mb-1 block tracking-widest">Full
+                        Name</label>
+                    <input type="text" id="cust-name" placeholder="JOHN DOE"
+                        class="w-full bg-black border border-zinc-800 p-3 rounded-xl text-xs font-mono text-white outline-none focus:border-purple-500 transition">
+                </div>
+                <div>
+                    <label class="text-[8px] text-purple-500 font-black uppercase mb-1 block tracking-widest">Contact
+                        Email</label>
+                    <input type="email" id="cust-email" placeholder="CLIENT@EMAIL.COM"
+                        class="w-full bg-black border border-zinc-800 p-3 rounded-xl text-xs font-mono text-white outline-none focus:border-purple-500 transition">
+                </div>
+                <div>
+                    <label class="text-[8px] text-purple-500 font-black uppercase mb-1 block tracking-widest">Shipping
+                        Address</label>
+                    <textarea id="cust-address" rows="3" placeholder="STREET, CITY, POSTCODE"
+                        class="w-full bg-black border border-zinc-800 p-3 rounded-xl text-xs font-mono text-white outline-none focus:border-purple-500 resize-none transition"></textarea>
+                </div>
+
+                <div class="flex items-center gap-3 pt-2">
+                    <input type="checkbox" id="save-cust-prefs"
+                        class="w-4 h-4 accent-purple-600 bg-black border-zinc-800 rounded">
+                    <label for="save-cust-prefs"
+                        class="text-[9px] text-zinc-400 uppercase font-bold cursor-pointer">Remember client
+                        details</label>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-2 gap-3 mt-8">
+                <button onclick="closeCustomerModal()"
+                    class="py-4 bg-zinc-800 rounded-xl text-[10px] font-black uppercase text-zinc-400 hover:bg-zinc-700 transition">Cancel</button>
+                <button id="confirm-order-btn"
+                    class="py-4 bg-white text-black rounded-xl text-[10px] font-black uppercase hover:bg-purple-600 hover:text-white transition shadow-lg">Confirm
+                    Order</button>
+            </div>
+        </div>
+    </div>
+
+    <footer class="px-4 md:px-12 pb-12 mt-24">
+        <div class="border-t border-zinc-900 pt-8 flex flex-col md:flex-row justify-between items-center gap-6">
+            <div class="flex flex-col gap-1 text-center md:text-left">
+                <span class="text-[9px] text-white font-black uppercase tracking-[0.4em]">UK? Studio Archive ©
+                    2025</span>
+                <div class="flex items-center gap-2 justify-center md:justify-start">
+                    <div class="w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse"></div>
+                    <span class="text-[7px] text-zinc-600 font-black uppercase tracking-[0.2em]">All Systems Operational
+                        // London_Core</span>
+                </div>
+            </div>
+
+            <button onclick="openContactForm()"
+                class="group flex items-center gap-4 bg-zinc-900/50 border border-zinc-800 px-6 py-3 rounded-full hover:border-white hover:bg-white hover:text-black transition-all">
+                <span class="text-[9px] font-black uppercase tracking-widest">Establish_Contact</span>
+                <span class="text-xs group-hover:rotate-45 transition-transform">↗</span>
+            </button>
+
+            <div class="hidden lg:flex flex-col text-right">
+                <span class="text-[7px] text-zinc-700 font-mono uppercase">Lat: 51.5074° N | Long: 0.1278° W</span>
+                <span class="text-[7px] text-zinc-800 font-mono uppercase">User_Session:
+                    ${Math.random().toString(36).substr(2, 9).toUpperCase()}</span>
+            </div>
+        </div>
+    </footer>
+
+    <div id="contact-modal"
+        class="fixed inset-0 z-[200] flex items-center justify-center p-4 bg-black/90 backdrop-blur-xl opacity-0 pointer-events-none transition-all duration-500">
+        <div id="contact-content"
+            class="bg-zinc-900 border border-zinc-800 w-full max-w-lg rounded-[2.5rem] p-8 md:p-12 scale-95 transition-transform duration-500">
+            <div class="flex justify-between items-start mb-8">
+                <div>
+                    <span
+                        class="text-[10px] text-purple-500 font-black uppercase tracking-[0.4em]">Inquiry_Portal</span>
+                    <h2 class="heading-font text-3xl font-black uppercase tracking-tighter mt-1">Contact_Us</h2>
+                </div>
+                <button onclick="closeContactForm()"
+                    class="text-2xl text-zinc-500 hover:text-white transition">×</button>
+            </div>
+
+            <form onsubmit="handleContactSubmit(event)" class="space-y-4">
+                <div class="space-y-1">
+                    <label class="text-[8px] text-zinc-500 font-black uppercase ml-2">Subject</label>
+                    <select
+                        class="w-full bg-black border border-zinc-800 rounded-2xl px-5 py-4 text-xs font-bold focus:border-purple-500 outline-none appearance-none text-white">
+                        <option>GENERAL_INQUIRY</option>
+                        <option>PRODUCTION_ISSUE</option>
+                        <option>COLLABORATION_REQUEST</option>
+                    </select>
+                </div>
+                <input type="text" placeholder="FULL_NAME" required
+                    class="w-full bg-black border border-zinc-800 rounded-2xl px-5 py-4 text-xs font-bold focus:border-purple-500 outline-none text-white">
+                <input type="email" placeholder="EMAIL_ADDRESS" required
+                    class="w-full bg-black border border-zinc-800 rounded-2xl px-5 py-4 text-xs font-bold focus:border-purple-500 outline-none text-white">
+                <textarea placeholder="MESSAGE_CONTENT" rows="4" required
+                    class="w-full bg-black border border-zinc-800 rounded-2xl px-5 py-4 text-xs font-bold focus:border-purple-500 outline-none text-white resize-none"></textarea>
+
+                <button type="submit"
+                    class="w-full bg-white text-black font-black uppercase text-[10px] tracking-widest py-5 rounded-2xl hover:bg-purple-500 hover:text-white transition-colors mt-4">
+                    Transmit_Message
+                </button>
+            </form>
+        </div>
+    </div>
+
     <script src="script.js"></script>
 </body>
 
