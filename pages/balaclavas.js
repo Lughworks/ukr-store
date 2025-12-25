@@ -73,7 +73,6 @@ export function render() {
     `;
 }
 
-// Logical Helpers
 window.updateBalaclavaPreview = (text, btn) => {
     window.updateSelection(btn, 'active-preset');
     const display = document.getElementById('preview-text-display');

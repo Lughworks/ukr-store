@@ -111,7 +111,6 @@ window.saveHatConfig = () => {
     const activePresetBtn = document.querySelector('.active-preset');
     const styleName = activePresetBtn ? activePresetBtn.querySelector('span').innerText : 'Preset';
     
-    // Determine the value to save (Hex color or Pattern Name)
     const colorOrPattern = isLogoMode 
         ? document.querySelector('#pattern-options .active-preset')?.dataset.pattern 
         : document.querySelector('#solid-colors .active-color')?.dataset.color;
@@ -120,7 +119,6 @@ window.saveHatConfig = () => {
         front: styleName,
         frontFont: 'Preset Style',
         color: colorOrPattern,
-        // We save the pattern flag so the Production Log can render the mini-image
         isPattern: isLogoMode, 
         image: isLogoMode ? `../images/hats/patterns/${colorOrPattern.toLowerCase()}.png` : null,
         size: 'Adjustable',
@@ -135,11 +133,10 @@ window.updateHatPreview = (type, value) => {
     if (!target) return;
 
     if (type === 'pattern') {
-        // Find the filename from our list or just use the ID
         const fileName = value.toLowerCase().replace(' ', '_') + '.png';
         target.style.backgroundImage = `url('../images/hats/patterns/${fileName}')`;
         target.style.backgroundSize = 'cover';
-        target.innerHTML = ''; // Clear the "Studio_Preview" text
+        target.innerHTML = '';
     } else {
         target.style.backgroundImage = 'none';
         target.style.backgroundColor = value;

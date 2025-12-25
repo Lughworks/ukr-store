@@ -5,7 +5,7 @@ export function render() {
 
                 <div>
                     <span class="text-[10px] text-purple-500 font-bold tracking-[0.3em] uppercase italic">Intelligence / Archive</span>
-                    <h1 class="heading-font text-4xl md:text-6xl font-black uppercase tracking-tighter mt-2">Unknown_Collective</h1>
+                    <h1 class="heading-font text-4xl md:text-6xl font-black uppercase tracking-tighter mt-2">Unknown Collective</h1>
                 </div>
 
                 <button onclick="window.closePage()" class="group flex items-center gap-3 bg-zinc-900 hover:bg-white hover:text-black transition-all px-6 py-3 rounded-full border border-zinc-800">
