@@ -1,8 +1,21 @@
+const DISCORD_WEBHOOK_URL = "https://discord.com/api/webhooks/1453722658108735508/LTdntHGIIbfHgp0Ve9q0gFI86BSioA7DZ3mAp0X7QTfXtUh4Srj6T9lEC-HToChEgmAA";
 const studioState = {
     productionQueue: JSON.parse(localStorage.getItem('uk_studio_queue_local')) || [],
     currentOpenPage: null,
-    isRehydrating: false
+    isRehydrating: false,
+    tempUpload: null // Add this to store the file object
 };
+const dataURLtoFile = (dataurl, filename) => {
+    let arr = dataurl.split(','),
+        mime = arr[0].match(/:(.*?);/)[1],
+        bstr = atob(arr[1]), 
+        n = bstr.length, 
+        u8arr = new Uint8Array(n);
+    while(n--){
+        u8arr[n] = bstr.charCodeAt(n);
+    }
+    return new File([u8arr], filename, {type:mime});
+}
 
 window.checkSavedCustomer = () => {
     const saved = localStorage.getItem('uk_studio_saved_local');
@@ -15,58 +28,161 @@ window.checkSavedCustomer = () => {
     }
 };
 
-const DISCORD_WEBHOOK_URL = "https://discord.com/api/webhooks/1453722658108735508/LTdntHGIIbfHgp0Ve9q0gFI86BSioA7DZ3mAp0X7QTfXtUh4Srj6T9lEC-HToChEgmAA";
-
-window.sendToDiscord = async (item) => {
-    const config = item.config;
-    const cust = item.customer || { name: "N/A", ig: "N/A", addr: "N/A" };
+window.sendToDiscord = async (item, itemIndex) => {
+    const config = item.config || {};
+    const cust = item.customer || { name: "N/A", email: "N/A", address: "N/A" };
     
+    // Create a clean hex color for the embed sidebar
+    const brandColor = config.color && config.color.startsWith('#') 
+        ? parseInt(config.color.replace('#', ''), 16) 
+        : 0x9c3bf6;
+
+    const formData = new FormData();
+
+    // 1. Build the high-readability Embed
     const embed = {
-        title: `🏗️ PRODUCTION READY: ${item.id}`,
-        color: 0x9c3bf6,
+        title: `🏗️ PRODUCTION MANIFEST: ${item.id}`,
+        description: `**Product:** ${item.name.toUpperCase()}\n**Status:** READY_FOR_PRINT`,
+        color: brandColor,
         fields: [
-            { name: "👤 Customer Profile", value: `**Name:** ${cust.name}\n**Email:** ${cust.email}`, inline: true },
-            { name: "📍 Shipping Destination", value: `\`${cust.addr || 'Pickup/Pending'}\``, inline: true },
-            { name: "──────────", value: " " }, 
-            { name: "Product Type", value: `**${item.type}**`, inline: true },
-            { name: "Size / Quantity", value: `\`${config.size || 'N/A'}\``, inline: true },
-            { name: "Configurations", value: `Front: ${config.front || 'Standard'}\nRear: ${config.back || 'None'}` },
-            { name: "Technical Build Specs", value: `_${config.specs || 'Custom Build'}_` }
+            { 
+                name: "👤 CUSTOMER DETAILS", 
+                value: `**Name:** ${cust.name}\n**Email:** ${cust.email}\n**Shipping:** ${cust.address}`, 
+                inline: false 
+            },
+            { 
+                name: "👕 GARMENT SPECS", 
+                value: `**Size:** ${config.size || 'N/A'}\n**Base Color:** ${config.color || 'N/A'}\n**Material:** ${config.specs || 'Standard'}`, 
+                inline: true 
+            },
+            { 
+                name: "🎨 DESIGN CONFIG", 
+                value: `**Front:** ${config.front || 'None'}\n**Font:** ${config.frontFont || 'Default'}\n**Rear:** ${config.back || 'None'}\n**Font:** ${config.backFont || 'Default'}`, 
+                inline: true 
+            }
         ],
-        footer: { text: "UC Studio Engine • Auto-Fulfillment Mode" },
+        footer: { text: `UC_STUDIO // ${new Date().toLocaleDateString()} // SESSION_ID: ${Math.random().toString(36).substr(2, 9).toUpperCase()}` },
         timestamp: new Date().toISOString()
     };
 
-    if (config.image) {
-        embed.description = "⚠️ **Custom Artwork Attached** (Check local studio log for asset)";
+    // 2. IMAGE HANDLING: Attach the design file
+    // We look for 'image' or 'tempImageData' in the item
+const imageSrc = config.image || item.tempImageData;
+
+if (imageSrc) {
+    try {
+        let blob;
+        // If it's a local path (like ../images/...), we fetch it to get the data
+        if (imageSrc.startsWith('..') || imageSrc.startsWith('/')) {
+            const response = await fetch(imageSrc);
+            blob = await response.blob();
+        } 
+        // If it's an uploaded Base64 string
+        else if (imageSrc.startsWith('data:image')) {
+            const response = await fetch(imageSrc);
+            blob = await response.blob();
+        }
+
+        if (blob) {
+            formData.append('file', blob, 'design_manifest.png');
+            embed.image = { url: 'attachment://design_manifest.png' };
+        }
+    } catch (e) {
+        console.error("Failed to bundle design image:", e);
     }
+}
+    // 3. Assemble and Transmit
+    formData.append('payload_json', JSON.stringify({
+        username: "UC PRODUCTION TERMINAL",
+        avatar_url: "https://unknowncollective.com/logo.png", // Replace with your actual logo URL if you have one
+        embeds: [embed]
+    }));
 
     try {
         const response = await fetch(DISCORD_WEBHOOK_URL, {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ embeds: [embed] })
+            body: formData
         });
 
         if (response.ok) {
-            return true;
+            console.log("[SYSTEM] Manifest transmitted. Clearing local queue item.");
+            // Remove the item from log after successful send
+            if (itemIndex !== undefined) {
+                studioState.productionQueue.splice(itemIndex, 1);
+                localStorage.setItem('uk_studio_queue_local', JSON.stringify(studioState.productionQueue));
+                renderProductionLog();
+                renderHUD();
+            }
         } else {
-            throw new Error("Webhook failed");
+            const errorText = await response.text();
+            console.error("[SYSTEM] Webhook Error:", errorText);
+            alert("TRANSMISSION ERROR: Check Console.");
         }
     } catch (err) {
-        console.error("Discord Error:", err);
-        return false;
+        console.error("[CRITICAL] Network failure:", err);
     }
 };
 
-function initDiagnostics() {
+async function initDiagnostics() {
+    // 1. Terminal Clock
     setInterval(() => {
         const clock = document.getElementById('system-clock');
         if (clock) clock.innerText = new Date().toLocaleTimeString('en-GB', { hour12: false });
     }, 1000);
+
+    // 2. Boot Sequence
+    const logContainer = document.getElementById('boot-log');
+    const bootOverlay = document.getElementById('boot-loader');
+    const logs = [
+        "> INITIALIZING UC_CORE_v1.0.9...",
+        "> ESTABLISHING ENCRYPTED UPLINK...",
+        "> LOADING PRODUCTION_MODULES...",
+        "> AUTHENTICATING STUDIO_ASSETS...",
+        "> READY."
+    ];
+
+    if (logContainer) {
+        for (const line of logs) {
+            const p = document.createElement('p');
+            p.className = "mb-1 opacity-0";
+            p.innerText = line;
+            logContainer.appendChild(p);
+            
+            // Artificial delay for "processing" feel
+            await new Promise(r => setTimeout(r, 400));
+            p.classList.remove('opacity-0');
+        }
+        
+        setTimeout(() => {
+            bootOverlay.style.opacity = "0";
+            // Enable interaction after boot
+            bootOverlay.classList.add('hidden');
+        }, 800);
+    }
+
+    const currentHash = window.location.hash.replace('#', '');
+    if (currentHash) {
+        console.log(`[SYSTEM] Recovering Ghost State: ${currentHash}`);
+        // Small delay to let the UI settle before opening the product
+        setTimeout(() => {
+            openProduct(currentHash);
+        }, 500); 
+    }
+
     renderHUD();
     renderProductionLog();
 }
+
+window.addEventListener('hashchange', () => {
+    const newHash = window.location.hash.replace('#', '');
+    if (newHash) {
+        // If the hash changed and isn't empty, open that product
+        openProduct(newHash);
+    } else {
+        // If the hash is removed (back button to home), close the page
+        window.closePage();
+    }
+});
 
 window.updateSelection = (element, className) => {
     const parent = element.parentElement;
@@ -76,22 +192,25 @@ window.updateSelection = (element, className) => {
 
 window.handleImageUpload = (input) => {
     const file = input.files[0];
-    const previewContainer = input.parentElement;
-    
-    if (file) {
-        const reader = new FileReader();
-        reader.onload = (e) => {
-            previewContainer.dataset.uploadedImage = e.target.result;
-            previewContainer.querySelector('span').innerText = "✅ " + file.name;
-            previewContainer.classList.add('border-purple-500');
-        };
-        reader.readAsDataURL(file);
-    }
+    if (!file) return;
+
+    const container = document.getElementById('image-preview-container');
+    const reader = new FileReader();
+
+    reader.onload = (e) => {
+        // Just show the image, no animations, no extra divs
+        container.innerHTML = `<img src="${e.target.result}" class="w-full h-full object-contain">`;
+        // Store the data URL so the save function can find it easily
+        studioState.tempUpload = e.target.result;
+    };
+    reader.readAsDataURL(file);
 };
 
 async function openProduct(rawName) {
     let pageName = rawName.toLowerCase().replace("custom", "").replace(/\s/g, "").trim();
     
+    // Update the URL hash without reloading the page
+    window.location.hash = pageName;    
     const fileMap = { 
         'hoodie': 'hoodies', 
         'tshirt': 't-shirts', 
@@ -182,51 +301,38 @@ window.reopenDesign = async (e, index) => {
     }, 850); 
 };
 
-window.saveDesignToQueue = (productType, config) => {
-    const designId = "UK-" + Math.random().toString(36).substr(2, 5).toUpperCase();
-    
-    const newEntry = {
-        id: designId,
-        type: productType,
-        timestamp: new Date().toISOString(),
-        status: 'PENDING',
-        priority: 'NORMAL',
-        config: config 
+window.saveDesignToQueue = (name, config) => {
+    // 1. Generate the item object exactly as your UI expects it
+    const item = {
+        id: `UC-${Math.floor(1000 + Math.random() * 9000)}`,
+        name: name, 
+        config: config,
+        timestamp: new Date().toISOString()
     };
 
-    studioState.productionQueue.push(newEntry);
+    // 2. Save to the studio state and local storage
+    studioState.productionQueue.push(item);
     localStorage.setItem('uk_studio_queue_local', JSON.stringify(studioState.productionQueue));
-
-    renderHUD();
+    
+    // 3. Update the Production Log UI
     renderProductionLog();
+    renderHUD();
+
+    // 4. THE FIX: Close the product page overlay
     window.closePage();
 };
 
-window.closePage = () => {
-    if (studioState.isRehydrating && !document.getElementById("content-layer").innerHTML) return;
-    const contentLayer = document.getElementById("content-layer");
-    contentLayer.classList.replace('opacity-100', 'opacity-0');
-    contentLayer.classList.add('pointer-events-none');
-    setTimeout(() => {
-        const pivot = document.getElementById("expansion-pivot");
-        pivot.style.width = "0"; pivot.style.height = "0"; pivot.style.opacity = "0";
-        document.getElementById("page-overlay").style.zIndex = "-1";
-        document.body.style.overflow = "auto";
-    }, 400);
+window.removeFromQueue = (index) => {
+    // Remove the item from the array
+    studioState.productionQueue.splice(index, 1);
+    // Save the updated array to storage
+    localStorage.setItem('uk_studio_queue_local', JSON.stringify(studioState.productionQueue));
+    // Refresh the UI
+    renderProductionLog();
+    renderHUD();
 };
 
-function renderHUD() {
-    const hud = document.getElementById('hud-items');
-    if (!hud) return;
-    hud.innerHTML = '';
-    studioState.productionQueue.slice(-8).forEach(() => {
-        const dot = document.createElement('div');
-        dot.className = "w-2 h-2 rounded-full bg-purple-500 shadow-[0_0_8px_#9c3bf6]";
-        hud.appendChild(dot);
-    });
-}
-
-function renderProductionLog() {
+window.renderProductionLog = () => {
     const logContainer = document.getElementById('production-list');
     if (!logContainer) return;
 
@@ -235,9 +341,11 @@ function renderProductionLog() {
         return;
     }
 
+    // We map and then .reverse() so newest designs appear first visually
     logContainer.innerHTML = studioState.productionQueue.map((item, index) => {
-        const config = item.config;
-        const qIndex = studioState.productionQueue.length - 1 - index;
+        const config = item.config || {};
+        // The actual index in the studioState array
+        const qIndex = index;
         
         return `
         <div onclick="reopenDesign(event, ${qIndex})" 
@@ -245,7 +353,7 @@ function renderProductionLog() {
             
             <div class="flex justify-between items-start mb-4">
                 <div>
-                    <span class="text-[9px] text-purple-500 font-bold uppercase tracking-widest">${item.type}</span>
+                    <span class="text-[9px] text-purple-500 font-bold uppercase tracking-widest">${item.name || 'Unit'}</span>
                     <h4 class="heading-font text-2xl font-black uppercase tracking-tighter">${item.id}</h4>
                 </div>
                 <div class="text-right">
@@ -265,7 +373,7 @@ function renderProductionLog() {
                     ${config.image ? `<img src="${config.image}" class="w-8 h-8 rounded border border-zinc-700 object-cover bg-black">` : ''}
                 </div>
 
-                ${(config.back) ? `
+                ${(config.back && config.back !== 'None') ? `
                 <div class="pt-2 border-t border-zinc-800/20 space-y-0.5">
                     <span class="text-[7px] text-zinc-600 uppercase font-black tracking-tighter">Secondary / Rear</span>
                     <p class="text-[10px] text-zinc-200 font-bold uppercase">${config.back}</p>
@@ -286,7 +394,7 @@ function renderProductionLog() {
                 <span class="text-[7px] text-zinc-700 font-mono font-bold">${new Date(item.timestamp).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</span>
                 
                 <div class="flex items-center gap-2">
-                    <button onclick="event.stopPropagation(); window.deleteLogItem(${qIndex})" class="p-2 bg-zinc-800 hover:bg-red-500/20 hover:text-red-500 rounded-lg transition-colors group/icon">
+                    <button onclick="event.stopPropagation(); window.removeFromQueue(${qIndex})" class="p-2 bg-zinc-800 hover:bg-red-500/20 hover:text-red-500 rounded-lg transition-colors group/icon">
                         <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/><line x1="10" y1="11" x2="10" y2="17"/><line x1="14" y1="11" x2="14" y2="17"/></svg>
                     </button>
                     <button onclick="event.stopPropagation(); window.orderItem(${qIndex})" class="p-2 bg-purple-600 hover:bg-purple-500 text-white rounded-lg transition-colors">
@@ -296,6 +404,38 @@ function renderProductionLog() {
             </div>
         </div>
     `}).reverse().join('');
+};
+
+window.closePage = () => {
+    const fileInputs = document.querySelectorAll('input[type="file"]');
+    fileInputs.forEach(input => {
+        input.value = ""; 
+    });
+    if (studioState) {
+        studioState.tempUpload = null;
+    }
+    if (studioState.isRehydrating && !document.getElementById("content-layer").innerHTML) return;
+    history.pushState("", document.title, window.location.pathname + window.location.search);
+    const contentLayer = document.getElementById("content-layer");
+    contentLayer.classList.replace('opacity-100', 'opacity-0');
+    contentLayer.classList.add('pointer-events-none');
+    setTimeout(() => {
+        const pivot = document.getElementById("expansion-pivot");
+        pivot.style.width = "0"; pivot.style.height = "0"; pivot.style.opacity = "0";
+        document.getElementById("page-overlay").style.zIndex = "-1";
+        document.body.style.overflow = "auto";
+    }, 400);
+};
+
+function renderHUD() {
+    const hud = document.getElementById('hud-items');
+    if (!hud) return;
+    hud.innerHTML = '';
+    studioState.productionQueue.slice(-8).forEach(() => {
+        const dot = document.createElement('div');
+        dot.className = "w-2 h-2 rounded-full bg-purple-500 shadow-[0_0_8px_#9c3bf6]";
+        hud.appendChild(dot);
+    });
 }
 
 window.expandIntelligence = (group) => {
@@ -385,6 +525,7 @@ window.deleteLogItem = (index) => {
 let currentOrderingIndex = null;
 
 window.orderItem = (index) => {
+    // Store the index of the item being ordered
     currentOrderingIndex = index;
     window.checkSavedCustomer();
     
@@ -392,7 +533,12 @@ window.orderItem = (index) => {
     modal.classList.remove('opacity-0', 'pointer-events-none');
     document.getElementById('modal-content').classList.remove('scale-95');
     
-    document.getElementById('confirm-order-btn').onclick = () => finalizeOrderWithCustomerData();
+    // FIX: Target 'confirm-order-btn' instead of 'your-button-id'
+    const finalBtn = document.getElementById('confirm-order-btn');
+    if (finalBtn) {
+        // We use an arrow function to ensure 'e' (the event) is passed
+        finalBtn.onclick = (e) => window.finalizeOrderWithCustomerData(e);
+    }
 };
 
 window.closeCustomerModal = () => {
@@ -400,49 +546,23 @@ window.closeCustomerModal = () => {
     modal.classList.add('opacity-0', 'pointer-events-none');
 };
 
-async function finalizeOrderWithCustomerData() {
-    const name = document.getElementById('cust-name').value;
-    const email = document.getElementById('cust-email').value;
-    const addr = document.getElementById('cust-address').value;
-    const shouldSave = document.getElementById('save-cust-prefs').checked;
-
-    if (!name || !email) return alert("Missing Name or Email.");
-
-    if (shouldSave) {
-        localStorage.setItem('uk_studio_saved_client', JSON.stringify({ name, email, address: addr }));
-    } else {
-        localStorage.removeItem('uk_studio_saved_client');
+window.orderAllItems = () => {
+    if (studioState.productionQueue.length === 0) {
+        alert("PRODUCTION QUEUE EMPTY. NO DATA TO TRANSMIT.");
+        return;
     }
 
-    const queueIdx = studioState.productionQueue.length - 1 - currentOrderingIndex;
-    const item = studioState.productionQueue[queueIdx];
+    // Set the global bulk flag
+    studioState.isBulkOrder = true;
     
-    const itemWithCustomer = { ...item, customer: { name, email, addr } };
-
-    window.closeCustomerModal();
-    const success = await window.sendToDiscord(itemWithCustomer);
+    // Open the customer modal
+    const modal = document.getElementById('customer-modal');
+    modal.classList.remove('opacity-0', 'pointer-events-none');
     
-    if (success) {
-        studioState.productionQueue.splice(queueIdx, 1);
-        localStorage.setItem('uk_studio_queue_local', JSON.stringify(studioState.productionQueue));
-        
-        alert(`SUCCESS: Order for ${item.id} moved to Discord Production.`);
-        renderProductionLog();
-        renderHUD();
-    }
-}
-
-window.orderAllItems = async () => {
-    if (!confirm(`Confirm production of ${studioState.productionQueue.length} items?`)) return;
-
-    for (let i = 0; i < studioState.productionQueue.length; i++) {
-        await window.sendToDiscord(studioState.productionQueue[i]);
-        studioState.productionQueue[i].status = "ORDERED";
-    }
-
-    localStorage.setItem('uk_studio_queue_local', JSON.stringify(studioState.productionQueue));
-    renderProductionLog();
-    alert("Full Manifest Sent to Discord");
+    // Auto-fill if they have saved prefs
+    window.checkSavedCustomer();
+    
+    console.log(`[SYSTEM] Bulk Mode Activated: ${studioState.productionQueue.length} items in queue.`);
 };
 
 window.exportProductionSheet = () => {
@@ -490,5 +610,84 @@ window.handleContactSubmit = async (e) => {
         e.target.reset();
     }, 1500);
 };
+
+window.finalizeOrderWithCustomerData = async (e) => {
+    if (e) e.preventDefault();
+    
+    const confirmBtn = document.getElementById('confirm-order-btn');
+    if (confirmBtn.disabled) return; // Guard clause
+
+    // 1. Enter "Processing" State
+    const originalText = confirmBtn.innerText;
+    confirmBtn.disabled = true;
+    confirmBtn.innerText = studioState.isBulkOrder ? "TRANSMITTING BATCH..." : "UPLOADING...";
+
+    const customer = {
+        name: document.getElementById('cust-name').value,
+        email: document.getElementById('cust-email').value,
+        address: document.getElementById('cust-address').value
+    };
+
+    try {
+        if (studioState.isBulkOrder) {
+            // BULK MODE
+            while (studioState.productionQueue.length > 0) {
+                const item = studioState.productionQueue[0];
+                item.customer = customer;
+                
+                // Update button text with progress
+                confirmBtn.innerText = `SENDING (${studioState.productionQueue.length} REMAINING)`;
+                
+                await window.sendToDiscord(item, 0);
+                await new Promise(r => setTimeout(r, 400)); // Delay
+            }
+            studioState.isBulkOrder = false;
+        } else {
+            // SINGLE MODE
+            const item = studioState.productionQueue[currentOrderingIndex];
+            if (item) {
+                item.customer = customer;
+                await window.sendToDiscord(item, currentOrderingIndex);
+            }
+        }
+
+        // 2. Success Sequence
+        window.closeCustomerModal();
+        const feedback = document.createElement('div');
+        feedback.className = "fixed inset-0 z-[1000] bg-white text-black flex items-center justify-center font-black italic text-4xl uppercase tracking-tighter";
+        feedback.innerHTML = "MANIFEST_TRANSMITTED";
+        document.body.appendChild(feedback);
+
+        setTimeout(() => {
+            feedback.remove();
+            window.closePage();
+        }, 2000);
+
+    } catch (err) {
+        console.error("Transmission Failed", err);
+        alert("CRITICAL ERROR DURING TRANSMISSION");
+    } finally {
+        // 3. Reset Button State (in case of error)
+        confirmBtn.disabled = false;
+        confirmBtn.innerText = originalText;
+    }
+};
+
+window.addEventListener('keydown', (e) => {
+    if (e.key === "Escape") {
+        console.log("[SYSTEM] ESC sequence detected. Closing active overlays.");
+        
+        // 1. Close the Product Expansion Page
+        window.closePage();
+        
+        // 2. Close the Customer/Fulfillment Modal
+        window.closeCustomerModal();
+        
+        // 3. Close the Contact Modal
+        if (typeof window.closeContactForm === 'function') {
+            window.closeContactForm();
+        }
+    }
+});
 
 window.onload = initDiagnostics;

@@ -1,5 +1,5 @@
 export function render() {
-    return `
+  return `
         <div class="min-h-screen bg-black text-white p-4 md:p-12 relative">
             <div class="flex justify-between items-center mb-12">
                 <div>
@@ -52,20 +52,61 @@ export function render() {
                         <label class="text-[10px] font-black uppercase text-zinc-500 tracking-widest block mb-6">Configuration</label>
                         
                         <div class="grid grid-cols-8 gap-2 mb-6 max-h-48 overflow-y-auto p-2 border border-zinc-800 rounded-xl">
-                            ${['#000000', '#FFFFFF', '#4B5563', '#991B1B', '#1E3A8A', '#166534', '#EAB308', '#D946EF', '#F97316', '#06B6D4', '#8B5CF6', '#EC4899', '#10B981', '#6366F1', '#F43F5E', '#71717A', '#3F3F46', '#27272A', '#52525B']
-                                .map((color, i) => `
+                            ${[
+                              "#000000",
+                              "#FFFFFF",
+                              "#4B5563",
+                              "#991B1B",
+                              "#1E3A8A",
+                              "#166534",
+                              "#EAB308",
+                              "#D946EF",
+                              "#F97316",
+                              "#06B6D4",
+                              "#8B5CF6",
+                              "#EC4899",
+                              "#10B981",
+                              "#6366F1",
+                              "#F43F5E",
+                              "#71717A",
+                              "#3F3F46",
+                              "#27272A",
+                              "#52525B",
+                            ]
+                              .map(
+                                (color, i) => `
                                 <div 
                                     onclick="window.updateSelection(this, 'active-color')" 
                                     data-color="${color}" 
                                     style="background-color: ${color}" 
-                                    class="aspect-square rounded-md border border-zinc-700 cursor-pointer hover:scale-110 transition ${i === 0 ? 'active-color' : ''}">
-                                </div>`).join('')}
+                                    class="aspect-square rounded-md border border-zinc-700 cursor-pointer hover:scale-110 transition ${
+                                      i === 0 ? "active-color" : ""
+                                    }">
+                                </div>`
+                              )
+                              .join("")}
                         </div>
 
                         <div class="grid grid-cols-4 gap-2">
-                            ${['XS', 'S', 'M', 'L', 'XL', '2XL', '3XL', '4XL', '5XL'].map(size => `
-                                <button onclick="window.updateSelection(this, 'active-size')" class="py-3 bg-black border border-zinc-800 rounded-xl text-[10px] font-bold hover:border-purple-500 transition ${size === 'L' ? 'active-size' : ''}">${size}</button>
-                            `).join('')}
+                            ${[
+                              "XS",
+                              "S",
+                              "M",
+                              "L",
+                              "XL",
+                              "2XL",
+                              "3XL",
+                              "4XL",
+                              "5XL",
+                            ]
+                              .map(
+                                (size) => `
+                                <button onclick="window.updateSelection(this, 'active-size')" class="py-3 bg-black border border-zinc-800 rounded-xl text-[10px] font-bold hover:border-purple-500 transition ${
+                                  size === "L" ? "active-size" : ""
+                                }">${size}</button>
+                            `
+                              )
+                              .join("")}
                         </div>
                     </div>
 
@@ -90,9 +131,22 @@ export function render() {
                                     <option>Gothic Script</option>
                                     <option>Modern Sans</option>
                                 </select>
-                                <div class="w-full border-2 border-dashed border-zinc-800 rounded-xl p-6 text-center hover:border-purple-500/50 cursor-pointer transition group">
-                                    <div class="text-xl mb-1 group-hover:scale-110 transition-transform">↑</div>
-                                    <span class="text-[9px] text-zinc-600 uppercase font-bold">Upload Vector / PNG</span>
+                                    <div class="bg-zinc-900/40 border border-zinc-800 rounded-2xl p-6">
+                                    <span class="text-[10px] font-black uppercase tracking-widest text-zinc-500 block mb-4">Visual Assets</span>
+                                    
+                                    <div id="image-upload-zone" 
+                                        onclick="document.getElementById('artwork-upload-input').click()"
+                                        class="aspect-video bg-black border-2 border-dashed border-zinc-800 rounded-xl flex items-center justify-center hover:border-purple-500 cursor-pointer overflow-hidden">
+                                        
+                                        <input type="file" id="artwork-upload-input" class="hidden" accept="image/*" 
+                                            onchange="window.handleImageUpload(this)">
+                                        
+                                        <div id="image-preview-container" class="w-full h-full flex items-center justify-center">
+                                            <div class="text-center">
+                                                <span class="text-zinc-600 text-[9px] uppercase font-bold text-center px-4">Click to Upload Artwork</span>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -100,12 +154,15 @@ export function render() {
 
                     <button 
                         onclick="saveDesignToQueue('T-Shirt', { 
-                            front: document.querySelector('input[placeholder*=\\'FRONT\\']')?.value || 'None',
+                            front: document.querySelector('input[placeholder*=\'FRONT\']')?.value || 'None',
                             frontFont: document.getElementById('font-front-t').value,
-                            back: document.querySelector('input[placeholder*=\\'REAR\\']')?.value || 'None',
+                            back: document.querySelector('input[placeholder*=\'REAR\']')?.value || 'None',
                             backFont: document.getElementById('font-rear-t').value,
                             color: document.querySelector('.active-color')?.dataset.color || '#000000',
                             size: document.querySelector('.active-size')?.innerText || 'L',
+                            
+                            // THE FIX: Grab the uploaded image src from the preview container
+                            image: document.querySelector('#image-preview-container img')?.src || null,                            
                             specs: '240GSM Organic'
                         })"
                         class="w-full bg-white text-black py-6 rounded-2xl font-black uppercase text-xs tracking-[0.3em] hover:bg-purple-600 hover:text-white transition-all">

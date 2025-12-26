@@ -89,11 +89,23 @@ export function render() {
                                     <option>Gothic Script</option>
                                     <option>Modern Sans</option>
                                 </select>
-                                <p class="text-[8px] text-zinc-400 uppercase font-bold mb-2">Rear Image Upload</p>
-                                <label id="image-upload-zone" class="block w-full border-2 border-dashed border-zinc-800 rounded-xl p-4 text-center hover:border-purple-500/50 cursor-pointer transition relative">
-                                    <input type="file" accept="image/*" class="hidden" onchange="window.handleImageUpload(this)">
-                                    <span class="text-[9px] text-zinc-600 uppercase font-bold">Upload Artwork (.PNG / .SVG)</span>
-                                </label>
+                                <div class="bg-zinc-900/40 border border-zinc-800 rounded-2xl p-6">
+                                    <span class="text-[10px] font-black uppercase tracking-widest text-zinc-500 block mb-4">Visual Assets</span>
+                                    
+                                    <div id="image-upload-zone" 
+                                        onclick="document.getElementById('artwork-upload-input').click()"
+                                        class="aspect-video bg-black border-2 border-dashed border-zinc-800 rounded-xl flex items-center justify-center hover:border-purple-500 cursor-pointer overflow-hidden">
+                                        
+                                        <input type="file" id="artwork-upload-input" class="hidden" accept="image/*" 
+                                            onchange="window.handleImageUpload(this)">
+                                        
+                                        <div id="image-preview-container" class="w-full h-full flex items-center justify-center">
+                                            <div class="text-center">
+                                                <span class="text-zinc-600 text-[9px] uppercase font-bold text-center px-4">Click to Upload Artwork</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -104,7 +116,7 @@ export function render() {
                             frontFont: document.getElementById('font-front').value,
                             back: document.querySelector('input[placeholder*=\\'BACK\\']')?.value || 'No Text',
                             backFont: document.getElementById('font-rear').value,
-                            image: document.getElementById('image-upload-zone').dataset.uploadedImage || null,
+                            image: document.querySelector('#image-preview-container img')?.src || null,
                             color: document.querySelector('.active-color')?.dataset.color || 'Black',
                             size: document.querySelector('.active-size')?.innerText || 'L',
                             specs: 'Heavyweight Cotton'
