@@ -1,9 +1,9 @@
-const DISCORD_WEBHOOK_URL = "https://discord.com/api/webhooks/1453722658108735508/LTdntHGIIbfHgp0Ve9q0gFI86BSioA7DZ3mAp0X7QTfXtUh4Srj6T9lEC-HToChEgmAA";
+const DISCORD_WEBHOOK_URL = "";
 const studioState = {
     productionQueue: JSON.parse(localStorage.getItem('uk_studio_queue_local')) || [],
     currentOpenPage: null,
     isRehydrating: false,
-    tempUpload: null // Add this to store the file object
+    tempUpload: null
 };
 const dataURLtoFile = (dataurl, filename) => {
     let arr = dataurl.split(','),
@@ -32,14 +32,12 @@ window.sendToDiscord = async (item, itemIndex) => {
     const config = item.config || {};
     const cust = item.customer || { name: "N/A", email: "N/A", address: "N/A" };
     
-    // Create a clean hex color for the embed sidebar
     const brandColor = config.color && config.color.startsWith('#') 
         ? parseInt(config.color.replace('#', ''), 16) 
         : 0x9c3bf6;
 
     const formData = new FormData();
 
-    // 1. Build the high-readability Embed
     const embed = {
         title: `🏗️ PRODUCTION MANIFEST: ${item.id}`,
         description: `**Product:** ${item.name.toUpperCase()}\n**Status:** READY_FOR_PRINT`,
@@ -65,19 +63,15 @@ window.sendToDiscord = async (item, itemIndex) => {
         timestamp: new Date().toISOString()
     };
 
-    // 2. IMAGE HANDLING: Attach the design file
-    // We look for 'image' or 'tempImageData' in the item
 const imageSrc = config.image || item.tempImageData;
 
 if (imageSrc) {
     try {
         let blob;
-        // If it's a local path (like ../images/...), we fetch it to get the data
         if (imageSrc.startsWith('..') || imageSrc.startsWith('/')) {
             const response = await fetch(imageSrc);
             blob = await response.blob();
         } 
-        // If it's an uploaded Base64 string
         else if (imageSrc.startsWith('data:image')) {
             const response = await fetch(imageSrc);
             blob = await response.blob();
@@ -91,10 +85,9 @@ if (imageSrc) {
         console.error("Failed to bundle design image:", e);
     }
 }
-    // 3. Assemble and Transmit
     formData.append('payload_json', JSON.stringify({
         username: "UC PRODUCTION TERMINAL",
-        avatar_url: "https://unknowncollective.com/logo.png", // Replace with your actual logo URL if you have one
+        avatar_url: "https://unknowncollective.com/logo.png",
         embeds: [embed]
     }));
 
@@ -106,7 +99,6 @@ if (imageSrc) {
 
         if (response.ok) {
             console.log("[SYSTEM] Manifest transmitted. Clearing local queue item.");
-            // Remove the item from log after successful send
             if (itemIndex !== undefined) {
                 studioState.productionQueue.splice(itemIndex, 1);
                 localStorage.setItem('uk_studio_queue_local', JSON.stringify(studioState.productionQueue));
@@ -124,13 +116,11 @@ if (imageSrc) {
 };
 
 async function initDiagnostics() {
-    // 1. Terminal Clock
     setInterval(() => {
         const clock = document.getElementById('system-clock');
         if (clock) clock.innerText = new Date().toLocaleTimeString('en-GB', { hour12: false });
     }, 1000);
 
-    // 2. Boot Sequence
     const logContainer = document.getElementById('boot-log');
     const bootOverlay = document.getElementById('boot-loader');
     const logs = [
@@ -148,14 +138,12 @@ async function initDiagnostics() {
             p.innerText = line;
             logContainer.appendChild(p);
             
-            // Artificial delay for "processing" feel
             await new Promise(r => setTimeout(r, 400));
             p.classList.remove('opacity-0');
         }
         
         setTimeout(() => {
             bootOverlay.style.opacity = "0";
-            // Enable interaction after boot
             bootOverlay.classList.add('hidden');
         }, 800);
     }
@@ -163,7 +151,6 @@ async function initDiagnostics() {
     const currentHash = window.location.hash.replace('#', '');
     if (currentHash) {
         console.log(`[SYSTEM] Recovering Ghost State: ${currentHash}`);
-        // Small delay to let the UI settle before opening the product
         setTimeout(() => {
             openProduct(currentHash);
         }, 500); 
@@ -176,10 +163,8 @@ async function initDiagnostics() {
 window.addEventListener('hashchange', () => {
     const newHash = window.location.hash.replace('#', '');
     if (newHash) {
-        // If the hash changed and isn't empty, open that product
         openProduct(newHash);
     } else {
-        // If the hash is removed (back button to home), close the page
         window.closePage();
     }
 });
@@ -198,9 +183,7 @@ window.handleImageUpload = (input) => {
     const reader = new FileReader();
 
     reader.onload = (e) => {
-        // Just show the image, no animations, no extra divs
         container.innerHTML = `<img src="${e.target.result}" class="w-full h-full object-contain">`;
-        // Store the data URL so the save function can find it easily
         studioState.tempUpload = e.target.result;
     };
     reader.readAsDataURL(file);
@@ -209,7 +192,6 @@ window.handleImageUpload = (input) => {
 async function openProduct(rawName) {
     let pageName = rawName.toLowerCase().replace("custom", "").replace(/\s/g, "").trim();
     
-    // Update the URL hash without reloading the page
     window.location.hash = pageName;    
     const fileMap = { 
         'hoodie': 'hoodies', 
@@ -224,6 +206,7 @@ async function openProduct(rawName) {
         'visual_log': 'gallery',
         'gallery': 'gallery',
         'team': 'team',
+        'sunstrip': 'sunstrips',
     };
     
     if (fileMap[pageName]) pageName = fileMap[pageName];
@@ -302,7 +285,6 @@ window.reopenDesign = async (e, index) => {
 };
 
 window.saveDesignToQueue = (name, config) => {
-    // 1. Generate the item object exactly as your UI expects it
     const item = {
         id: `UC-${Math.floor(1000 + Math.random() * 9000)}`,
         name: name, 
@@ -310,24 +292,18 @@ window.saveDesignToQueue = (name, config) => {
         timestamp: new Date().toISOString()
     };
 
-    // 2. Save to the studio state and local storage
     studioState.productionQueue.push(item);
     localStorage.setItem('uk_studio_queue_local', JSON.stringify(studioState.productionQueue));
     
-    // 3. Update the Production Log UI
     renderProductionLog();
     renderHUD();
 
-    // 4. THE FIX: Close the product page overlay
     window.closePage();
 };
 
 window.removeFromQueue = (index) => {
-    // Remove the item from the array
     studioState.productionQueue.splice(index, 1);
-    // Save the updated array to storage
     localStorage.setItem('uk_studio_queue_local', JSON.stringify(studioState.productionQueue));
-    // Refresh the UI
     renderProductionLog();
     renderHUD();
 };
@@ -341,10 +317,8 @@ window.renderProductionLog = () => {
         return;
     }
 
-    // We map and then .reverse() so newest designs appear first visually
     logContainer.innerHTML = studioState.productionQueue.map((item, index) => {
         const config = item.config || {};
-        // The actual index in the studioState array
         const qIndex = index;
         
         return `
@@ -525,7 +499,6 @@ window.deleteLogItem = (index) => {
 let currentOrderingIndex = null;
 
 window.orderItem = (index) => {
-    // Store the index of the item being ordered
     currentOrderingIndex = index;
     window.checkSavedCustomer();
     
@@ -533,10 +506,8 @@ window.orderItem = (index) => {
     modal.classList.remove('opacity-0', 'pointer-events-none');
     document.getElementById('modal-content').classList.remove('scale-95');
     
-    // FIX: Target 'confirm-order-btn' instead of 'your-button-id'
     const finalBtn = document.getElementById('confirm-order-btn');
     if (finalBtn) {
-        // We use an arrow function to ensure 'e' (the event) is passed
         finalBtn.onclick = (e) => window.finalizeOrderWithCustomerData(e);
     }
 };
@@ -552,14 +523,11 @@ window.orderAllItems = () => {
         return;
     }
 
-    // Set the global bulk flag
     studioState.isBulkOrder = true;
     
-    // Open the customer modal
     const modal = document.getElementById('customer-modal');
     modal.classList.remove('opacity-0', 'pointer-events-none');
     
-    // Auto-fill if they have saved prefs
     window.checkSavedCustomer();
     
     console.log(`[SYSTEM] Bulk Mode Activated: ${studioState.productionQueue.length} items in queue.`);
@@ -615,9 +583,7 @@ window.finalizeOrderWithCustomerData = async (e) => {
     if (e) e.preventDefault();
     
     const confirmBtn = document.getElementById('confirm-order-btn');
-    if (confirmBtn.disabled) return; // Guard clause
-
-    // 1. Enter "Processing" State
+    if (confirmBtn.disabled) return; 
     const originalText = confirmBtn.innerText;
     confirmBtn.disabled = true;
     confirmBtn.innerText = studioState.isBulkOrder ? "TRANSMITTING BATCH..." : "UPLOADING...";
@@ -630,20 +596,17 @@ window.finalizeOrderWithCustomerData = async (e) => {
 
     try {
         if (studioState.isBulkOrder) {
-            // BULK MODE
             while (studioState.productionQueue.length > 0) {
                 const item = studioState.productionQueue[0];
                 item.customer = customer;
                 
-                // Update button text with progress
                 confirmBtn.innerText = `SENDING (${studioState.productionQueue.length} REMAINING)`;
                 
                 await window.sendToDiscord(item, 0);
-                await new Promise(r => setTimeout(r, 400)); // Delay
+                await new Promise(r => setTimeout(r, 400));
             }
             studioState.isBulkOrder = false;
         } else {
-            // SINGLE MODE
             const item = studioState.productionQueue[currentOrderingIndex];
             if (item) {
                 item.customer = customer;
@@ -651,7 +614,6 @@ window.finalizeOrderWithCustomerData = async (e) => {
             }
         }
 
-        // 2. Success Sequence
         window.closeCustomerModal();
         const feedback = document.createElement('div');
         feedback.className = "fixed inset-0 z-[1000] bg-white text-black flex items-center justify-center font-black italic text-4xl uppercase tracking-tighter";
@@ -667,7 +629,6 @@ window.finalizeOrderWithCustomerData = async (e) => {
         console.error("Transmission Failed", err);
         alert("CRITICAL ERROR DURING TRANSMISSION");
     } finally {
-        // 3. Reset Button State (in case of error)
         confirmBtn.disabled = false;
         confirmBtn.innerText = originalText;
     }
@@ -677,13 +638,10 @@ window.addEventListener('keydown', (e) => {
     if (e.key === "Escape") {
         console.log("[SYSTEM] ESC sequence detected. Closing active overlays.");
         
-        // 1. Close the Product Expansion Page
         window.closePage();
         
-        // 2. Close the Customer/Fulfillment Modal
         window.closeCustomerModal();
         
-        // 3. Close the Contact Modal
         if (typeof window.closeContactForm === 'function') {
             window.closeContactForm();
         }
