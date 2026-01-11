@@ -28,13 +28,13 @@ export function render() {
                             <text id="sticker-text-bg" x="50%" y="55%" text-anchor="middle" dominant-baseline="middle"
                                   class="heading-font italic font-black"
                                   style="font-size: 80px; fill: white; stroke: white; stroke-width: 3px; stroke-linejoin: round; paint-order: stroke;">
-                                UC STUDIO
+                                UE STUDIO
                             </text>
 
                             <text id="sticker-text-main" x="50%" y="55%" text-anchor="middle" dominant-baseline="middle"
                                   class="heading-font italic font-black"
                                   style="font-size: 80px; fill: #000000; transition: fill 0.3s ease;">
-                                UC STUDIO
+                                UE STUDIO
                             </text>
                         </svg>
                     </div>
@@ -107,7 +107,7 @@ export function render() {
 }
 
 window.setStickerText = (val) => {
-    const text = val.toUpperCase() || 'UC STUDIO';
+    const text = val.toUpperCase() || 'UE STUDIO';
     document.getElementById('sticker-text-bg').textContent = text;
     document.getElementById('sticker-text-main').textContent = text;
     

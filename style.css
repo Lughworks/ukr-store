@@ -31,7 +31,8 @@ body {
     transform: scale(1.1);
 }
 
-.active-size, .active-preset {
+.active-size,
+.active-preset {
     background-color: #9c3bf6 !important;
     color: #fff !important;
     border-color: #9c3bf6 !important;
@@ -69,4 +70,42 @@ body {
     font-size: 8px;
     letter-spacing: 2px;
     text-transform: uppercase;
+}
+
+.mechanical-part {
+    transition: transform 0.6s cubic-bezier(0.17, 0.84, 0.44, 1), opacity 0.3s;
+}
+
+.u-block-initial {
+    transform: translateY(-100vh);
+    opacity: 0;
+}
+
+.e-block-initial {
+    transform: translateY(100vh);
+    opacity: 0;
+}
+
+.expansion-chamber {
+    display: inline-flex;
+    overflow: hidden;
+    width: 0;
+    white-space: nowrap;
+    align-items: center;
+    transition: width 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.ue-core {
+    font-size: 18vw;
+    font-weight: 900;
+    font-style: italic;
+    line-height: 0.8;
+    flex-shrink: 0;
+}
+
+.expansion-text {
+    font-size: 8vw;
+    font-weight: 900;
+    font-style: italic;
+    letter-spacing: -0.05em;
 }

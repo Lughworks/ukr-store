@@ -59,7 +59,7 @@ window.sendToDiscord = async (item, itemIndex) => {
                 inline: true 
             }
         ],
-        footer: { text: `UC_STUDIO // ${new Date().toLocaleDateString()} // SESSION_ID: ${Math.random().toString(36).substr(2, 9).toUpperCase()}` },
+        footer: { text: `UE_STUDIO // ${new Date().toLocaleDateString()} // SESSION_ID: ${Math.random().toString(36).substr(2, 9).toUpperCase()}` },
         timestamp: new Date().toISOString()
     };
 
@@ -86,8 +86,8 @@ if (imageSrc) {
     }
 }
     formData.append('payload_json', JSON.stringify({
-        username: "UC PRODUCTION TERMINAL",
-        avatar_url: "https://unknowncollective.com/logo.png",
+        username: "UE PRODUCTION TERMINAL",
+        avatar_url: "https://unknownempire.com/logo.png",
         embeds: [embed]
     }));
 
@@ -115,45 +115,49 @@ if (imageSrc) {
     }
 };
 
+const BOOT_HOLD = 1200;
+
 async function initDiagnostics() {
     setInterval(() => {
         const clock = document.getElementById('system-clock');
         if (clock) clock.innerText = new Date().toLocaleTimeString('en-GB', { hour12: false });
     }, 1000);
 
-    const logContainer = document.getElementById('boot-log');
-    const bootOverlay = document.getElementById('boot-loader');
-    const logs = [
-        "> INITIALIZING UC_CORE_v1.0.9...",
-        "> ESTABLISHING ENCRYPTED UPLINK...",
-        "> LOADING PRODUCTION_MODULES...",
-        "> AUTHENTICATING STUDIO_ASSETS...",
-        "> READY."
-    ];
+    const uBlock = document.getElementById('u-block');
+    const eBlock = document.getElementById('e-block');
+    const nknown = document.getElementById('nknown-chamber');
+    const mpire = document.getElementById('mpire-chamber');
+    const loader = document.getElementById('boot-loader');
+    const assembly = document.getElementById('brand-assembly');
 
-    if (logContainer) {
-        for (const line of logs) {
-            const p = document.createElement('p');
-            p.className = "mb-1 opacity-0";
-            p.innerText = line;
-            logContainer.appendChild(p);
-            
-            await new Promise(r => setTimeout(r, 400));
-            p.classList.remove('opacity-0');
-        }
-        
-        setTimeout(() => {
-            bootOverlay.style.opacity = "0";
-            bootOverlay.classList.add('hidden');
-        }, 800);
-    }
+    await new Promise(r => setTimeout(r, BOOT_HOLD));
+
+    uBlock.style.transform = "translateY(0)";
+    uBlock.style.opacity = "1";
+    
+    await new Promise(r => setTimeout(r, 100));
+    
+    eBlock.style.transform = "translateY(0)";
+    eBlock.style.opacity = "1";
+
+    await new Promise(r => setTimeout(r, 800));
+
+    nknown.style.width = "30vw"; 
+    mpire.style.width = "26vw";
+
+    await new Promise(r => setTimeout(r, 2000));
+
+    loader.style.opacity = "0";
+    assembly.style.transform = "scale(1.2)";
+    assembly.style.filter = "blur(10px)";
+    
+    setTimeout(() => {
+        loader.classList.add('hidden');
+    }, 1000);
 
     const currentHash = window.location.hash.replace('#', '');
     if (currentHash) {
-        console.log(`[SYSTEM] Recovering Ghost State: ${currentHash}`);
-        setTimeout(() => {
-            openProduct(currentHash);
-        }, 500); 
+        setTimeout(() => openProduct(currentHash), 500); 
     }
 
     renderHUD();
@@ -202,7 +206,7 @@ async function openProduct(rawName) {
         'sticker': 'stickers',
         'ur': 'ur',
         'ud': 'ud',
-        'unknowncollective': 'general',
+        'unknownempire': 'general',
         'visual_log': 'gallery',
         'gallery': 'gallery',
         'team': 'team',
@@ -286,7 +290,7 @@ window.reopenDesign = async (e, index) => {
 
 window.saveDesignToQueue = (name, config) => {
     const item = {
-        id: `UC-${Math.floor(1000 + Math.random() * 9000)}`,
+        id: `UE-${Math.floor(1000 + Math.random() * 9000)}`,
         name: name, 
         config: config,
         timestamp: new Date().toISOString()
@@ -421,7 +425,7 @@ window.expandIntelligence = (group) => {
             bio: "Specialized in high-speed urban transit. Built for the chase, optimized for the night. Our Riderz operate in the dense urban core."
         },
         general: {
-            title: "The Unknown Collective",
+            title: "The Unknown Empire",
             color: "#a855f7",
             specs: ["Multi-disciplinary studio", "Subterranean Network", "Performance Hardware"],
             bio: "A collaborative effort between design, engineering, and culture. We build the tools for those who refuse to be tracked."
@@ -461,7 +465,7 @@ window.expandIntelligence = (group) => {
                     
                     <div class="bg-zinc-900/20 border border-zinc-800 rounded-3xl p-8 flex items-center justify-center relative group overflow-hidden">
                         <div class="absolute inset-0 blueprint-grid opacity-20"></div>
-                        <span class="text-[10px] font-black text-zinc-700 uppercase tracking-[0.8em] rotate-90">UC_LOG_FILE</span>
+                        <span class="text-[10px] font-black text-zinc-700 uppercase tracking-[0.8em] rotate-90">UE_LOG_FILE</span>
                         <div class="w-full aspect-square border-2 border-dashed border-zinc-800 rounded-full flex items-center justify-center">
                              <span class="text-4xl font-black" style="color: ${info.color}">${group.toUpperCase()}</span>
                         </div>

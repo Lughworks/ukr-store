@@ -5,7 +5,7 @@ export function render() {
 
                 <div>
                     <span class="text-[10px] text-purple-500 font-bold tracking-[0.3em] uppercase italic">Intelligence / Archive</span>
-                    <h1 class="heading-font text-4xl md:text-6xl font-black uppercase tracking-tighter mt-2">Unknown Collective</h1>
+                    <h1 class="heading-font text-4xl md:text-6xl font-black uppercase tracking-tighter mt-2">Unknown Empire</h1>
                 </div>
 
                 <button onclick="window.closePage()" class="group flex items-center gap-3 bg-zinc-900 hover:bg-white hover:text-black transition-all px-6 py-3 rounded-full border border-zinc-800">
@@ -19,9 +19,9 @@ export function render() {
                     <div class="absolute inset-0 blueprint-grid opacity-20"></div>
                     <div class="w-full h-full rounded-[2.2rem] overflow-hidden relative z-10">
                         <img src="./images/general/general_asset_01.png" 
-                             onerror="this.src='https://placehold.co/1200x500/111/white?text=COLLECTIVE_CORE_VISUAL'" 
+                             onerror="this.src='https://placehold.co/1200x500/111/white?text=Empire_CORE_VISUAL'" 
                              class="w-full h-full object-cover grayscale opacity-60 group-hover:opacity-100 group-hover:grayscale-0 transition-all duration-1000" 
-                             alt="Collective Core">
+                             alt="Empire Core">
                         
                         <div class="absolute top-8 left-8 flex flex-col gap-2">
                             <div class="bg-black/60 backdrop-blur-md border border-purple-500/30 px-4 py-1 rounded-sm">
@@ -61,7 +61,7 @@ export function render() {
             <div class="pt-12 border-t border-zinc-900 flex justify-between items-center text-[8px] text-zinc-700 font-black uppercase tracking-[0.5em]">
                 <span>Status: Optimal</span>
                 <span>User Access: Admin Level 01</span>
-                <span>Unknown Collective © 2025</span>
+                <span>Unknown Empire © 2025</span>
             </div>
         </div>
     `;
