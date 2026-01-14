@@ -109,3 +109,28 @@ body {
     font-style: italic;
     letter-spacing: -0.05em;
 }
+
+/* MOBILE TACTICAL BUTTON SCOPING */
+@media (max-width: 768px) {
+    /* Hide the button by default */
+    .mobile-order-trigger {
+        display: none;
+    }
+
+    /* Only show when the Production Log page is active */
+    #production-log.active-page .mobile-order-trigger {
+        display: flex;
+        position: fixed;
+        bottom: 24px;
+        left: 16px;
+        right: 16px;
+        z-index: 100;
+        box-shadow: 0 20px 40px rgba(0,0,0,0.6);
+        animation: slideUp 0.3s steps(4);
+    }
+}
+
+@keyframes slideUp {
+    from { transform: translateY(100px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+}

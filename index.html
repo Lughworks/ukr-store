@@ -27,7 +27,7 @@
             <div id="e-block" class="flex items-center mechanical-part e-block-initial">
                 <h1 class="ue-core text-purple-600">E</h1>
                 <div id="mpire-chamber" class="expansion-chamber">
-                    <span class="expansion-text text-purple-600 pl-4">MPIRE</span>
+                    <span class="expansion-text text-purple-600 pr-4">MPIRE</span>
                 </div>
             </div>
 
@@ -53,13 +53,11 @@
             </div>
         </div>
 
-        <div id="production-queue-container"
-            class="hidden md:flex items-center gap-4 bg-zinc-900/40 px-4 py-2 rounded-full border border-zinc-800">
+        <div id="production-queue-container" class="hidden md:flex items-center gap-4 bg-zinc-900/40 px-4 py-2 rounded-full border border-zinc-800">
             <span class="text-[8px] font-black uppercase tracking-widest text-zinc-600">Active Queue:</span>
             <div id="hud-items" class="flex gap-2">
             </div>
-            <button onclick="clearQueue()"
-                class="ml-2 text-[7px] text-zinc-700 hover:text-red-500 uppercase font-black transition-colors">Reset</button>
+            <button onclick="clearQueue()" class="ml-2 text-[7px] text-zinc-700 hover:text-red-500 uppercase font-black transition-colors">Reset</button>
         </div>
 
         <div class="font-mono text-[10px] text-zinc-500">SYS_VER: 1.0.9</div>
@@ -70,16 +68,14 @@
         <div class="px-4 md:px-12 mb-12">
             <div class="h-[1px] w-full bg-gradient-to-r from-transparent via-zinc-800 to-transparent relative">
                 <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-black px-4">
-                    <span
-                        class="text-[8px] text-zinc-600 font-black uppercase tracking-[0.8em]">Core Identity Archive</span>
+                    <span class="text-[8px] text-zinc-600 font-black uppercase tracking-[0.8em]">Core Identity Archive</span>
                 </div>
             </div>
         </div>
 
         <div class="px-4 md:px-12 grid grid-cols-1 lg:grid-cols-12 gap-4 mb-16">
 
-            <div onclick="openProduct('ur')"
-                class="lg:col-span-3 bg-zinc-900/30 border border-zinc-800 rounded-[2rem] p-8 hover:border-blue-500 transition-all group cursor-pointer active:scale-95 relative overflow-hidden h-80 flex flex-col justify-between">
+            <div onclick="openProduct('ur')" class="lg:col-span-3 bg-zinc-900/30 border border-zinc-800 rounded-[2rem] p-8 hover:border-blue-500 transition-all group cursor-pointer active:scale-95 relative overflow-hidden h-80 flex flex-col justify-between">
                 <div class="absolute top-0 right-0 p-6 opacity-10 group-hover:opacity-30 transition-opacity">
                     <span class="text-5xl font-black italic">01</span>
                 </div>
@@ -95,36 +91,27 @@
                 </div>
             </div>
 
-            <div onclick="openProduct('unknownempire')"
-                class="lg:col-span-6 bg-zinc-900/30 border border-zinc-800 rounded-[2rem] p-8 hover:border-purple-500 transition-all group cursor-pointer active:scale-95 relative overflow-hidden h-80 flex flex-col items-center justify-center text-center">
+            <div onclick="openProduct('unknownempire')" class="lg:col-span-6 bg-zinc-900/30 border border-zinc-800 rounded-[2rem] p-8 hover:border-purple-500 transition-all group cursor-pointer active:scale-95 relative overflow-hidden h-80 flex flex-col items-center justify-center text-center">
                 <div class="absolute inset-0 blueprint-grid opacity-20"></div>
 
                 <div class="relative z-10 flex flex-col items-center w-full">
-                    <h2 class="heading-font text-5xl font-black uppercase tracking-tight text-white">About The
-                        Empire
-                    </h2>
-
+                    <h2 class="heading-font text-5xl font-black uppercase tracking-tight text-white">About The Empire </h2>
                     <div class="h-1 w-16 bg-purple-500 my-6"></div>
-
                     <p class="text-xs text-zinc-400 max-w-sm uppercase font-medium leading-relaxed tracking-wider">
                         A multi-disciplinary studio bridging the gap between performance hardware and street-level
                         culture.
                     </p>
-
-                    <p class="text-[9px] text-zinc-600 uppercase font-black tracking-[0.6em] mt-8">Core Archive Protocol
-                    </p>
+                    <p class="text-[9px] text-zinc-600 uppercase font-black tracking-[0.6em] mt-8">Core Archive Protocol </p>
                 </div>
             </div>
 
-            <div onclick="openProduct('ud')"
-                class="lg:col-span-3 bg-zinc-900/30 border border-zinc-800 rounded-[2rem] p-8 hover:border-red-500 transition-all group cursor-pointer active:scale-95 relative overflow-hidden h-80 flex flex-col justify-between">
+            <div onclick="openProduct('ud')" class="lg:col-span-3 bg-zinc-900/30 border border-zinc-800 rounded-[2rem] p-8 hover:border-red-500 transition-all group cursor-pointer active:scale-95 relative overflow-hidden h-80 flex flex-col justify-between">
                 <div class="absolute top-0 right-0 p-6 opacity-10 group-hover:opacity-30 transition-opacity">
                     <span class="text-5xl font-black italic">02</span>
                 </div>
                 <div class="relative z-10">
                     <span class="text-[8px] text-red-500 font-black uppercase tracking-[0.4em]">Division Driverz</span>
-                    <h3 class="heading-font text-3xl font-black uppercase tracking-tighter text-white mt-1">Unknown
-                        Driverz</h3>
+                    <h3 class="heading-font text-3xl font-black uppercase tracking-tighter text-white mt-1">Unknown Driverz</h3>
                 </div>
                 <div class="relative z-10">
                     <p class="text-[11px] text-zinc-500 uppercase font-bold leading-relaxed tracking-wide">
@@ -138,69 +125,64 @@
         <div class="px-4 md:px-12 mb-12">
             <div class="h-[1px] w-full bg-gradient-to-r from-transparent via-zinc-800 to-transparent relative">
                 <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-black px-4">
-                    <span
-                        class="text-[8px] text-zinc-600 font-black uppercase tracking-[0.8em]">Operational Media Feed</span>
+                    <span class="text-[8px] text-zinc-600 font-black uppercase tracking-[0.8em]">Operational Media Feed</span>
                 </div>
             </div>
         </div>
 
-    <div class="px-4 md:px-12 grid grid-cols-5 grid-rows-5 gap-4 mb-16 h-screen max-h-[900px]">
+        <div class="px-4 md:px-12 grid grid-cols-1 md:grid-cols-5 gap-4 mb-16 min-h-fit lg:h-screen lg:max-h-[900px]">
 
-        <div onclick="openProduct('gallery')"
-            class="col-span-3 row-span-5 bg-zinc-900/30 border border-zinc-800 rounded-[3rem] p-12 hover:border-white transition-all group cursor-pointer active:scale-95 relative overflow-hidden flex flex-col justify-between">
-
-            <div class="absolute inset-0 blueprint-grid opacity-10"></div>
-
-            <div class="absolute inset-0 opacity-20 group-hover:opacity-40 transition-opacity duration-1000">
-                <img src="./images/gallery/1.png"
-                    onerror="this.src='https://placehold.co/1200x1200/111/333?text=GALLERY_MASTER'"
-                    class="w-full h-full object-cover grayscale scale-105 group-hover:scale-100 transition-transform duration-1000">
-                <div class="absolute inset-0 bg-gradient-to-t from-black via-black/20 to-transparent"></div>
-            </div>
-
-            <div class="relative z-10">
-                <div class="flex items-center gap-4 mb-4">
-                    <span class="px-3 py-1 bg-white/10 rounded-full text-[8px] text-white font-black uppercase tracking-widest">Master Archive</span>
+            <div onclick="openProduct('gallery')" class="md:col-span-3 md:row-span-5 bg-zinc-900/30 border border-zinc-800 rounded-[2rem] md:rounded-[3rem] p-6 md:p-12 hover:border-white transition-all group cursor-pointer active:scale-95 relative overflow-hidden flex flex-col justify-between min-h-[400px] md:min-h-0">
+                <div class="absolute inset-0 blueprint-grid opacity-10"></div>
+                <div class="absolute inset-0 opacity-20 group-hover:opacity-40 transition-opacity duration-1000">
+                    <img src="./images/gallery/1.png" onerror="this.src='https://placehold.co/1200x1200/111/333?text=GALLERY_MASTER'" class="w-full h-full object-cover grayscale scale-105 group-hover:scale-100 transition-transform duration-1000">
+                    <div class="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent"></div>
                 </div>
-                <h3 class="heading-font text-6xl md:text-8xl font-black uppercase tracking-tighter text-white italic">Visual Log</h3>
-            </div>
 
-            <div class="relative z-10 flex justify-between items-end">
-                <div class="max-w-md">
-                    <p class="text-xs text-zinc-400 uppercase font-black leading-relaxed tracking-[0.2em]">
-                        The complete chronological record of Empire operations, field testing, and environmental assets.
-                    </p>
+                <div class="relative z-10">
+                    <div class="flex items-center gap-4 mb-4">
+                        <span class="px-3 py-1 bg-white/10 rounded-full text-[8px] text-white font-black uppercase tracking-widest">Master Archive</span>
+                    </div>
+                    <h3 class="heading-font text-4xl md:text-6xl lg:text-8xl font-black uppercase tracking-tighter text-white italic">Visual Log</h3>
                 </div>
-                <div class="text-right">
-                    <span class="text-[9px] text-zinc-600 font-mono block">FILE SIZE: 1.2GB</span>
-                    <span class="text-[9px] text-zinc-600 font-mono block">UPLINK: STABLE</span>
+
+                <div class="relative z-10 flex flex-col md:flex-row justify-between items-start md:items-end gap-4">
+                    <div class="max-w-md">
+                        <p class="text-[10px] md:text-xs text-zinc-400 uppercase font-black leading-relaxed tracking-[0.2em]">
+                            Chronological record of Empire operations and field testing assets.
+                        </p>
+                    </div>
+                    <div class="text-left md:text-right w-full md:w-auto border-t border-zinc-800 md:border-none pt-4 md:pt-0">
+                        <span class="text-[8px] md:text-[9px] text-zinc-600 font-mono block">FILE_ID: 00-X1</span>
+                        <span class="text-[8px] md:text-[9px] text-zinc-600 font-mono block">UPLINK: STABLE</span>
+                    </div>
                 </div>
             </div>
+
+            <div onclick="openProduct('team')" class="md:col-span-2 md:row-span-3 bg-zinc-900/30 border border-zinc-800 rounded-[2rem] p-6 md:p-8 hover:border-purple-500 transition-all group cursor-pointer active:scale-95 relative overflow-hidden flex flex-col justify-between min-h-[200px]">
+                <div class="absolute inset-0 blueprint-grid opacity-10"></div>
+                <div class="relative z-10">
+                    <span class="text-[8px] text-purple-500 font-black uppercase tracking-[0.4em]">Personnel Log</span>
+                    <h3 class="heading-font text-2xl md:text-3xl font-black uppercase tracking-tighter text-white mt-1 italic">The Team</h3>
+                </div>
+                <div class="relative z-10 flex items-center justify-between">
+                    <div class="flex -space-x-3">
+                        <div class="w-8 h-8 rounded-full bg-zinc-800 border-2 border-black flex items-center justify-center text-[10px] font-black italic">01</div>
+                        <div class="w-8 h-8 rounded-full bg-zinc-700 border-2 border-black flex items-center justify-center text-[10px] font-black italic">02</div>
+                        <div class="w-8 h-8 rounded-full bg-purple-900 border-2 border-black flex items-center justify-center text-[10px] font-black italic">+</div>
+                    </div>
+                    <span class="text-[8px] text-zinc-600 font-black uppercase tracking-widest">Access Files →</span>
+                </div>
+            </div>
+
+            <a href="https://tiktok.com/@unknownempire_" target="_blank" class="md:col-span-2 md:row-span-2 bg-zinc-900/30 border border-zinc-800 rounded-[2rem] p-6 flex flex-col justify-center items-center group hover:border-white transition-all min-h-[100px]">
+                <div class="flex items-center gap-3">
+                    <i class="fa-brands fa-tiktok text-xl"></i>
+                    <h4 class="heading-font text-xl font-black uppercase text-white tracking-widest group-hover:italic transition-all">TikTok</h4>
+                </div>
+                <span class="text-[7px] text-zinc-600 uppercase font-black mt-2 tracking-[0.3em]">External_Stream_01</span>
+            </a>
         </div>
-
-        <div onclick="openProduct('team')"
-            class="col-span-2 row-span-4 col-start-4 bg-zinc-900/30 border border-zinc-800 rounded-[2.5rem] p-8 hover:border-purple-500 transition-all group cursor-pointer active:scale-95 relative overflow-hidden flex flex-col justify-between">
-            <div class="absolute inset-0 blueprint-grid opacity-10"></div>
-            <div class="relative z-10">
-                <span class="text-[8px] text-purple-500 font-black uppercase tracking-[0.4em]">Personnel Log</span>
-                <h3 class="heading-font text-3xl font-black uppercase tracking-tighter text-white mt-1 italic">The Team</h3>
-            </div>
-            <div class="relative z-10">
-                <div class="flex -space-x-3 mb-4">
-                    <div class="w-8 h-8 rounded-full bg-zinc-800 border-2 border-black flex items-center justify-center text-[10px] font-black italic">01</div>
-                    <div class="w-8 h-8 rounded-full bg-zinc-700 border-2 border-black flex items-center justify-center text-[10px] font-black italic">02</div>
-                    <div class="w-8 h-8 rounded-full bg-purple-900 border-2 border-black flex items-center justify-center text-[10px] font-black italic">+</div>
-                </div>
-                <p class="text-[10px] text-zinc-500 uppercase font-black tracking-widest leading-tight">Access encrypted personnel files.</p>
-            </div>
-        </div>
-
-        <a href="https://tiktok.com/@unknownempire_" target="_blank"
-            class="col-span-2 col-start-4 row-start-5 bg-zinc-900/30 border border-zinc-800 rounded-[2rem] p-6 flex flex-col justify-center group hover:border-white transition-all">
-            <h4 class="heading-font text-xl font-black uppercase text-white">TikTok</h4>
-        </a>
-
-    </div>
 
         <div class="px-4 md:px-12 mb-12">
             <div class="h-[1px] w-full bg-gradient-to-r from-transparent via-zinc-800 to-transparent relative">
@@ -212,15 +194,12 @@
         </div>
 
         <div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-12 gap-4 auto-rows-[200px]">
-            <div
-                class="md:col-span-8 md:row-span-2 bento-card rounded-2xl bg-zinc-900/40 p-10 flex flex-col justify-between group cursor-pointer border border-zinc-800">
-                <div
-                    class="absolute top-0 right-0 p-6 text-[8px] font-mono text-zinc-700 uppercase tracking-widest text-right">
+            <div class="md:col-span-8 md:row-span-2 bento-card rounded-2xl bg-zinc-900/40 p-10 flex flex-col justify-between group cursor-pointer border border-zinc-800">
+                <div class="absolute top-0 right-0 p-6 text-[8px] font-mono text-zinc-700 uppercase tracking-widest text-right">
                     Ref: HUD-S1<br>Spec: 80/20 Cotton-Poly</div>
                 <div class="relative z-10">
                     <span class="text-[10px] text-purple-500 font-bold tracking-[0.4em] uppercase">Core Apparel</span>
-                    <h3
-                        class="heading-font text-5xl md:text-7xl font-black uppercase tracking-tighter mt-2 group-hover:italic transition-all">
+                    <h3 class="heading-font text-5xl md:text-7xl font-black uppercase tracking-tighter mt-2 group-hover:italic transition-all">
                         Hoodies</h3>
                 </div>
 
@@ -234,30 +213,24 @@
                 </div>
             </div>
 
-            <div
-                class="md:col-span-4 md:row-span-2 bento-card rounded-2xl bg-purple-600 p-8 flex flex-col justify-between group cursor-pointer border border-purple-400/20">
-                <h3 class="heading-font text-5xl font-black uppercase tracking-tighter leading-[0.8] text-white">
-                    T-Shirts</h3>
+            <div class="md:col-span-4 md:row-span-2 bento-card rounded-2xl bg-purple-600 p-8 flex flex-col justify-between group cursor-pointer border border-purple-400/20">
+                <h3 class="heading-font text-5xl font-black uppercase tracking-tighter leading-[0.8] text-white">T-Shirts</h3>
                 <div>
-                    <p class="text-[10px] font-bold text-black uppercase mb-4 tracking-tighter">Premium Boxy Fit /
-                        240GSM</p>
+                    <p class="text-[10px] font-bold text-black uppercase mb-4 tracking-tighter">Premium Boxy Fit /240GSM</p>
                     <div class="w-full bg-black/20 h-[1px]"></div>
                     <p class="text-[9px] text-white/80 mt-4 uppercase font-bold tracking-[0.2em]">Open Configurator</p>
                 </div>
             </div>
 
-            <div
-                class="md:col-span-4 bento-card rounded-2xl bg-zinc-900/40 p-6 flex flex-col justify-between group cursor-pointer border border-zinc-800">
+            <div class="md:col-span-4 bento-card rounded-2xl bg-zinc-900/40 p-6 flex flex-col justify-between group cursor-pointer border border-zinc-800">
                 <h3 class="font-bold text-xl uppercase italic tracking-tighter text-zinc-300">Hats</h3>
                 <p class="text-[9px] text-zinc-600 uppercase mt-2 tracking-widest">Logo Presets • 4 Core Colours</p>
             </div>
-            <div
-                class="md:col-span-4 bento-card rounded-2xl bg-zinc-900/40 p-6 flex flex-col justify-between group cursor-pointer border border-zinc-800">
+            <div class="md:col-span-4 bento-card rounded-2xl bg-zinc-900/40 p-6 flex flex-col justify-between group cursor-pointer border border-zinc-800">
                 <h3 class="font-bold text-xl uppercase italic tracking-tighter text-zinc-300">Balaclavas</h3>
                 <p class="text-[9px] text-zinc-600 uppercase mt-2 tracking-widest">Text Presets • 5 Core Colours</p>
             </div>
-            <div
-                class="md:col-span-4 bento-card rounded-2xl bg-zinc-900/40 p-6 flex flex-col justify-between group cursor-pointer border border-zinc-800">
+            <div class="md:col-span-4 bento-card rounded-2xl bg-zinc-900/40 p-6 flex flex-col justify-between group cursor-pointer border border-zinc-800">
                 <h3 class="font-bold text-xl uppercase italic tracking-tighter text-zinc-300">Stickers</h3>
                 <p class="text-[9px] text-zinc-600 uppercase mt-2 tracking-widest">HD Sublimation</p>
             </div>
@@ -268,16 +241,25 @@
         </div>
 
         <section class="mt-20 px-6 max-w-7xl mx-auto">
-            <div class="flex items-center gap-4 mb-8">
-                <h2 class="heading-font text-4xl font-black uppercase tracking-tighter italic">Production Log</h2>
-                <div class="h-[1px] flex-grow bg-zinc-800"></div>
-                <button onclick="window.orderAllItems()" 
-                    class="bg-purple-600 hover:bg-purple-500 text-white text-[9px] font-black uppercase tracking-[0.2em] px-6 py-2 rounded-full transition-all flex items-center gap-2 ml-auto">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m12 19 7-7 3 3-7 7-3-3z"/><path d="m5 12 7-7 3 3-7 7-3-3z"/><path d="m2 5 7-7 3 3-7 7-3-3z"/></svg>
-                    Execute Bulk Order
-                </button>
-            </div>
-            <div id="production-list" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            <div class="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12 px-2">
+                <div>
+                    <div class="flex items-center gap-3 mb-2">
+                        <div class="w-2 h-2 bg-purple-500 rounded-full animate-pulse"></div>
+                        <span class="text-[8px] text-zinc-500 font-black uppercase tracking-[0.4em]">Live Manifest</span>
+                    </div>
+                    <h2 class="heading-font text-4xl md:text-6xl font-black uppercase tracking-tighter italic">Production Log</h2>
+                </div>
+
+                <div id="log-action-container" class="md:relative">
+                    <button onclick="window.orderAll()" 
+                            class="mobile-order-trigger w-full md:w-auto bg-white text-black group hover:bg-purple-500 hover:text-white transition-all px-8 py-5 md:py-4 rounded-2xl md:rounded-xl flex items-center justify-center gap-4 border border-white/10">
+                        <div class="flex flex-col items-start md:items-center">
+                            <span class="text-[7px] font-black uppercase tracking-[0.2em] opacity-60 group-hover:text-white/80">Batch Operation</span>
+                            <span class="text-xs font-black uppercase tracking-widest">Execute Bulk Order</span>
+                        </div>
+                        <i class="fa-solid fa-layer-group text-lg"></i>
+                    </button>
+                </div>
             </div>
         </section>
     </main>
@@ -295,8 +277,7 @@
             </div>
         </div>
 
-        <button onclick="openContactForm()"
-            class="group flex items-center gap-4 bg-zinc-900/50 border border-zinc-800 px-6 py-3 rounded-full hover:border-white hover:bg-white hover:text-black transition-all">
+        <button onclick="openContactForm()" class="group flex items-center gap-4 bg-zinc-900/50 border border-zinc-800 px-6 py-3 rounded-full hover:border-white hover:bg-white hover:text-black transition-all">
             <span class="text-[9px] font-black uppercase tracking-widest">Establish Contact</span>
             <span class="text-xs group-hover:rotate-45 transition-transform">↗</span>
         </button>
@@ -310,54 +291,41 @@
         <div id="content-layer" class="fixed inset-0 opacity-0 pointer-events-none overflow-y-auto"></div>
     </div>
 
-    <div id="customer-modal"
-        class="fixed inset-0 z-[200] flex items-center justify-center bg-black/95 opacity-0 pointer-events-none transition-opacity duration-300 backdrop-blur-sm">
-        <div class="bg-zinc-900 border border-zinc-800 p-8 rounded-3xl w-full max-w-md shadow-2xl transform scale-95 transition-transform duration-300"
-            id="modal-content">
+    <div id="customer-modal" class="fixed inset-0 z-[200] flex items-center justify-center bg-black/95 opacity-0 pointer-events-none transition-opacity duration-300 backdrop-blur-sm">
+        <div class="bg-zinc-900 border border-zinc-800 p-8 rounded-3xl w-full max-w-md shadow-2xl transform scale-95 transition-transform duration-300" id="modal-content">
             <div class="mb-6">
                 <h3 class="heading-font text-2xl font-black uppercase tracking-tighter text-white">Fulfillment Data</h3>
-                <p class="text-[9px] text-zinc-500 uppercase font-bold tracking-widest">Connect this build to a client
-                    profile</p>
+                <p class="text-[9px] text-zinc-500 uppercase font-bold tracking-widest">Connect this build to a client profile</p>
             </div>
 
             <div class="space-y-4">
                 <div>
-                    <label class="text-[8px] text-purple-500 font-black uppercase mb-1 block tracking-widest">Full
-                        Name</label>
-                    <input type="text" id="cust-name" placeholder="JOHN DOE"
-                        class="w-full bg-black border border-zinc-800 p-3 rounded-xl text-xs font-mono text-white outline-none focus:border-purple-500 transition">
+                    <label class="text-[8px] text-purple-500 font-black uppercase mb-1 block tracking-widest">Full Name</label>
+                    <input type="text" id="cust-name" placeholder="JOHN DOE" class="w-full bg-black border border-zinc-800 p-3 rounded-xl text-xs font-mono text-white outline-none focus:border-purple-500 transition">
                 </div>
                 <div>
-                    <label class="text-[8px] text-purple-500 font-black uppercase mb-1 block tracking-widest">Contact
-                        Email</label>
-                    <input type="email" id="cust-email" placeholder="CLIENT@EMAIL.COM"
-                        class="w-full bg-black border border-zinc-800 p-3 rounded-xl text-xs font-mono text-white outline-none focus:border-purple-500 transition">
+                    <label class="text-[8px] text-purple-500 font-black uppercase mb-1 block tracking-widest">Contact Email</label>
+                    <input type="email" id="cust-email" placeholder="CLIENT@EMAIL.COM" class="w-full bg-black border border-zinc-800 p-3 rounded-xl text-xs font-mono text-white outline-none focus:border-purple-500 transition">
                 </div>
                 <div>
-                    <label class="text-[8px] text-purple-500 font-black uppercase mb-1 block tracking-widest">Shipping
-                        Address</label>
-                    <textarea id="cust-address" rows="3" placeholder="STREET, CITY, POSTCODE"
-                        class="w-full bg-black border border-zinc-800 p-3 rounded-xl text-xs font-mono text-white outline-none focus:border-purple-500 resize-none transition"></textarea>
+                    <label class="text-[8px] text-purple-500 font-black uppercase mb-1 block tracking-widest">Shipping Address</label>
+                    <textarea id="cust-address" rows="3" placeholder="STREET, CITY, POSTCODE" class="w-full bg-black border border-zinc-800 p-3 rounded-xl text-xs font-mono text-white outline-none focus:border-purple-500 resize-none transition"></textarea>
                 </div>
 
                 <div class="flex items-center gap-3 pt-2">
-                    <input type="checkbox" id="save-cust-prefs"
-                        class="w-4 h-4 accent-purple-600 bg-black border-zinc-800 rounded">
-                    <label for="save-cust-prefs"
-                        class="text-[9px] text-zinc-400 uppercase font-bold cursor-pointer">Remember client
+                    <input type="checkbox" id="save-cust-prefs" class="w-4 h-4 accent-purple-600 bg-black border-zinc-800 rounded">
+                    <label for="save-cust-prefs" class="text-[9px] text-zinc-400 uppercase font-bold cursor-pointer">Remember client
                         details</label>
                 </div>
             </div>
 
             <div class="mt-8">
                 <form onsubmit="window.finalizeOrderWithCustomerData(event)" class="grid grid-cols-2 gap-3">
-                    <button type="button" onclick="window.closeCustomerModal()" 
-                        class="w-full bg-zinc-900 border border-zinc-800 text-zinc-400 font-black py-4 rounded-xl uppercase tracking-widest hover:bg-zinc-800 hover:text-white transition-all">
+                    <button type="button" onclick="window.closeCustomerModal()" class="w-full bg-zinc-900 border border-zinc-800 text-zinc-400 font-black py-4 rounded-xl uppercase tracking-widest hover:bg-zinc-800 hover:text-white transition-all">
                         Cancel
                     </button>
                     
-                    <button type="submit" id="confirm-order-btn"
-                        class="w-full bg-purple-600 text-white font-black py-4 rounded-xl uppercase tracking-widest hover:bg-white hover:text-black transition-all disabled:opacity-50 disabled:cursor-wait">
+                    <button type="submit" id="confirm-order-btn"  class="w-full bg-purple-600 text-white font-black py-4 rounded-xl uppercase tracking-widest hover:bg-white hover:text-black transition-all disabled:opacity-50 disabled:cursor-wait">
                         Confirm Order
                     </button>
                 </form>
@@ -365,39 +333,30 @@
         </div>
     </div>
 
-    <div id="contact-modal"
-        class="fixed inset-0 z-[200] flex items-center justify-center p-4 bg-black/90 backdrop-blur-xl opacity-0 pointer-events-none transition-all duration-500">
-        <div id="contact-content"
-            class="bg-zinc-900 border border-zinc-800 w-full max-w-lg rounded-[2.5rem] p-8 md:p-12 scale-95 transition-transform duration-500">
+    <div id="contact-modal" class="fixed inset-0 z-[200] flex items-center justify-center p-4 bg-black/90 backdrop-blur-xl opacity-0 pointer-events-none transition-all duration-500">
+        <div id="contact-content" class="bg-zinc-900 border border-zinc-800 w-full max-w-lg rounded-[2.5rem] p-8 md:p-12 scale-95 transition-transform duration-500">
             <div class="flex justify-between items-start mb-8">
                 <div>
-                    <span
-                        class="text-[10px] text-purple-500 font-black uppercase tracking-[0.4em]">Inquiry Portal</span>
+                    <span class="text-[10px] text-purple-500 font-black uppercase tracking-[0.4em]">Inquiry Portal</span>
                     <h2 class="heading-font text-3xl font-black uppercase tracking-tighter mt-1">Contact Us</h2>
                 </div>
-                <button onclick="closeContactForm()"
-                    class="text-2xl text-zinc-500 hover:text-white transition">×</button>
+                <button onclick="closeContactForm()" class="text-2xl text-zinc-500 hover:text-white transition">×</button>
             </div>
 
             <form onsubmit="handleContactSubmit(event)" class="space-y-4">
                 <div class="space-y-1">
                     <label class="text-[8px] text-zinc-500 font-black uppercase ml-2">Subject</label>
-                    <select
-                        class="w-full bg-black border border-zinc-800 rounded-2xl px-5 py-4 text-xs font-bold focus:border-purple-500 outline-none appearance-none text-white">
+                    <select class="w-full bg-black border border-zinc-800 rounded-2xl px-5 py-4 text-xs font-bold focus:border-purple-500 outline-none appearance-none text-white">
                         <option>GENERAL INQUIRY</option>
                         <option>PRODUCTION ISSUE</option>
                         <option>COLLABORATION REQUEST</option>
                     </select>
                 </div>
-                <input type="text" placeholder="FULL NAME" required
-                    class="w-full bg-black border border-zinc-800 rounded-2xl px-5 py-4 text-xs font-bold focus:border-purple-500 outline-none text-white">
-                <input type="email" placeholder="EMAIL ADDRESS" required
-                    class="w-full bg-black border border-zinc-800 rounded-2xl px-5 py-4 text-xs font-bold focus:border-purple-500 outline-none text-white">
-                <textarea placeholder="MESSAGE CONTENT" rows="4" required
-                    class="w-full bg-black border border-zinc-800 rounded-2xl px-5 py-4 text-xs font-bold focus:border-purple-500 outline-none text-white resize-none"></textarea>
+                <input type="text" placeholder="FULL NAME" required class="w-full bg-black border border-zinc-800 rounded-2xl px-5 py-4 text-xs font-bold focus:border-purple-500 outline-none text-white">
+                <input type="email" placeholder="EMAIL ADDRESS" required class="w-full bg-black border border-zinc-800 rounded-2xl px-5 py-4 text-xs font-bold focus:border-purple-500 outline-none text-white">
+                <textarea placeholder="MESSAGE CONTENT" rows="4" required class="w-full bg-black border border-zinc-800 rounded-2xl px-5 py-4 text-xs font-bold focus:border-purple-500 outline-none text-white resize-none"></textarea>
 
-                <button type="submit"
-                    class="w-full bg-white text-black font-black uppercase text-[10px] tracking-widest py-5 rounded-2xl hover:bg-purple-500 hover:text-white transition-colors mt-4">
+                <button type="submit" class="w-full bg-white text-black font-black uppercase text-[10px] tracking-widest py-5 rounded-2xl hover:bg-purple-500 hover:text-white transition-colors mt-4">
                     Transmit Message
                 </button>
             </form>
