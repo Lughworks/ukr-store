@@ -1,6 +1,4 @@
 export function render() {
-    // We set a high threshold (e.g., 50). The system will automatically 
-    // hide any slots where an image isn't found in the folder.
     const maxCapacity = 50; 
     const sequence = Array.from({ length: maxCapacity }, (_, i) => i + 1);
 

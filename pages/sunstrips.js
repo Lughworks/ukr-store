@@ -1,10 +1,16 @@
 export function render() {
+  const __unit = (window?.computeUnitPriceFromTable?.({ product: { slug: 'sunstrips' }, config: {} }) ?? 0);
+const __price = new Intl.NumberFormat('en-GB', { style: 'currency', currency: 'GBP' }).format(__unit);
     return `
         <div class="min-h-screen bg-black text-white p-4 md:p-12 relative overflow-y-auto">
             <div class="flex justify-between items-center mb-12">
                 <div>
                     <span class="text-[10px] text-purple-500 font-bold tracking-[0.3em] uppercase italic">Automotive / Division 03</span>
                     <h1 class="heading-font text-4xl md:text-6xl font-black uppercase tracking-tighter mt-2">Sunstrips</h1>
+                    <div class="inline-flex items-center gap-3 px-4 py-2 rounded-full border border-zinc-800 bg-zinc-900/40">
+                        <span class="text-[8px] uppercase tracking-[0.4em] font-black text-zinc-500">Price</span>
+                        <span class="text-[11px] font-black uppercase tracking-widest text-purple-400">${__price}</span>
+                    </div>
                 </div>
                 <button onclick="window.closePage()" class="group flex items-center gap-3 bg-zinc-900 hover:bg-white hover:text-black transition-all px-6 py-3 rounded-full border border-zinc-800">
                     <span class="text-[10px] font-bold uppercase tracking-widest text-inherit">Back to Studio</span>
@@ -14,27 +20,34 @@ export function render() {
 
             <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start">
                 <div class="lg:col-span-7">
-                    <div class="aspect-[21/9] bg-zinc-900/20 border border-zinc-800 rounded-3xl relative overflow-hidden flex items-center justify-center group">
-                        <div class="absolute inset-0 blueprint-grid opacity-30"></div>
-                        
-                        <div class="lg:col-span-7">
-                            <div class="aspect-[21/9] bg-zinc-900/20 border border-zinc-800 rounded-3xl relative overflow-hidden flex items-center justify-center group">
-                                <div class="absolute inset-0 blueprint-grid opacity-30"></div>
-                                
-                                <img src="./images/sunstrips/base_windshield.png" class="absolute inset-0 w-full h-full object-cover opacity-50" onerror="this.style.display='none'">
+                    <div id="preview-stage" class="aspect-[21/9] bg-zinc-900/20 border border-zinc-800 rounded-3xl flex items-center justify-center group relative overflow-hidden">
+                        <div data-preview="2d" class="absolute inset-0">
+                            <div class="absolute inset-0 blueprint-grid opacity-30"></div>
+                            
+                            <div class="lg:col-span-7">
+                                <div class="aspect-[21/9] bg-zinc-900/20 border border-zinc-800 rounded-3xl relative overflow-hidden flex items-center justify-center group">
+                                    <div class="absolute inset-0 blueprint-grid opacity-30"></div>
+                                    
+                                    <img src="./images/sunstrips/base_windshield.png" class="absolute inset-0 w-full h-full object-cover opacity-50" onerror="this.style.display='none'">
 
-                                <div id="sunstrip-preview" class="relative w-full h-32 bg-zinc-950/80 border-y border-zinc-800 flex items-center justify-center overflow-hidden">
-                                    <span class="text-4xl md:text-6xl font-black uppercase tracking-tighter text-white italic drop-shadow-2xl">
-                                        UNKNOWNDRIVERZ
-                                    </span>
+                                    <div id="sunstrip-preview" class="relative w-full h-32 bg-zinc-950/80 border-y border-zinc-800 flex items-center justify-center overflow-hidden">
+                                        <span class="text-4xl md:text-6xl font-black uppercase tracking-tighter text-white italic drop-shadow-2xl">
+                                            UNKNOWNDRIVERZ
+                                        </span>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
 
-                        <div class="absolute bottom-4 left-6 flex gap-4 text-[8px] text-zinc-600 font-mono uppercase tracking-widest">
-                            <span>Dim: 1400mm x 250mm</span>
-                            <span class="text-purple-500/50">•</span>
-                            <span>Fit: Universal / Oversized</span>
+                            <div class="absolute bottom-4 left-6 flex gap-4 text-[8px] text-zinc-600 font-mono uppercase tracking-widest">
+                                <span>Dim: 1400mm x 250mm</span>
+                                <span class="text-purple-500/50">•</span>
+                                <span>Fit: Universal / Oversized</span>
+                            </div>
+                        </div>
+                        <div data-preview="3d" class="hidden absolute inset-0 p-4"></div>
+                        <div class="absolute bottom-6 left-6 z-30 flex gap-2">
+                            <button onclick="window.disable3DViewer()" class="bg-black/60 backdrop-blur-md px-4 py-2 rounded-full border border-white/10 text-[9px] font-bold uppercase tracking-widest hover:border-purple-500 transition">Studio</button>
+                            <button onclick="window.enable3DViewer('sunstrips','default')" class="bg-black/60 backdrop-blur-md px-4 py-2 rounded-full border border-white/10 text-[9px] font-bold uppercase tracking-widest hover:border-purple-500 transition">3D</button>
                         </div>
                     </div>
                 </div>
@@ -70,12 +83,8 @@ export function render() {
 
                     <button onclick="window.saveSunstripConfig()" 
                         class="w-full bg-white text-black py-6 rounded-2xl font-black uppercase text-xs tracking-[0.3em] hover:bg-purple-600 hover:text-white transition-all shadow-2xl active:scale-95">
-                        Add to Production Queue
+                        Add to Cart
                     </button>
-                    
-                    <div class="text-center">
-                        <span class="text-[8px] text-zinc-700 font-black uppercase tracking-[0.4em]">Hardware Division // 03</span>
-                    </div>
                 </div>
             </div>
         </div>
@@ -91,5 +100,5 @@ window.saveSunstripConfig = () => {
         specs: 'Die-Cut Vinyl / No Customization'
     };
 
-    window.saveDesignToQueue('Sunstrip', config);
+    window.saveDesignToQueue({ slug: 'sunstrips', label: 'Sunstrip' }, config, { text: (config.front || 'Sunstrip') });
 };

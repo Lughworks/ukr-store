@@ -1,30 +1,89 @@
 export function render() {
     const personnel = [
         { 
-            id: 'ARCH-01', 
-            role: 'Lead Architect', 
-            alias: 'OVERSEER',
+            id: 'TEST-01', 
+            role: '', 
+            alias: '',
             image: 'overseer.png', 
-            bio: 'SPECIALIZING IN TECHNICAL OUTERWEAR AND MODULAR SYSTEMS. OVERSEES THE INTEGRATION OF DIVISION 01 AND 02 HARDWARE.', 
-            specs: { clearance: 'LEVEL 05', sector: 'LONDON CORE', sync: '98%' },
+            bio: '', 
+            specs: { clearance: '', sector: '', sync: '' },
             socials: [
                 { icon: 'fa-brands fa-instagram', url: 'https://instagram.com/unknownempire_' },
                 { icon: 'fa-brands fa-tiktok', url: '#' },
+                { icon: 'fa-solid fa-envelope', url: 'mailto:contact@unknownempire.com' },
                 { icon: 'fa-solid fa-globe', url: '#' }
             ]
         },
         { 
-            id: 'VIS-02', 
-            role: 'Visual Director', 
-            alias: 'GHOST 02',
-            image: 'ghost02.png', 
-            bio: 'RESPONSIBLE FOR THE VISUAL LANGUAGE AND DIGITAL PRESENCE. MANAGING THE ARCHIVE AND LOG OPERATIONS.', 
-            specs: { clearance: 'LEVEL 04', sector: 'NEON DISTRICT', sync: '92%' },
+            id: 'TEST-02', 
+            role: '', 
+            alias: '',
+            image: 'overseer.png', 
+            bio: '', 
+            specs: { clearance: '', sector: '', sync: '' },
             socials: [
                 { icon: 'fa-brands fa-instagram', url: 'https://instagram.com/unknownempire_' },
-                { icon: 'fa-solid fa-envelope', url: 'mailto:contact@unknownempire.com' }
+                { icon: 'fa-brands fa-tiktok', url: '#' },
+                { icon: 'fa-solid fa-envelope', url: 'mailto:contact@unknownempire.com' },
+                { icon: 'fa-solid fa-globe', url: '#' }
             ]
-        }
+        },
+        { 
+            id: 'TEST-03', 
+            role: '', 
+            alias: '',
+            image: 'overseer.png', 
+            bio: '', 
+            specs: { clearance: '', sector: '', sync: '' },
+            socials: [
+                { icon: 'fa-brands fa-instagram', url: 'https://instagram.com/unknownempire_' },
+                { icon: 'fa-brands fa-tiktok', url: '#' },
+                { icon: 'fa-solid fa-envelope', url: 'mailto:contact@unknownempire.com' },
+                { icon: 'fa-solid fa-globe', url: '#' }
+            ]
+        },
+        { 
+            id: 'TEST-04', 
+            role: '', 
+            alias: '',
+            image: 'overseer.png', 
+            bio: '', 
+            specs: { clearance: '', sector: '', sync: '' },
+            socials: [
+                { icon: 'fa-brands fa-instagram', url: 'https://instagram.com/unknownempire_' },
+                { icon: 'fa-brands fa-tiktok', url: '#' },
+                { icon: 'fa-solid fa-envelope', url: 'mailto:contact@unknownempire.com' },
+                { icon: 'fa-solid fa-globe', url: '#' }
+            ]
+        },
+        { 
+            id: 'TEST-05', 
+            role: '', 
+            alias: '',
+            image: 'overseer.png', 
+            bio: '', 
+            specs: { clearance: '', sector: '', sync: '' },
+            socials: [
+                { icon: 'fa-brands fa-instagram', url: 'https://instagram.com/unknownempire_' },
+                { icon: 'fa-brands fa-tiktok', url: '#' },
+                { icon: 'fa-solid fa-envelope', url: 'mailto:contact@unknownempire.com' },
+                { icon: 'fa-solid fa-globe', url: '#' }
+            ]
+        },
+        { 
+            id: 'TEST-06', 
+            role: '', 
+            alias: '',
+            image: 'overseer.png', 
+            bio: '', 
+            specs: { clearance: '', sector: '', sync: '' },
+            socials: [
+                { icon: 'fa-brands fa-instagram', url: 'https://instagram.com/unknownempire_' },
+                { icon: 'fa-brands fa-tiktok', url: '#' },
+                { icon: 'fa-solid fa-envelope', url: 'mailto:contact@unknownempire.com' },
+                { icon: 'fa-solid fa-globe', url: '#' }
+            ]
+        },
     ];
 
     return `

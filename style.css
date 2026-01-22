@@ -110,14 +110,11 @@ body {
     letter-spacing: -0.05em;
 }
 
-/* MOBILE TACTICAL BUTTON SCOPING */
 @media (max-width: 768px) {
-    /* Hide the button by default */
     .mobile-order-trigger {
         display: none;
     }
 
-    /* Only show when the Production Log page is active */
     #production-log.active-page .mobile-order-trigger {
         display: flex;
         position: fixed;

@@ -5,6 +5,280 @@ const studioState = {
     isRehydrating: false,
     tempUpload: null
 };
+const BOOT_HOLD = 1200;
+const persistQueue = () => {
+    localStorage.setItem(
+        'uk_studio_queue_local',
+        JSON.stringify(studioState.productionQueue)
+    );
+};
+
+const PRICING_SCHEMA_VERSION = 1;
+
+const SHIPPING = {
+    currency: 'GBP',
+    tiers: [
+        { minSubtotal: 0, cost: 4.99, label: 'Standard Shipping' },
+        { minSubtotal: 75, cost: 0, label: 'Free Shipping' }
+    ]
+};
+
+const pickShippingTier = (subtotal) => {
+    const tiers = (SHIPPING.tiers || []).slice().sort((a, b) => (a.minSubtotal || 0) - (b.minSubtotal || 0));
+    let chosen = tiers[0] || { minSubtotal: 0, cost: 0, label: 'Shipping' };
+    for (const t of tiers) {
+        if ((subtotal || 0) >= (t.minSubtotal || 0)) chosen = t;
+    }
+    return chosen;
+};
+
+window.MODEL_MAP = {
+  'hoodies': {
+    label: 'Hoodie',
+    variants: {
+      down: './assets/models/hood-down.glb',
+      up: './assets/models/hood-up.glb'
+    }
+  },
+  't-shirts': {
+    label: 'T-Shirt',
+    variants: {
+      default: './assets/models/t-shirt.glb'
+    }
+  },
+  'hats': {
+    label: 'Hat',
+    variants: {
+      default: './assets/models/hat.glb'
+    }
+  },
+  'balaclavas': {
+    label: 'Balaclava',
+    variants: {
+      default: './assets/models/balaclava.glb'
+    }
+  },
+  'sunstrips': {
+    label: 'Sunstrip',
+    variants: {
+      default: './assets/models/sunstrip.glb'
+    }
+  },
+  'stickers': {
+    label: 'Stickers',
+    variants: {
+      default: './assets/models/stickers.glb'
+    }
+  }
+};
+
+window.enable3DViewer = (slug, variant = 'default') => {
+  const stage = document.getElementById('preview-stage');
+  if (!stage) return;
+
+  const cfg = window.MODEL_MAP?.[slug];
+  const src = cfg?.variants?.[variant] || cfg?.variants?.default;
+
+  if (!src) {
+    console.warn('[3D] No model configured for', slug, variant);
+    return;
+  }
+
+  stage.querySelector('[data-preview="2d"]')?.classList.add('hidden');
+  stage.querySelector('[data-preview="3d"]')?.classList.remove('hidden');
+
+  let mv = stage.querySelector('model-viewer');
+  if (!mv) {
+    mv = document.createElement('model-viewer');
+    mv.setAttribute('camera-controls', '');
+    mv.setAttribute('touch-action', 'pan-y');
+    mv.setAttribute('shadow-intensity', '1');
+    mv.setAttribute('exposure', '1');
+    mv.setAttribute('environment-image', 'neutral');
+    mv.style.width = '100%';
+    mv.style.height = '100%';
+    mv.style.background = 'transparent';
+    stage.querySelector('[data-preview="3d"]')?.appendChild(mv);
+  }
+
+  mv.src = src;
+  mv.alt = `${cfg?.label || slug} 3D model`;
+};
+
+window.disable3DViewer = () => {
+  const stage = document.getElementById('preview-stage');
+  if (!stage) return;
+
+  stage.querySelector('[data-preview="3d"]')?.classList.add('hidden');
+  stage.querySelector('[data-preview="2d"]')?.classList.remove('hidden');
+};
+
+window.set3DVariant = (slug, variant) => {
+  window.enable3DViewer(slug, variant);
+};
+
+window.getFreeShippingTarget = () => {
+    const tiers = (SHIPPING.tiers || [])
+        .slice()
+        .sort((a, b) => (a.minSubtotal || 0) - (b.minSubtotal || 0));
+
+    return tiers.find(t => Number(t.cost) === 0)?.minSubtotal || null;
+};
+
+window.getFreeShippingRemaining = () => {
+    const target = window.getFreeShippingTarget();
+    if (!target) return 0;
+    const subtotal = window.getCartSubtotal();
+    return Math.max(0, target - subtotal);
+};
+
+window.getFreeShippingProgress = () => {
+    const target = window.getFreeShippingTarget();
+    if (!target) return 1;
+    return Math.min(1, window.getCartSubtotal() / target);
+};
+window.updateShippingMini = () => {
+    const bar = document.getElementById('shipping-mini-bar');
+    const label = document.getElementById('shipping-mini-label');
+    const wrap = document.getElementById('shipping-mini');
+    if (!bar || !wrap) return;
+
+    const remaining = window.getFreeShippingRemaining ? window.getFreeShippingRemaining() : 0;
+    const progress = window.getFreeShippingProgress ? window.getFreeShippingProgress() : 0;
+
+    if (typeof window.getShippingTierLabel === 'function') {
+        label.textContent = window.getShippingTierLabel();
+    } else {
+        label.textContent = 'Shipping';
+    }
+
+    if (!remaining) {
+        bar.style.width = '100%';
+        bar.classList.remove('bg-purple-500');
+        bar.classList.add('bg-green-500');
+        if (label) label.textContent = 'Free';
+    } else {
+        bar.style.width = `${Math.max(0, Math.min(1, progress)) * 100}%`;
+        bar.classList.remove('bg-green-500');
+        bar.classList.add('bg-purple-500');
+        if (label) label.textContent = 'Standard';
+    }
+};
+
+window.getCartShipping = () => {
+    const subtotal = window.getCartSubtotal();
+    const tier = pickShippingTier(subtotal);
+    return Number(tier.cost || 0) || 0;
+};
+
+window.getCartTotal = () => {
+    return window.getCartSubtotal() + window.getCartShipping();
+};
+
+const normalizeQueueItem = (item) => {
+    const it = (item && typeof item === 'object') ? item : {};
+
+    if (!it.product || typeof it.product !== 'object') {
+        const legacyLabel = it.name || it.type || 'Product';
+        it.product = { slug: (it.type || '').toString(), label: legacyLabel };
+    }
+    if (!it.product.slug) {
+        it.product.slug = (it.product.label || '').toString().toLowerCase().replace(/\s/g, '').replace(/[^a-z0-9\-]/g, '');
+    }
+    if (!it.product.label) it.product.label = it.name || 'Product';
+
+    if (!it.config || typeof it.config !== 'object') it.config = {};
+    if (!it.preview || typeof it.preview !== 'object') it.preview = {};
+    it.quantity = Math.max(1, Math.min(99, Number(it.quantity || 1) || 1));
+
+    if (!it.pricing || typeof it.pricing !== 'object') it.pricing = {};
+    if (!it.pricing.currency) it.pricing.currency = CURRENCY;
+    if (it.pricing.schemaVersion == null) it.pricing.schemaVersion = PRICING_SCHEMA_VERSION;
+    if (it.pricing.locked == null) it.pricing.locked = true;
+    if (!it.pricing.unit || Number(it.pricing.unit) <= 0) {
+        it.pricing.unit = window.computeUnitPriceFromTable(it);
+    }
+    it.pricing.line = window.getItemLineTotal(it);
+
+    return it;
+};
+
+const CURRENCY = 'GBP';
+const formatMoney = (amount, currency = CURRENCY) => {
+    const n = Number(amount || 0);
+    return new Intl.NumberFormat('en-GB', { style: 'currency', currency }).format(n);
+};
+
+const PRICE_TABLE = {
+    'hoodies': { unit: 45.00, sizeUpcharge: { '2XL': 5.00, '3XL': 5.00, '4XL': 5.00, '5XL': 5.00 } },
+    't-shirts': { unit: 30.00, sizeUpcharge: { '2XL': 3.00, '3XL': 3.00, '4XL': 3.00, '5XL': 3.00 } },
+    'hats': { unit: 22.00 },
+    'balaclavas': { unit: 18.00 },
+    'sunstrips': { unit: 15.00 },
+    'stickers': {
+        byPack: {
+            '25': 8.00,
+            '50': 12.00,
+            '100': 18.00,
+            '150': 24.00
+        },
+        defaultPack: '50'
+    }
+};
+
+window.computeUnitPriceFromTable = (item) => {
+    const slug = item?.product?.slug;
+    if (!slug) return 0;
+
+    const rule = PRICE_TABLE[slug];
+    if (!rule) return 0;
+
+    if (slug === 'stickers') {
+        const pack = String(item?.config?.quantity || rule.defaultPack || '50');
+        return Number(rule.byPack?.[pack] ?? rule.byPack?.[rule.defaultPack] ?? 0) || 0;
+    }
+
+    let base = Number(rule.unit || 0) || 0;
+
+    const size = (item?.config?.size || '').toString().toUpperCase();
+    if (size && rule.sizeUpcharge && rule.sizeUpcharge[size] != null) {
+        base += Number(rule.sizeUpcharge[size]) || 0;
+    }
+
+    return base;
+};
+
+window.getItemUnitPrice = (item) => {
+    const stored = item?.pricing?.unit;
+    const locked = item?.pricing?.locked !== false;
+    const schemaVersion = item?.pricing?.schemaVersion || PRICING_SCHEMA_VERSION;
+
+    if (locked && stored != null && !Number.isNaN(Number(stored)) && Number(stored) > 0) {
+        return Number(stored);
+    }
+
+    const computed = window.computeUnitPriceFromTable(item);
+
+    if (!item.pricing) item.pricing = { currency: CURRENCY };
+    if (!locked || schemaVersion !== PRICING_SCHEMA_VERSION) {
+        item.pricing.unit = computed;
+        item.pricing.schemaVersion = PRICING_SCHEMA_VERSION;
+    }
+
+    return computed;
+};
+
+window.getItemLineTotal = (item) => {
+    const unit = window.getItemUnitPrice(item);
+    const qty = Number(item?.quantity || 1) || 1;
+    return unit * qty;
+};
+
+window.getCartSubtotal = () => {
+    return (studioState.productionQueue || []).reduce((sum, item) => sum + window.getItemLineTotal(item), 0);
+};
+
+
 const dataURLtoFile = (dataurl, filename) => {
     let arr = dataurl.split(','),
         mime = arr[0].match(/:(.*?);/)[1],
@@ -32,9 +306,7 @@ window.sendToDiscord = async (item, itemIndex) => {
     const config = item.config || {};
     const cust = item.customer || { name: "N/A", email: "N/A", address: "N/A" };
     
-    const brandColor = config.color && config.color.startsWith('#') 
-        ? parseInt(config.color.replace('#', ''), 16) 
-        : 0x9c3bf6;
+    const brandColor = config.color && config.color.startsWith('#') ? parseInt(config.color.replace('#', ''), 16) : 0x9c3bf6;
 
     const formData = new FormData();
 
@@ -52,6 +324,11 @@ window.sendToDiscord = async (item, itemIndex) => {
                 name: "👕 GARMENT SPECS", 
                 value: `**Size:** ${config.size || 'N/A'}\n**Base Color:** ${config.color || 'N/A'}\n**Material:** ${config.specs || 'Standard'}`, 
                 inline: true 
+            },
+            { 
+                name: "💷 PRICING",
+                value: `**Unit:** ${formatMoney(window.getItemUnitPrice(item))}\n**Qty:** ${item.quantity || 1}\n**Line:** ${formatMoney(window.getItemLineTotal(item))}`,
+                inline: true
             },
             { 
                 name: "🎨 DESIGN CONFIG", 
@@ -102,7 +379,7 @@ if (imageSrc) {
             if (itemIndex !== undefined) {
                 studioState.productionQueue.splice(itemIndex, 1);
                 localStorage.setItem('uk_studio_queue_local', JSON.stringify(studioState.productionQueue));
-                renderProductionLog();
+                renderCart();
                 renderHUD();
             }
         } else {
@@ -115,9 +392,10 @@ if (imageSrc) {
     }
 };
 
-const BOOT_HOLD = 1200;
-
 async function initDiagnostics() {
+    studioState.productionQueue = (studioState.productionQueue || []).map(normalizeQueueItem);
+    persistQueue();
+
     setInterval(() => {
         const clock = document.getElementById('system-clock');
         if (clock) clock.innerText = new Date().toLocaleTimeString('en-GB', { hour12: false });
@@ -161,7 +439,9 @@ async function initDiagnostics() {
     }
 
     renderHUD();
-    renderProductionLog();
+    renderCart();
+    if (typeof window.updateShippingMini === 'function') window.updateShippingMini();
+    if (typeof window.updateLandingPrices === 'function') window.updateLandingPrices();
 }
 
 window.addEventListener('hashchange', () => {
@@ -242,146 +522,232 @@ async function openProduct(rawName) {
     }
 }
 
-window.reopenDesign = async (e, index) => {
-    if (e) { e.preventDefault(); e.stopPropagation(); }
+window.saveDesignToQueue = (product, config, preview = {}) => {
+    if (!product || typeof product !== "object") {
+        console.warn("saveDesignToQueue called with invalid product:", product);
+        return;
+    }
 
-    const reversedQueue = [...studioState.productionQueue].reverse();
-    const design = reversedQueue[index];
-    if (!design) return;
+    if (!product.slug || !product.label) {
+        console.warn("Product missing slug/label:", product);
+        return;
+    }
 
-    studioState.isRehydrating = true;
-    await openProduct(design.type);
-
-    setTimeout(() => {
-        const config = design.config;
-
-        const fInput = document.querySelector('input[placeholder*="FRONT"], input[placeholder*="CONTENT"], input[placeholder*="SLOGAN"]');
-        const bInput = document.querySelector('input[placeholder*="BACK"], input[placeholder*="REAR"]');
-        if (fInput) fInput.value = config.front || config.text || "";
-        if (bInput) bInput.value = config.back || "";
-
-        if (config.size) {
-            const sizeBtns = Array.from(document.querySelectorAll('button'));
-            const target = sizeBtns.find(b => b.innerText.trim() === config.size);
-            if (target) window.updateSelection(target, 'active-size');
-        }
-
-        if (config.color) {
-            const swatch = document.querySelector(`[data-color="${config.color}"]`);
-            if (swatch) window.updateSelection(swatch, 'active-color');
-        }
-
-        const frontDropdown = document.getElementById('font-front') || document.getElementById('font-front-t');
-        const backDropdown = document.getElementById('font-rear') || document.getElementById('font-rear-t');
-        
-        if (frontDropdown && config.frontFont) frontDropdown.value = config.frontFont;
-        if (backDropdown && config.backFont) backDropdown.value = config.backFont;
-        if (config.image) {
-            const uploadZone = document.getElementById('image-upload-zone');
-            if (uploadZone) {
-                uploadZone.dataset.uploadedImage = config.image;
-                uploadZone.querySelector('span').innerText = "✅ Image Restored";
-                uploadZone.classList.add('border-purple-500');
-            }
-        }
-        studioState.isRehydrating = false;
-    }, 850); 
-};
-
-window.saveDesignToQueue = (name, config) => {
     const item = {
         id: `UE-${Math.floor(1000 + Math.random() * 9000)}`,
-        name: name, 
-        config: config,
+        product: {
+            slug: product.slug,
+            label: product.label
+        },
+        config,
+        preview,
+        quantity: 1,
+        pricing: {
+            currency: CURRENCY,
+            schemaVersion: PRICING_SCHEMA_VERSION,
+            locked: true,
+            unit: 0,
+            line: 0
+        },
         timestamp: new Date().toISOString()
     };
 
-    studioState.productionQueue.push(item);
-    localStorage.setItem('uk_studio_queue_local', JSON.stringify(studioState.productionQueue));
-    
-    renderProductionLog();
-    renderHUD();
+    item.pricing.unit = (typeof window.computeUnitPriceFromTable === 'function') ? window.computeUnitPriceFromTable(item) : 0;
+    item.pricing.line = window.getItemLineTotal(item);
 
-    window.closePage();
+    studioState.productionQueue.push(item);
+    persistQueue();
+
+    renderCart();
+    renderHUD();
+    if (typeof window.updateShippingMini === 'function') window.updateShippingMini();
+    if (typeof window.updateShippingMini === 'function') window.updateShippingMini();
+    closePage();
+};
+
+window.setCartItemQuantity = (index, nextQty) => {
+    const item = studioState.productionQueue[index];
+    if (!item) return;
+
+    const qty = Math.max(1, Math.min(99, Number(nextQty || 1) || 1));
+    item.quantity = qty;
+
+    if (!item.pricing) item.pricing = { currency: CURRENCY, unit: window.getItemUnitPrice(item), line: 0 };
+    if (!item.pricing.unit || Number(item.pricing.unit) <= 0) item.pricing.unit = window.getItemUnitPrice(item);
+    item.pricing.line = window.getItemLineTotal(item);
+
+    persistQueue();
+    renderCart();
+    renderHUD();
+    if (typeof window.updateShippingMini === 'function') window.updateShippingMini();
+};
+
+window.bumpCartItemQuantity = (index, delta) => {
+    const item = studioState.productionQueue[index];
+    if (!item) return;
+    window.setCartItemQuantity(index, (Number(item.quantity || 1) || 1) + (Number(delta) || 0));
 };
 
 window.removeFromQueue = (index) => {
     studioState.productionQueue.splice(index, 1);
     localStorage.setItem('uk_studio_queue_local', JSON.stringify(studioState.productionQueue));
-    renderProductionLog();
+    renderCart();
     renderHUD();
+    if (typeof window.updateShippingMini === 'function') window.updateShippingMini();
 };
 
-window.renderProductionLog = () => {
-    const logContainer = document.getElementById('production-list');
-    if (!logContainer) return;
+window.renderCart = () => {
+    const container = document.getElementById('production-list');
+    if (!container) return;
 
     if (studioState.productionQueue.length === 0) {
-        logContainer.innerHTML = `<div class="col-span-full py-20 border border-dashed border-zinc-800 rounded-3xl text-center text-[10px] text-zinc-600 uppercase tracking-widest">No Designs Logged</div>`;
+        container.innerHTML = `
+          <div class="col-span-full py-20 border border-dashed border-zinc-800 rounded-3xl text-center text-[10px] text-zinc-600 uppercase tracking-widest">
+            Cart is empty
+          </div>`;
         return;
     }
 
-    logContainer.innerHTML = studioState.productionQueue.map((item, index) => {
-        const config = item.config || {};
-        const qIndex = index;
-        
-        return `
-        <div onclick="reopenDesign(event, ${qIndex})" 
-             class="bg-zinc-900/40 border border-zinc-800 p-6 rounded-3xl hover:border-purple-500 transition-all group cursor-pointer relative overflow-hidden shadow-xl">
-            
-            <div class="flex justify-between items-start mb-4">
+    const items = studioState.productionQueue
+        .map((item, index) => ({ item, index }))
+        .reverse();
+
+    const subtotal = window.getCartSubtotal();
+    const tierShort = (() => {
+        if (typeof window.getShippingTierLabel === "function") {
+            return window.getShippingTierLabel();
+        }
+
+        if (typeof pickShippingTier === "function") {
+            const tier = pickShippingTier(subtotal);
+            return Number(tier?.cost || 0) === 0 ? "Free" : "Standard";
+        }
+
+        return "Standard";
+    })();
+    container.innerHTML = `
+        <div class="col-span-full flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-4 p-4 rounded-2xl border border-zinc-800 bg-zinc-900/30">
+            <div class="text-[10px] uppercase tracking-widest text-zinc-500 font-black">
+                Items: <span class="text-white">${studioState.productionQueue.length}</span>
+            </div>
+            <div class="text-sm font-black uppercase tracking-widest flex flex-col md:items-end gap-1">
                 <div>
-                    <span class="text-[9px] text-purple-500 font-bold uppercase tracking-widest">${item.name || 'Unit'}</span>
-                    <h4 class="heading-font text-2xl font-black uppercase tracking-tighter">${item.id}</h4>
-                </div>
-                <div class="text-right">
-                    <span class="text-xs text-white font-black block leading-none">${config.size || '--'}</span>
-                    <span class="text-[7px] text-zinc-600 uppercase font-black">Spec/Size</span>
-                </div>
-            </div>
-
-            <div class="grid grid-cols-1 gap-3 py-4 border-y border-zinc-800/50 mb-4">
-                
-                <div class="flex justify-between items-center">
-                    <div class="space-y-0.5">
-                        <span class="text-[7px] text-zinc-600 uppercase font-black tracking-tighter">Primary Configuration</span>
-                        <p class="text-[10px] text-zinc-200 font-bold uppercase">${config.front || config.text || 'Standard'}</p>
-                        ${config.frontFont ? `<p class="text-[8px] text-purple-400/80 font-mono italic">${config.frontFont}</p>` : ''}
-                    </div>
-                    ${config.image ? `<img src="${config.image}" class="w-8 h-8 rounded border border-zinc-700 object-cover bg-black">` : ''}
+                    Subtotal:
+                    <span class="text-purple-400">${formatMoney(subtotal)}</span>
                 </div>
 
-                ${(config.back && config.back !== 'None') ? `
-                <div class="pt-2 border-t border-zinc-800/20 space-y-0.5">
-                    <span class="text-[7px] text-zinc-600 uppercase font-black tracking-tighter">Secondary / Rear</span>
-                    <p class="text-[10px] text-zinc-200 font-bold uppercase">${config.back}</p>
-                    ${config.backFont ? `<p class="text-[8px] text-purple-400/80 font-mono italic">${config.backFont}</p>` : ''}
+                <div class="text-[11px] text-zinc-400 font-black uppercase tracking-widest">
+                    Shipping:
+                    <span class="text-zinc-200">
+                        ${formatMoney(window.getCartShipping())}
+                    </span>
+                    <span class="ml-1 text-zinc-600 font-black">(${tierShort})</span>
                 </div>
-                ` : ''}
 
-                <div class="flex justify-between items-center pt-2 border-t border-zinc-800/20">
-                    <span class="text-[7px] text-zinc-500 uppercase font-bold italic">${config.specs || 'Custom Build'}</span>
-                    <div class="flex items-center gap-2">
-                        <span class="text-[8px] text-zinc-400 uppercase font-black font-mono">${config.color || 'Default'}</span>
-                        <div class="w-3 h-3 rounded-full border border-white/20 shadow-sm" style="background: ${config.color || 'transparent'}"></div>
-                    </div>
-                </div>
-            </div>
+                ${(() => {
+                    const remaining = window.getFreeShippingRemaining();
+                    const progress = window.getFreeShippingProgress();
 
-            <div class="flex justify-between items-center">
-                <span class="text-[7px] text-zinc-700 font-mono font-bold">${new Date(item.timestamp).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</span>
-                
-                <div class="flex items-center gap-2">
-                    <button onclick="event.stopPropagation(); window.removeFromQueue(${qIndex})" class="p-2 bg-zinc-800 hover:bg-red-500/20 hover:text-red-500 rounded-lg transition-colors group/icon">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/><line x1="10" y1="11" x2="10" y2="17"/><line x1="14" y1="11" x2="14" y2="17"/></svg>
-                    </button>
-                    <button onclick="event.stopPropagation(); window.orderItem(${qIndex})" class="p-2 bg-purple-600 hover:bg-purple-500 text-white rounded-lg transition-colors">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="21" r="1"/><circle cx="19" cy="21" r="1"/><path d="M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.12"/></svg>
-                    </button>
+                    if (!remaining) {
+                        return `
+                            <div class="mt-2 flex items-center justify-end gap-2 text-[10px] uppercase font-black tracking-widest text-green-400">
+                                <span class="w-2 h-2 bg-green-400 rounded-full animate-pulse"></span>
+                                Eligible for free shipping
+                            </div>
+                        `;
+                    }
+                    return `
+                        <div class="mt-2 w-full max-w-xs">
+                            <div class="flex justify-between text-[9px] uppercase font-black tracking-widest text-zinc-600 mb-1">
+                                <span>Free Shipping:</span>
+                                <span class="text-purple-400">${formatMoney(remaining)} to go</span>
+                            </div>
+                            <div class="h-1.5 w-full bg-zinc-800 rounded-full overflow-hidden">
+                                <div
+                                    class="h-full bg-purple-500 transition-all duration-500"
+                                    style="width: ${progress * 100}%"
+                                ></div>
+                            </div>
+                        </div>
+                    `;
+                })()}
+
+                <div class="text-[12px] text-white font-black uppercase tracking-widest">
+                    Total:
+                    <span class="text-purple-400">
+                        ${formatMoney(window.getCartTotal())}
+                    </span>
                 </div>
             </div>
         </div>
-    `}).reverse().join('');
+
+        ${items.map(({ item, index }) => {
+            const unit = window.getItemUnitPrice(item);
+            const line = window.getItemLineTotal(item);
+            const currency = item?.pricing?.currency || CURRENCY;
+            const qty = Number(item.quantity || 1) || 1;
+
+            return `
+            <div class="border border-zinc-800 rounded-xl p-4 bg-zinc-900/20">
+                <div class="flex justify-between items-start gap-4">
+                    <div class="min-w-0 flex-1">
+                        <p class="text-xs uppercase tracking-widest text-zinc-400">
+                            ${(item.product?.label || item.name || 'Product')}
+                        </p>
+                        <p class="text-sm font-semibold truncate">
+                            ${item.preview?.text || "Custom Design"}
+                        </p>
+
+                        <div class="mt-4 flex flex-col gap-3">
+                            <div class="flex flex-wrap gap-x-4 gap-y-1 text-[10px] uppercase tracking-widest text-zinc-500 font-black">
+                                <span>Unit: <span class="text-zinc-200">${formatMoney(unit, currency)}</span></span>
+                                <span>Total: <span class="text-purple-400">${formatMoney(line, currency)}</span></span>
+                            </div>
+
+                            <div class="flex items-center gap-3">
+                                <span class="text-[10px] uppercase tracking-widest text-zinc-500 font-black">Qty</span>
+
+                                <div class="inline-flex items-center rounded-xl border border-zinc-800 bg-black overflow-hidden">
+                                    <button onclick="bumpCartItemQuantity(${index}, -1)" class="px-3 py-2 text-sm font-black text-zinc-300 hover:text-white hover:bg-zinc-900 transition" aria-label="Decrease quantity">−</button>
+                                    <input
+                                        value="${qty}"
+                                        inputmode="numeric"
+                                        class="w-12 text-center bg-transparent text-[10px] font-black uppercase tracking-widest text-white outline-none"
+                                        onkeydown="if(event.key==='Enter'){ event.preventDefault(); this.blur(); }"
+                                        onblur="setCartItemQuantity(${index}, this.value)"
+                                    />
+                                    <button onclick="bumpCartItemQuantity(${index}, 1)" class="px-3 py-2 text-sm font-black text-zinc-300 hover:text-white hover:bg-zinc-900 transition" aria-label="Increase quantity">+</button>
+                                </div>
+
+                                <span class="text-[9px] uppercase tracking-widest text-zinc-600 font-black">(1–99)</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="flex flex-col gap-2 shrink-0">
+                        <button onclick="reopenDesign(${index})" class="text-[10px] uppercase tracking-widest font-black px-4 py-2 rounded-lg border border-zinc-800 bg-black hover:border-purple-500 transition">
+                            Edit
+                        </button>
+                        <button onclick="removeFromQueue(${index})" class="text-[10px] uppercase tracking-widest font-black px-4 py-2 rounded-lg border border-zinc-800 bg-black hover:border-red-500 hover:text-red-400 transition">
+                            Remove
+                        </button>
+                    </div>
+                </div>
+            </div>
+            `;
+        }).join('')}
+    `;
+};
+
+window.reopenDesign = async (index) => {
+    const item = studioState.productionQueue[index];
+    if (!item) return;
+
+    await openProduct(item.product.slug);
+
+    setTimeout(() => {
+        hydratePageWithConfig(item.config);
+    }, 300);
 };
 
 window.closePage = () => {
@@ -403,6 +769,43 @@ window.closePage = () => {
         document.getElementById("page-overlay").style.zIndex = "-1";
         document.body.style.overflow = "auto";
     }, 400);
+};
+
+window.getShippingInfoLabel = () => {
+    const free = window.getFreeShippingTarget();
+    if (!free) return "Shipping calculated at checkout";
+    return `Free shipping over ${formatMoney(free)}`;
+};
+
+window.updateLandingPrices = () => {
+    const set = (id, value) => {
+        const el = document.getElementById(id);
+        if (!el) return;
+        el.textContent = (typeof formatMoney === 'function')
+            ? formatMoney(value)
+            : new Intl.NumberFormat('en-GB', { style: 'currency', currency: 'GBP' }).format(Number(value || 0));
+    };
+
+    const priceFor = (slug, config = {}) => {
+        if (typeof window.computeUnitPriceFromTable === 'function') {
+            return window.computeUnitPriceFromTable({ product: { slug }, config }) || 0;
+        }
+        if (typeof window.getItemUnitPrice === 'function') {
+            return window.getItemUnitPrice({ product: { slug }, config }) || 0;
+        }
+        return 0;
+    };
+
+    set('price-hoodies', priceFor('hoodies'));
+    set('price-tshirts', priceFor('t-shirts'));
+    set('price-hats', priceFor('hats'));
+    set('price-balaclavas', priceFor('balaclavas'));
+    set('price-sunstrips', priceFor('sunstrips'));
+    set('price-stickers', priceFor('stickers', { quantity: '50' }));
+
+    document.querySelectorAll('[data-shipping-info]').forEach(el => {
+        el.textContent = window.getShippingInfoLabel();
+    });
 };
 
 function renderHUD() {
@@ -485,7 +888,7 @@ window.clearQueue = () => {
         studioState.productionQueue = [];
         localStorage.removeItem('uk_studio_queue_local');
         renderHUD();
-        renderProductionLog();
+        renderCart();
     }
 };
 
@@ -496,8 +899,9 @@ window.deleteLogItem = (index) => {
     studioState.productionQueue.splice(actualIndex, 1);
     
     localStorage.setItem('uk_studio_queue_local', JSON.stringify(studioState.productionQueue));
-    renderProductionLog();
+    renderCart();
     renderHUD();
+    if (typeof window.updateShippingMini === 'function') window.updateShippingMini();
 };
 
 let currentOrderingIndex = null;

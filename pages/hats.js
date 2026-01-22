@@ -1,10 +1,16 @@
 export function render() {
+  const __unit = (window?.computeUnitPriceFromTable?.({ product: { slug: 'hats' }, config: {} }) ?? 0);
+const __price = new Intl.NumberFormat('en-GB', { style: 'currency', currency: 'GBP' }).format(__unit);
     return `
         <div class="min-h-screen bg-black text-white p-4 md:p-12 relative">
             <div class="flex justify-between items-center mb-12">
                 <div>
                     <span class="text-[10px] text-purple-500 font-bold tracking-[0.3em] uppercase italic">Hardware / Division 02</span>
                     <h1 class="heading-font text-4xl md:text-6xl font-black uppercase tracking-tighter mt-2">Hats</h1>
+                    <div class="inline-flex items-center gap-3 px-4 py-2 rounded-full border border-zinc-800 bg-zinc-900/40">
+                        <span class="text-[8px] uppercase tracking-[0.4em] font-black text-zinc-500">Price</span>
+                        <span class="text-[11px] font-black uppercase tracking-widest text-purple-400">${__price}</span>
+                    </div>
                 </div>
                 <button onclick="window.closePage()" class="group flex items-center gap-3 bg-zinc-900 hover:bg-white hover:text-black transition-all px-6 py-3 rounded-full border border-zinc-800">
                     <span class="text-[10px] font-bold uppercase tracking-widest text-inherit">Back to Studio</span>
@@ -15,30 +21,37 @@ export function render() {
             <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
                 
                 <div class="lg:col-span-7">
-                    <div class="aspect-square bg-zinc-900/20 border border-zinc-800 rounded-[3rem] relative overflow-hidden flex items-center justify-center p-8">
-                        <div class="absolute inset-0 blueprint-grid opacity-20"></div>
+                    <div id="preview-stage" class="aspect-square bg-zinc-900/20 border border-zinc-800 rounded-[3rem] flex items-center justify-center p-8 relative overflow-hidden">
+                        <div data-preview="2d" class="absolute inset-0">
+                            <div class="absolute inset-0 blueprint-grid opacity-20"></div>
                         
-                        <svg id="hat-svg-engine" viewBox="0 0 500 500" class="w-full h-full drop-shadow-2xl">
-                            <defs>
-                                <pattern id="logo-pattern-fill" x="0" y="0" width="120" height="120" patternUnits="userSpaceOnUse">
-                                    <image id="svg-logo-pattern-img" href="" x="0" y="0" width="120" height="120" preserveAspectRatio="xMidYMid slice" />
-                                </pattern>
-                                
-                                <clipPath id="hat-clip">
-                                    <path d="M250,120 C180,120 100,160 80,240 C75,260 70,300 70,320 L430,320 C430,300 425,260 420,240 C400,160 320,120 250,120 Z" />
-                                    <path d="M70,320 C70,350 120,400 250,400 C380,400 430,350 430,320 L70,320 Z" />
-                                </clipPath>
-                            </defs>
+                            <svg id="hat-svg-engine" viewBox="0 0 500 500" class="w-full h-full drop-shadow-2xl">
+                                <defs>
+                                    <pattern id="logo-pattern-fill" x="0" y="0" width="120" height="120" patternUnits="userSpaceOnUse">
+                                        <image id="svg-logo-pattern-img" href="" x="0" y="0" width="120" height="120" preserveAspectRatio="xMidYMid slice" />
+                                    </pattern>
+                                    
+                                    <clipPath id="hat-clip">
+                                        <path d="M250,120 C180,120 100,160 80,240 C75,260 70,300 70,320 L430,320 C430,300 425,260 420,240 C400,160 320,120 250,120 Z" />
+                                        <path d="M70,320 C70,350 120,400 250,400 C380,400 430,350 430,320 L70,320 Z" />
+                                    </clipPath>
+                                </defs>
 
-                            <rect width="500" height="500" fill="#303030ff" clip-path="url(#hat-clip)" />
-                            <path d="M250,120 C180,120 100,160 80,240 C75,260 70,300 70,320 L430,320 C430,300 425,260 420,240 C400,160 320,120 250,120 Z" fill="black" opacity="0.4" />
-                            
-                            <text id="svg-logo-target" x="50%" y="275" text-anchor="middle" 
-                                  class="heading-font italic font-black" 
-                                  style="font-size: 110px; fill: #ffffff; transition: fill 0.3s ease;">
-                                UR?
-                            </text>
-                        </svg>
+                                <rect width="500" height="500" fill="#303030ff" clip-path="url(#hat-clip)" />
+                                <path d="M250,120 C180,120 100,160 80,240 C75,260 70,300 70,320 L430,320 C430,300 425,260 420,240 C400,160 320,120 250,120 Z" fill="black" opacity="0.4" />
+                                
+                                <text id="svg-logo-target" x="50%" y="275" text-anchor="middle" 
+                                    class="heading-font italic font-black" 
+                                    style="font-size: 110px; fill: #ffffff; transition: fill 0.3s ease;">
+                                    UR?
+                                </text>
+                            </svg>
+                        </div>
+                        <div data-preview="3d" class="hidden absolute inset-0 p-4"></div>
+                        <div class="absolute bottom-6 left-6 z-30 flex gap-2">
+                            <button onclick="window.disable3DViewer()" class="bg-black/60 backdrop-blur-md px-4 py-2 rounded-full border border-white/10 text-[9px] font-bold uppercase tracking-widest hover:border-purple-500 transition">Studio</button>
+                            <button onclick="window.enable3DViewer('hats','default')" class="bg-black/60 backdrop-blur-md px-4 py-2 rounded-full border border-white/10 text-[9px] font-bold uppercase tracking-widest hover:border-purple-500 transition">3D</button>
+                        </div>
                     </div>
                 </div>
 
@@ -60,27 +73,15 @@ export function render() {
                             </div>
                         </div>
 
-                        <div id="fill-colors" class="grid grid-cols-7 gap-2">
-                            ${['#FFFFFF', '#FF0000', '#9333EA', '#22C55E', '#3B82F6', '#EAB308', '#000000'].map(color => `
-                                <div onclick="window.applyLogoFill('color', '${color}', this)" 
-                                     style="background-color: ${color}" 
-                                     class="aspect-square rounded-md border-2 border-transparent cursor-pointer hover:scale-110 transition active-color-indicator"></div>
-                            `).join('')}
+                        <div id="fill-colors" class="grid grid-cols-7 gap-2">${['#FFFFFF', '#FF0000', '#9333EA', '#22C55E', '#3B82F6', '#EAB308', '#000000'].map(color => `
+                            <div onclick="window.applyLogoFill('color', '${color}', this)" style="background-color: ${color}" class="aspect-square rounded-md border-2 border-transparent cursor-pointer hover:scale-110 transition active-color-indicator"></div>`).join('')}
                         </div>
 
-                        <div id="fill-patterns" class="hidden grid grid-cols-3 gap-3">
-                            ${['Camo', 'Grid', 'Acid', 'Digital', 'Carbon', 'Leopard'].map(pat => `
-                                <div onclick="window.applyLogoFill('pattern', '${pat.toLowerCase()}.png', this)" 
-                                     style="background-image: url('./images/hats/patterns/${pat.toLowerCase()}.png'); background-size: cover; background-position: center;"
-                                     class="aspect-square rounded-xl border-2 border-transparent cursor-pointer hover:scale-110 transition flex items-end p-2 group">
-                                     <span class="text-[7px] font-black uppercase bg-black/80 backdrop-blur-sm px-2 py-1 rounded-md opacity-0 group-hover:opacity-100 transition-opacity">${pat}</span>
-                                </div>
-                            `).join('')}
-                        </div>
+                        <div id="fill-patterns" class="hidden grid grid-cols-3 gap-3">${['Camo', 'Grid', 'Acid', 'Digital', 'Carbon', 'Leopard'].map(pat => `<div onclick="window.applyLogoFill('pattern', '${pat.toLowerCase()}.png', this)" style="background-image: url('./images/hats/patterns/${pat.toLowerCase()}.png'); background-size: cover; background-position: center;"class="aspect-square rounded-xl border-2 border-transparent cursor-pointer hover:scale-110 transition flex items-end p-2 group"><span class="text-[7px] font-black uppercase bg-black/80 backdrop-blur-sm px-2 py-1 rounded-md opacity-0 group-hover:opacity-100 transition-opacity">${pat}</span></div>`).join('')}</div>
                     </div>
 
                     <button onclick="window.saveHatConfig()" class="w-full bg-white text-black py-6 rounded-2xl font-black uppercase text-xs tracking-[0.3em] hover:bg-purple-600 hover:text-white transition-all shadow-xl">
-                        Finalize Build
+                        Add to Cart
                     </button>
                 </div>
             </div>
@@ -128,9 +129,9 @@ window.applyLogoFill = (type, value, btn) => {
 
 window.saveHatConfig = () => {
     const logo = document.getElementById('svg-logo-target');
-    window.saveDesignToQueue('Hat', {
+    window.saveDesignToQueue({ slug: 'hats', label: 'Hat' }, {
         logo: logo.textContent,
         fill: logo.style.fill,
         specs: "SVG-Engine Dye-Sub Fill"
-    });
+    }, { text: (logo.textContent || 'Hat') });
 };

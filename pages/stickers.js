@@ -1,10 +1,17 @@
 export function render() {
+  const __defaultQty = '50';
+  const __unit = (window?.computeUnitPriceFromTable?.({ product: { slug: 'stickers' }, config: { quantity: __defaultQty } }) ?? 0);
+  const __price = new Intl.NumberFormat('en-GB', { style: 'currency', currency: 'GBP' }).format(__unit);
     return `
         <div class="min-h-screen bg-black text-white p-4 md:p-12 relative">
             <div class="flex justify-between items-center mb-12">
                 <div>
                     <span class="text-[10px] text-purple-500 font-bold tracking-[0.3em] uppercase italic">Merchandise / Division 02</span>
                     <h1 class="heading-font text-4xl md:text-6xl font-black uppercase tracking-tighter mt-2">Custom Stickers</h1>
+                    <div class="inline-flex items-center gap-3 px-4 py-2 rounded-full border border-zinc-800 bg-zinc-900/40">
+  <span class="text-[8px] uppercase tracking-[0.4em] font-black text-zinc-500">Pack Price</span>
+  <span id="price-value" class="text-[11px] font-black uppercase tracking-widest text-purple-400">${__price}</span>
+</div>
                 </div>
                 <button onclick="window.closePage()" class="group flex items-center gap-3 bg-zinc-900 hover:bg-white hover:text-black transition-all px-6 py-3 rounded-full border border-zinc-800">
                     <span class="text-[10px] font-bold uppercase tracking-widest text-inherit">Back to Studio</span>
@@ -92,13 +99,13 @@ export function render() {
                         <h3 class="text-xs font-black uppercase tracking-[0.2em] mb-4 text-zinc-400 italic">Bulk Quantity</h3>
                         <div class="grid grid-cols-4 gap-2">
                             ${['25', '50', '100', '150'].map(qty => `
-                                <button onclick="window.updateSelection(this, 'active-size')" class="py-3 bg-black border border-zinc-800 rounded-xl text-[10px] font-bold hover:border-purple-500 transition ${qty === '50' ? 'active-size border-purple-500' : ''}">${qty}</button>
+                                <button onclick="window.selectStickerQty('${qty}', this)" class="py-3 bg-black border border-zinc-800 rounded-xl text-[10px] font-bold hover:border-purple-500 transition ${qty === '50' ? 'active-size border-purple-500' : ''}">${qty}</button>
                             `).join('')}
                         </div>
                     </div>
 
                     <button onclick="window.saveStickerConfig()" class="w-full bg-white text-black py-6 rounded-2xl font-black uppercase text-xs tracking-[0.3em] hover:bg-purple-600 hover:text-white transition-all shadow-xl">
-                        Log Production Request
+                        Add to Cart
                     </button>
                 </div>
             </div>
@@ -140,14 +147,26 @@ window.applyStickerFill = (type, value, btn) => {
     }
 };
 
+window.updateStickerPrice = (qty) => {
+    const unit = (window?.computeUnitPriceFromTable?.({ product: { slug: 'stickers' }, config: { quantity: String(qty) } }) ?? 0);
+    const price = new Intl.NumberFormat('en-GB', { style: 'currency', currency: 'GBP' }).format(unit);
+    const el = document.getElementById('price-value');
+    if (el) el.textContent = price;
+};
+
+window.selectStickerQty = (qty, btn) => {
+    window.updateSelection(btn, 'active-size');
+    window.updateStickerPrice(qty);
+};
+
 window.saveStickerConfig = () => {
     const mainText = document.getElementById('sticker-text-main');
     const qty = document.querySelector('.active-size').innerText;
     
-    window.saveDesignToQueue('Sticker', {
+    window.saveDesignToQueue({ slug: 'stickers', label: 'Sticker' }, {
         content: mainText.textContent,
         fill: mainText.style.fill,
         quantity: qty,
         specs: 'Weatherproof Vinyl / Die-Cut Outline'
-    });
+    }, { text: (mainText.textContent || 'Sticker') });
 };
