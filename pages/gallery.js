@@ -27,7 +27,6 @@ export function render() {
                 transition: border-color 0.3s ease;
             }
 
-            /* Hiding logic for missing files */
             .asset-node.corrupted {
                 display: none !important;
             }

@@ -32,9 +32,7 @@ export function render() {
                             <span id="preview-text-front" class="text-3xl md:text-5xl font-black uppercase italic text-white drop-shadow-2xl text-center px-12"></span>
                         </div>
                     </div>
-                    <div data-preview="3d" class="hidden absolute inset-0 p-4">
-                        <!-- model-viewer injected here -->
-                    </div>
+                    <div data-preview="3d" class="hidden absolute inset-0 p-4"></div>
 
                     <div class="absolute bottom-6 left-6 z-30 flex gap-2">
                         <button onclick="window.disable3DViewer()" class="bg-black/60 backdrop-blur-md px-4 py-2 rounded-full border border-white/10 text-[9px] font-bold uppercase tracking-widest hover:border-purple-500 transition">Studio</button>

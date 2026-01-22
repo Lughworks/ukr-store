@@ -217,20 +217,18 @@ window.disable3DViewer = () => {
 
         const ks = key(rs), k3 = key(r3), km = key(rm);
 
-        if (ks !== last.stage) { console.log('[watch] stage', ks); last.stage = ks; }
-        if (k3 !== last.d3) { console.log('[watch] d3   ', k3); last.d3 = k3; }
-        if (km !== last.mv) { console.log('[watch] mv   ', km); last.mv = km; }
+        if (ks !== last.stage) { last.stage = ks; }
+        if (k3 !== last.d3) { last.d3 = k3; }
+        if (km !== last.mv) { last.mv = km; }
 
         if ((rs && (rs.width === 0 || rs.height === 0)) ||
             (r3 && (r3.width === 0 || r3.height === 0)) ||
             (rm && (rm.width === 0 || rm.height === 0))) {
-            console.warn('[watch] ZERO SIZE DETECTED', { rs, r3, rm });
         }
 
         requestAnimationFrame(tick);
     };
 
-    console.log('[watch] started');
     requestAnimationFrame(tick);
 })();
 

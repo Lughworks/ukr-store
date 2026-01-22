@@ -37,10 +37,7 @@ const __price = new Intl.NumberFormat('en-GB', { style: 'currency', currency: 'G
                                 </div>
                             </div>
                         </div>
-                        <div data-preview="3d" class="hidden absolute inset-0 p-4">
-                            <!-- model-viewer injected here -->
-                        </div>
-                        <!-- VIEW TOGGLE -->
+                        <div data-preview="3d" class="hidden absolute inset-0 p-4"></div>
                         <div class="absolute bottom-6 left-6 z-30 flex gap-2">
                             <button onclick="window.disable3DViewer()" class="bg-black/60 backdrop-blur-md px-4 py-2 rounded-full border border-white/10 text-[9px] font-bold uppercase tracking-widest hover:border-purple-500 transition">
                                 Studio

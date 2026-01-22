@@ -1,5 +1,5 @@
 export function render() {
-  const __unit = (window?.computeUnitPriceFromTable?.({ product: { slug: 'balaclavas' }, config: {} }) ?? 0);
+    const __unit = (window?.computeUnitPriceFromTable?.({ product: { slug: 'balaclavas' }, config: {} }) ?? 0);
     const __price = new Intl.NumberFormat('en-GB', { style: 'currency', currency: 'GBP' }).format(__unit);
     return `
         <div class="min-h-screen bg-black text-white p-4 md:p-12 relative">
@@ -41,7 +41,6 @@ export function render() {
                         </div>
                         <div data-preview="3d" class="preview-hidden absolute inset-0 p-4"></div>
 
-                        <!-- VIEW TOGGLE -->
                         <div class="absolute bottom-6 left-6 z-30 flex gap-2">
                             <button onclick="window.disable3DViewer()" class="bg-black/60 backdrop-blur-md px-4 py-2 rounded-full border border-white/10 text-[9px] font-bold uppercase tracking-widest hover:border-purple-500 transition">Studio</button>
                             <button onclick="window.enable3DViewer('balaclavas','default')" class="bg-black/60 backdrop-blur-md px-4 py-2 rounded-full border border-white/10 text-[9px] font-bold uppercase tracking-widest hover:border-purple-500 transition">3D</button>
@@ -54,15 +53,23 @@ export function render() {
                     <div class="bg-zinc-900/40 border border-zinc-800 p-8 rounded-3xl">
                         <h3 class="text-xs font-black uppercase tracking-[0.2em] mb-4 text-purple-500 italic">Step 1: Identity Selection</h3>
                         <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">${[
-                                {short: 'UR?', full: 'UnknownRiderz'},
-                                {short: 'UD?', full: 'UnknownDriverz'}
+                                { short: 'UR?', full: 'UnknownRiderz' },
+                                { short: 'UD?', full: 'UnknownDriverz' }
                             ].map(brand => `<button onclick="window.updateBalaclavaLogo('${brand.short}', this, 75)" class="p-4 bg-zinc-800 border border-zinc-700 rounded-2xl font-black italic text-xl hover:bg-zinc-700 transition">${brand.short}</button><button onclick="window.updateBalaclavaLogo('${brand.full}', this, 32)" class="p-4 bg-zinc-800 border border-zinc-700 rounded-2xl font-black italic text-[10px] tracking-widest hover:bg-zinc-700 transition">${brand.full}</button>`).join('')}
                         </div>
                     </div>
 
                     <div class="bg-zinc-900/40 border border-zinc-800 p-8 rounded-3xl">
-                        <h3 class="text-xs font-black uppercase tracking-[0.2em] mb-6 text-zinc-400">Step 2: Logo Color</h3>
-                        <div class="grid grid-cols-6 gap-3">${['#FFFFFF', '#FF0000', '#9333EA', '#22C55E', '#3B82F6', '#EAB308', '#FF6B00', '#555555'].map(color => `<div onclick="window.applyLogoColor('${color}', this)" style="background-color: ${color}" class="aspect-square rounded-full border-2 border-transparent cursor-pointer hover:scale-110 transition active:scale-95"></div>`).join('')}</div>
+                        <h3 class="text-xs font-black uppercase tracking-[0.2em] mb-4 text-zinc-400">Step 2: Product Color</h3>
+                        <div class="grid grid-cols-7 gap-2">
+                            ${['#FFFFFF', '#FF0000', '#9333EA', '#22C55E', '#3B82F6', '#EAB308', '#FF6B00', '#555555'].map(color => `
+                                <div 
+                                    onclick="window.applyLogoColor('${color}', this)" 
+                                    style="background-color: ${color}" 
+                                    class="aspect-square rounded-md border-2 border-transparent cursor-pointer hover:scale-110 transition"
+                                ></div>
+                            `).join('')}
+                        </div>
                     </div>
 
                     <button onclick="window.saveBalaclavaConfig()" class="w-full bg-white text-black py-6 rounded-2xl font-black uppercase text-xs tracking-[0.3em] hover:bg-purple-600 hover:text-white transition-all shadow-xl">
@@ -75,31 +82,31 @@ export function render() {
 }
 
 window.BALACLAVA_STATE = {
-  text: 'UR?',
-  bodyColor: '#555555'
+    text: 'UR?',
+    bodyColor: '#555555'
 };
 
 window.updateBalaclavaLogo = (text, btn, size) => {
-  window.updateSelection(btn, 'active-preset');
+    window.updateSelection(btn, 'active-preset');
 
-  const logo = document.getElementById('svg-logo-target');
-  if (logo) {
-    logo.textContent = text;
-    logo.style.fontSize = size + 'px';
-    logo.style.fill = '#FFFFFF';
-  }
+    const logo = document.getElementById('svg-logo-target');
+    if (logo) {
+        logo.textContent = text;
+        logo.style.fontSize = size + 'px';
+        logo.style.fill = '#FFFFFF';
+    }
 
-  window.BALACLAVA_STATE.text = text;
+    window.BALACLAVA_STATE.text = text;
 
-  window.applyBalaclavaTo3D?.();
+    window.applyBalaclavaTo3D?.();
 };
 
 window.applyLogoColor = (color, btn) => {
-  btn.parentElement.querySelectorAll('div').forEach(el => el.style.borderColor = 'transparent');
-  btn.style.borderColor = '#9333ea';
+    btn.parentElement.querySelectorAll('div').forEach(el => el.style.borderColor = 'transparent');
+    btn.style.borderColor = '#9333ea';
 
-  window.BALACLAVA_STATE.bodyColor = color;
-  window.applyBalaclavaTo3D?.();
+    window.BALACLAVA_STATE.bodyColor = color;
+    window.applyBalaclavaTo3D?.();
 };
 window.saveBalaclavaConfig = () => {
     const logo = document.getElementById('svg-logo-target');
@@ -113,29 +120,29 @@ window.saveBalaclavaConfig = () => {
 };
 
 window.BALACLAVA_3D = {
-  bodyMaterialName: 'balaclava-colour',
-  textMaterialName: 'balaclava-text',
+    bodyMaterialName: 'balaclava-colour',
+    textMaterialName: 'balaclava-text',
 };
 
 window.applyBalaclavaTo3D = async () => {
-  const mv = window.getActiveModelViewer?.();
-  if (!mv) return;
+    const mv = window.getActiveModelViewer?.();
+    if (!mv) return;
 
-  if (!mv.model) return;
+    if (!mv.model) return;
 
-  window.setMaterialBaseColor?.(mv, window.BALACLAVA_3D.bodyMaterialName, window.BALACLAVA_STATE.bodyColor);
+    window.setMaterialBaseColor?.(mv, window.BALACLAVA_3D.bodyMaterialName, window.BALACLAVA_STATE.bodyColor);
 
-  const png = window.makeTextTextureDataURL({
-    text: window.BALACLAVA_STATE.text,
-    color: '#FFFFFF',
-    font: 'bold 180px Inter, Arial',
-    size: 1024
-  });
+    const png = window.makeTextTextureDataURL({
+        text: window.BALACLAVA_STATE.text,
+        color: '#FFFFFF',
+        font: 'bold 180px Inter, Arial',
+        size: 1024
+    });
 
-  await window.applyBaseColorTextureURI?.(mv, window.BALACLAVA_3D.textMaterialName, png);
+    await window.applyBaseColorTextureURI?.(mv, window.BALACLAVA_3D.textMaterialName, png);
 };
 
 window.on3DModelReady = (slug, mv) => {
-  if (slug !== 'balaclavas') return;
-  window.applyBalaclavaTo3D?.();
+    if (slug !== 'balaclavas') return;
+    window.applyBalaclavaTo3D?.();
 };
