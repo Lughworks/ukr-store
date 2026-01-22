@@ -1,6 +1,6 @@
 export function render() {
   const __unit = (window?.computeUnitPriceFromTable?.({ product: { slug: 'balaclavas' }, config: {} }) ?? 0);
-const __price = new Intl.NumberFormat('en-GB', { style: 'currency', currency: 'GBP' }).format(__unit);
+    const __price = new Intl.NumberFormat('en-GB', { style: 'currency', currency: 'GBP' }).format(__unit);
     return `
         <div class="min-h-screen bg-black text-white p-4 md:p-12 relative">
             <div class="flex justify-between items-center mb-12">
@@ -39,7 +39,8 @@ const __price = new Intl.NumberFormat('en-GB', { style: 'currency', currency: 'G
                             <text id="svg-logo-target" x="50%" y="220" text-anchor="middle" class="heading-font italic font-black" style="font-size: 70px; fill: #ffffff; transition: all 0.3s ease; filter: drop-shadow(0 4px 10px rgba(0,0,0,0.9));">UR?</text>
                         </svg>
                         </div>
-                            <div data-preview="3d" class="hidden absolute inset-0 p-4"></div>
+                        <div data-preview="3d" class="preview-hidden absolute inset-0 p-4"></div>
+
                         <!-- VIEW TOGGLE -->
                         <div class="absolute bottom-6 left-6 z-30 flex gap-2">
                             <button onclick="window.disable3DViewer()" class="bg-black/60 backdrop-blur-md px-4 py-2 rounded-full border border-white/10 text-[9px] font-bold uppercase tracking-widest hover:border-purple-500 transition">Studio</button>
@@ -73,20 +74,33 @@ const __price = new Intl.NumberFormat('en-GB', { style: 'currency', currency: 'G
     `;
 }
 
+window.BALACLAVA_STATE = {
+  text: 'UR?',
+  bodyColor: '#555555'
+};
+
 window.updateBalaclavaLogo = (text, btn, size) => {
-    window.updateSelection(btn, 'active-preset');
-    const logo = document.getElementById('svg-logo-target');
+  window.updateSelection(btn, 'active-preset');
+
+  const logo = document.getElementById('svg-logo-target');
+  if (logo) {
     logo.textContent = text;
     logo.style.fontSize = size + 'px';
+    logo.style.fill = '#FFFFFF';
+  }
+
+  window.BALACLAVA_STATE.text = text;
+
+  window.applyBalaclavaTo3D?.();
 };
 
 window.applyLogoColor = (color, btn) => {
-    btn.parentElement.querySelectorAll('div').forEach(el => el.style.borderColor = 'transparent');
-    btn.style.borderColor = '#9333ea';
-    const logo = document.getElementById('svg-logo-target');
-    if (logo) logo.style.fill = color;
-};
+  btn.parentElement.querySelectorAll('div').forEach(el => el.style.borderColor = 'transparent');
+  btn.style.borderColor = '#9333ea';
 
+  window.BALACLAVA_STATE.bodyColor = color;
+  window.applyBalaclavaTo3D?.();
+};
 window.saveBalaclavaConfig = () => {
     const logo = document.getElementById('svg-logo-target');
 
@@ -96,4 +110,32 @@ window.saveBalaclavaConfig = () => {
         fontSize: logo.style.fontSize,
         specs: "Neck Gaiter / Vinyl Print"
     }, { text: (logo.textContent || 'Balaclava') });
+};
+
+window.BALACLAVA_3D = {
+  bodyMaterialName: 'balaclava-colour',
+  textMaterialName: 'balaclava-text',
+};
+
+window.applyBalaclavaTo3D = async () => {
+  const mv = window.getActiveModelViewer?.();
+  if (!mv) return;
+
+  if (!mv.model) return;
+
+  window.setMaterialBaseColor?.(mv, window.BALACLAVA_3D.bodyMaterialName, window.BALACLAVA_STATE.bodyColor);
+
+  const png = window.makeTextTextureDataURL({
+    text: window.BALACLAVA_STATE.text,
+    color: '#FFFFFF',
+    font: 'bold 180px Inter, Arial',
+    size: 1024
+  });
+
+  await window.applyBaseColorTextureURI?.(mv, window.BALACLAVA_3D.textMaterialName, png);
+};
+
+window.on3DModelReady = (slug, mv) => {
+  if (slug !== 'balaclavas') return;
+  window.applyBalaclavaTo3D?.();
 };

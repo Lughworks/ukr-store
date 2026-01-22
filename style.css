@@ -110,6 +110,28 @@ body {
     letter-spacing: -0.05em;
 }
 
+.preview-hidden {
+    opacity: 0;
+    pointer-events: none;
+}
+
+.preview-visible {
+    opacity: 1;
+    pointer-events: auto;
+}
+#preview-stage {
+    width: 100%;
+    height: 640px;
+    position: relative;
+}
+
+#preview-stage model-viewer {
+    width: 100%;
+    height: 100%;
+    display: block;
+}
+
+
 @media (max-width: 768px) {
     .mobile-order-trigger {
         display: none;

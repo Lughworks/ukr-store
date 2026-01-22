@@ -33,88 +33,283 @@ const pickShippingTier = (subtotal) => {
 };
 
 window.MODEL_MAP = {
-  'hoodies': {
-    label: 'Hoodie',
-    variants: {
-      down: './assets/models/hood-down.glb',
-      up: './assets/models/hood-up.glb'
+    'hoodies': {
+        label: 'Hoodie',
+        variants: {
+            down: './assets/models/hood-down.glb',
+            up: './assets/models/hood-up.glb'
+        }
+    },
+    't-shirts': {
+        label: 'T-Shirt',
+        variants: {
+            default: './assets/models/t-shirt.glb'
+        }
+    },
+    'hats': {
+        label: 'Hat',
+        variants: {
+            default: './assets/models/hat.glb'
+        }
+    },
+    'balaclavas': {
+        label: 'Balaclava',
+        variants: {
+            default: './assets/models/balaclava.glb'
+        }
+    },
+    'sunstrips': {
+        label: 'Sunstrip',
+        variants: {
+            default: './assets/models/sunstrip.glb'
+        }
+    },
+    'stickers': {
+        label: 'Stickers',
+        variants: {
+            default: './assets/models/stickers.glb'
+        }
     }
-  },
-  't-shirts': {
-    label: 'T-Shirt',
-    variants: {
-      default: './assets/models/t-shirt.glb'
+};
+
+window.getActiveModelViewer = () => {
+    const stage = document.getElementById('preview-stage');
+    return stage ? stage.querySelector('model-viewer') : null;
+};
+
+window.hexToBaseColorFactor = (hex) => {
+    const h = String(hex || '#FFFFFF').replace('#', '').trim();
+    const full = h.length === 3 ? h.split('').map(x => x + x).join('') : h.padEnd(6, '0').slice(0, 6);
+
+    const r = parseInt(full.slice(0, 2), 16) / 255;
+    const g = parseInt(full.slice(2, 4), 16) / 255;
+    const b = parseInt(full.slice(4, 6), 16) / 255;
+
+    return [r, g, b, 1];
+};
+
+window.setMaterialBaseColor = (mv, materialName, hex) => {
+    if (!mv?.model) return false;
+
+    const mat = mv.model.getMaterialByName(materialName);
+    if (!mat?.pbrMetallicRoughness) {
+        console.warn('[3D] No PBR material for', materialName);
+        return false;
     }
-  },
-  'hats': {
-    label: 'Hat',
-    variants: {
-      default: './assets/models/hat.glb'
-    }
-  },
-  'balaclavas': {
-    label: 'Balaclava',
-    variants: {
-      default: './assets/models/balaclava.glb'
-    }
-  },
-  'sunstrips': {
-    label: 'Sunstrip',
-    variants: {
-      default: './assets/models/sunstrip.glb'
-    }
-  },
-  'stickers': {
-    label: 'Stickers',
-    variants: {
-      default: './assets/models/stickers.glb'
-    }
-  }
+
+    mat.pbrMetallicRoughness.setBaseColorFactor(window.hexToBaseColorFactor(hex));
+    mv.requestUpdate();
+    return true;
 };
 
 window.enable3DViewer = (slug, variant = 'default') => {
-  const stage = document.getElementById('preview-stage');
-  if (!stage) return;
+    const stage = document.getElementById('preview-stage');
+    if (!stage) return;
 
-  const cfg = window.MODEL_MAP?.[slug];
-  const src = cfg?.variants?.[variant] || cfg?.variants?.default;
+    const cfg = window.MODEL_MAP?.[slug];
+    const src = cfg?.variants?.[variant] || cfg?.variants?.default;
+    if (!src) return;
 
-  if (!src) {
-    console.warn('[3D] No model configured for', slug, variant);
-    return;
-  }
+    const d2 = stage.querySelector('[data-preview="2d"]');
+    const d3 = stage.querySelector('[data-preview="3d"]');
 
-  stage.querySelector('[data-preview="2d"]')?.classList.add('hidden');
-  stage.querySelector('[data-preview="3d"]')?.classList.remove('hidden');
+    d2?.classList.add('preview-hidden');
+    d2?.classList.remove('preview-visible');
+    d2?.classList.remove('hidden');
 
-  let mv = stage.querySelector('model-viewer');
-  if (!mv) {
-    mv = document.createElement('model-viewer');
-    mv.setAttribute('camera-controls', '');
-    mv.setAttribute('touch-action', 'pan-y');
-    mv.setAttribute('shadow-intensity', '1');
-    mv.setAttribute('exposure', '1');
-    mv.setAttribute('environment-image', 'neutral');
-    mv.style.width = '100%';
-    mv.style.height = '100%';
-    mv.style.background = 'transparent';
-    stage.querySelector('[data-preview="3d"]')?.appendChild(mv);
-  }
+    d3?.classList.remove('preview-hidden');
+    d3?.classList.add('preview-visible');
+    d3?.classList.remove('hidden');
 
-  mv.src = src;
-  mv.alt = `${cfg?.label || slug} 3D model`;
+    const ensureLoadHook = (mv) => {
+        if (mv.__ueLoadHooked) return;
+        mv.__ueLoadHooked = true;
+
+        mv.addEventListener('load', () => {
+            const mats = mv?.model?.materials || [];
+            console.log('[3D] Loaded:', mv.src);
+            console.log('[3D] Materials:', mats.map(m => m.name));
+            console.log('[3D] Variants:', mv.availableVariants);
+            if (typeof window.on3DModelReady === 'function') window.on3DModelReady(slug, mv);
+        });
+    };
+
+    const setUpModelViewer = () => {
+        let mv = stage.querySelector('model-viewer');
+        if (!mv) {
+            mv = document.createElement('model-viewer');
+            mv.setAttribute('camera-controls', '');
+            mv.setAttribute('touch-action', 'pan-y');
+            mv.setAttribute('shadow-intensity', '1');
+            mv.setAttribute('exposure', '1');
+            mv.setAttribute('environment-image', 'neutral');
+
+            mv.setAttribute('reveal', 'manual');
+
+            mv.style.width = '100%';
+            mv.style.height = '100%';
+            mv.style.display = 'block';
+            mv.style.background = 'transparent';
+
+            d3?.appendChild(mv);
+        }
+
+        ensureLoadHook(mv);
+
+        mv.__ueSlug = slug;
+        mv.__ueVariant = variant;
+        mv.src = src;
+        mv.alt = `${cfg?.label || slug} 3D model`;
+
+        if (typeof mv.dismissPoster === 'function') mv.dismissPoster();
+
+        mv.requestUpdate();
+    };
+
+    const setSrcWhenSized = () => {
+        const r = d3?.getBoundingClientRect?.();
+        const w = r?.width || 0;
+        const h = r?.height || 0;
+
+        if (w > 2 && h > 2) {
+            setUpModelViewer();
+            return;
+        }
+        requestAnimationFrame(setSrcWhenSized);
+    };
+
+    requestAnimationFrame(setSrcWhenSized);
 };
 
-window.disable3DViewer = () => {
-  const stage = document.getElementById('preview-stage');
-  if (!stage) return;
 
-  stage.querySelector('[data-preview="3d"]')?.classList.add('hidden');
-  stage.querySelector('[data-preview="2d"]')?.classList.remove('hidden');
+window.disable3DViewer = () => {
+    const stage = document.getElementById('preview-stage');
+    if (!stage) return;
+
+    const mv = stage.querySelector('model-viewer');
+    if (mv) { try { mv.src = ''; } catch (e) { } mv.remove(); }
+
+    const d3 = stage.querySelector('[data-preview="3d"]');
+    const d2 = stage.querySelector('[data-preview="2d"]');
+
+    d3?.classList.add('preview-hidden');
+    d3?.classList.remove('preview-visible');
+
+    d2?.classList.remove('preview-hidden');
+    d2?.classList.add('preview-visible');
+};
+
+(() => {
+    const pick = () => ({
+        stage: document.getElementById('preview-stage'),
+        d3: document.querySelector('[data-preview="3d"]'),
+        mv: document.querySelector('model-viewer')
+    });
+
+    const rect = (el) => el ? el.getBoundingClientRect() : null;
+    const key = (r) => r ? `${Math.round(r.width)}x${Math.round(r.height)} @ ${Math.round(r.top)}` : 'null';
+
+    let last = { stage: '', d3: '', mv: '' };
+
+    const tick = () => {
+        const { stage, d3, mv } = pick();
+        const rs = rect(stage), r3 = rect(d3), rm = rect(mv);
+
+        const ks = key(rs), k3 = key(r3), km = key(rm);
+
+        if (ks !== last.stage) { console.log('[watch] stage', ks); last.stage = ks; }
+        if (k3 !== last.d3) { console.log('[watch] d3   ', k3); last.d3 = k3; }
+        if (km !== last.mv) { console.log('[watch] mv   ', km); last.mv = km; }
+
+        if ((rs && (rs.width === 0 || rs.height === 0)) ||
+            (r3 && (r3.width === 0 || r3.height === 0)) ||
+            (rm && (rm.width === 0 || rm.height === 0))) {
+            console.warn('[watch] ZERO SIZE DETECTED', { rs, r3, rm });
+        }
+
+        requestAnimationFrame(tick);
+    };
+
+    console.log('[watch] started');
+    requestAnimationFrame(tick);
+})();
+
+window.makeTextTextureDataURL = ({
+    text,
+    color = '#ffffff',
+    fontFamily = 'Inter, Arial',
+    weight = '900',
+    width = 1024,
+    height = 512,
+    padding = 0.12
+}) => {
+    const c = document.createElement('canvas');
+    c.width = width;
+    c.height = height;
+
+    const ctx = c.getContext('2d');
+    ctx.clearRect(0, 0, width, height);
+
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillStyle = color;
+
+    const maxW = width * (1 - padding * 2);
+    const maxH = height * (1 - padding * 2);
+
+    let size = maxH;
+    do {
+        ctx.font = `${weight} ${size}px ${fontFamily}`;
+        const metrics = ctx.measureText(text);
+        if (metrics.width <= maxW && size <= maxH) break;
+        size -= 2;
+    } while (size > 10);
+
+    ctx.shadowColor = 'rgba(0,0,0,0.6)';
+    ctx.shadowBlur = size * 0.12;
+    ctx.shadowOffsetY = size * 0.08;
+
+    ctx.fillText(text, width / 2, height / 2);
+    return c.toDataURL('image/png');
+};
+
+
+window.applyBaseColorTextureURI = async (mv, materialName, dataUrl) => {
+    if (!mv?.model) return false;
+
+    const mat = mv.model.getMaterialByName(materialName);
+    if (!mat) {
+        console.warn('[3D] Material not found:', materialName);
+        return false;
+    }
+
+    const pbr = mat.pbrMetallicRoughness;
+    if (!pbr) {
+        console.warn('[3D] No PBR on material:', materialName);
+        return false;
+    }
+
+    const texture = await mv.createTexture(dataUrl);
+
+    if (pbr.baseColorTexture && typeof pbr.baseColorTexture.setTexture === 'function') {
+        pbr.baseColorTexture.setTexture(texture);
+    } else if (typeof pbr.setBaseColorTexture === 'function') {
+        pbr.setBaseColorTexture(texture);
+    } else {
+        console.warn('[3D] Cannot set base color texture on:', materialName, pbr);
+        return false;
+    }
+
+    if (typeof mat.setAlphaMode === 'function') {
+        mat.setAlphaMode('BLEND');
+    }
+
+    mv.requestUpdate();
+    return true;
 };
 
 window.set3DVariant = (slug, variant) => {
-  window.enable3DViewer(slug, variant);
+    window.enable3DViewer(slug, variant);
 };
 
 window.getFreeShippingTarget = () => {
@@ -282,13 +477,13 @@ window.getCartSubtotal = () => {
 const dataURLtoFile = (dataurl, filename) => {
     let arr = dataurl.split(','),
         mime = arr[0].match(/:(.*?);/)[1],
-        bstr = atob(arr[1]), 
-        n = bstr.length, 
+        bstr = atob(arr[1]),
+        n = bstr.length,
         u8arr = new Uint8Array(n);
-    while(n--){
+    while (n--) {
         u8arr[n] = bstr.charCodeAt(n);
     }
-    return new File([u8arr], filename, {type:mime});
+    return new File([u8arr], filename, { type: mime });
 }
 
 window.checkSavedCustomer = () => {
@@ -305,7 +500,7 @@ window.checkSavedCustomer = () => {
 window.sendToDiscord = async (item, itemIndex) => {
     const config = item.config || {};
     const cust = item.customer || { name: "N/A", email: "N/A", address: "N/A" };
-    
+
     const brandColor = config.color && config.color.startsWith('#') ? parseInt(config.color.replace('#', ''), 16) : 0x9c3bf6;
 
     const formData = new FormData();
@@ -315,53 +510,53 @@ window.sendToDiscord = async (item, itemIndex) => {
         description: `**Product:** ${item.name.toUpperCase()}\n**Status:** READY_FOR_PRINT`,
         color: brandColor,
         fields: [
-            { 
-                name: "👤 CUSTOMER DETAILS", 
-                value: `**Name:** ${cust.name}\n**Email:** ${cust.email}\n**Shipping:** ${cust.address}`, 
-                inline: false 
+            {
+                name: "👤 CUSTOMER DETAILS",
+                value: `**Name:** ${cust.name}\n**Email:** ${cust.email}\n**Shipping:** ${cust.address}`,
+                inline: false
             },
-            { 
-                name: "👕 GARMENT SPECS", 
-                value: `**Size:** ${config.size || 'N/A'}\n**Base Color:** ${config.color || 'N/A'}\n**Material:** ${config.specs || 'Standard'}`, 
-                inline: true 
+            {
+                name: "👕 GARMENT SPECS",
+                value: `**Size:** ${config.size || 'N/A'}\n**Base Color:** ${config.color || 'N/A'}\n**Material:** ${config.specs || 'Standard'}`,
+                inline: true
             },
-            { 
+            {
                 name: "💷 PRICING",
                 value: `**Unit:** ${formatMoney(window.getItemUnitPrice(item))}\n**Qty:** ${item.quantity || 1}\n**Line:** ${formatMoney(window.getItemLineTotal(item))}`,
                 inline: true
             },
-            { 
-                name: "🎨 DESIGN CONFIG", 
-                value: `**Front:** ${config.front || 'None'}\n**Font:** ${config.frontFont || 'Default'}\n**Rear:** ${config.back || 'None'}\n**Font:** ${config.backFont || 'Default'}`, 
-                inline: true 
+            {
+                name: "🎨 DESIGN CONFIG",
+                value: `**Front:** ${config.front || 'None'}\n**Font:** ${config.frontFont || 'Default'}\n**Rear:** ${config.back || 'None'}\n**Font:** ${config.backFont || 'Default'}`,
+                inline: true
             }
         ],
         footer: { text: `UE_STUDIO // ${new Date().toLocaleDateString()} // SESSION_ID: ${Math.random().toString(36).substr(2, 9).toUpperCase()}` },
         timestamp: new Date().toISOString()
     };
 
-const imageSrc = config.image || item.tempImageData;
+    const imageSrc = config.image || item.tempImageData;
 
-if (imageSrc) {
-    try {
-        let blob;
-        if (imageSrc.startsWith('..') || imageSrc.startsWith('/')) {
-            const response = await fetch(imageSrc);
-            blob = await response.blob();
-        } 
-        else if (imageSrc.startsWith('data:image')) {
-            const response = await fetch(imageSrc);
-            blob = await response.blob();
-        }
+    if (imageSrc) {
+        try {
+            let blob;
+            if (imageSrc.startsWith('..') || imageSrc.startsWith('/')) {
+                const response = await fetch(imageSrc);
+                blob = await response.blob();
+            }
+            else if (imageSrc.startsWith('data:image')) {
+                const response = await fetch(imageSrc);
+                blob = await response.blob();
+            }
 
-        if (blob) {
-            formData.append('file', blob, 'design_manifest.png');
-            embed.image = { url: 'attachment://design_manifest.png' };
+            if (blob) {
+                formData.append('file', blob, 'design_manifest.png');
+                embed.image = { url: 'attachment://design_manifest.png' };
+            }
+        } catch (e) {
+            console.error("Failed to bundle design image:", e);
         }
-    } catch (e) {
-        console.error("Failed to bundle design image:", e);
     }
-}
     formData.append('payload_json', JSON.stringify({
         username: "UE PRODUCTION TERMINAL",
         avatar_url: "https://unknownempire.com/logo.png",
@@ -412,15 +607,15 @@ async function initDiagnostics() {
 
     uBlock.style.transform = "translateY(0)";
     uBlock.style.opacity = "1";
-    
+
     await new Promise(r => setTimeout(r, 100));
-    
+
     eBlock.style.transform = "translateY(0)";
     eBlock.style.opacity = "1";
 
     await new Promise(r => setTimeout(r, 800));
 
-    nknown.style.width = "30vw"; 
+    nknown.style.width = "30vw";
     mpire.style.width = "26vw";
 
     await new Promise(r => setTimeout(r, 2000));
@@ -428,14 +623,14 @@ async function initDiagnostics() {
     loader.style.opacity = "0";
     assembly.style.transform = "scale(1.2)";
     assembly.style.filter = "blur(10px)";
-    
+
     setTimeout(() => {
         loader.classList.add('hidden');
     }, 1000);
 
     const currentHash = window.location.hash.replace('#', '');
     if (currentHash) {
-        setTimeout(() => openProduct(currentHash), 500); 
+        setTimeout(() => openProduct(currentHash), 500);
     }
 
     renderHUD();
@@ -475,14 +670,14 @@ window.handleImageUpload = (input) => {
 
 async function openProduct(rawName) {
     let pageName = rawName.toLowerCase().replace("custom", "").replace(/\s/g, "").trim();
-    
-    window.location.hash = pageName;    
-    const fileMap = { 
-        'hoodie': 'hoodies', 
-        'tshirt': 't-shirts', 
-        't-shirt': 't-shirts', 
-        'hat': 'hats', 
-        'balaclava': 'balaclavas', 
+
+    window.location.hash = pageName;
+    const fileMap = {
+        'hoodie': 'hoodies',
+        'tshirt': 't-shirts',
+        't-shirt': 't-shirts',
+        'hat': 'hats',
+        'balaclava': 'balaclavas',
         'sticker': 'stickers',
         'ur': 'ur',
         'ud': 'ud',
@@ -492,7 +687,7 @@ async function openProduct(rawName) {
         'team': 'team',
         'sunstrip': 'sunstrips',
     };
-    
+
     if (fileMap[pageName]) pageName = fileMap[pageName];
 
     const pivot = document.getElementById("expansion-pivot");
@@ -509,16 +704,16 @@ async function openProduct(rawName) {
     try {
         const pageModule = await import(`./pages/${pageName}.js`);
         contentLayer.innerHTML = pageModule.render();
-        
+
         setTimeout(() => {
             contentLayer.style.zIndex = "100";
             contentLayer.classList.replace('opacity-0', 'opacity-100');
             contentLayer.classList.remove('pointer-events-none');
             document.body.style.overflow = "hidden";
         }, 450);
-    } catch (err) { 
+    } catch (err) {
         console.error(`[SYSTEM] Page Load Fail: ${pageName}`, err);
-        window.closePage(); 
+        window.closePage();
     }
 }
 
@@ -645,18 +840,18 @@ window.renderCart = () => {
                 </div>
 
                 ${(() => {
-                    const remaining = window.getFreeShippingRemaining();
-                    const progress = window.getFreeShippingProgress();
+            const remaining = window.getFreeShippingRemaining();
+            const progress = window.getFreeShippingProgress();
 
-                    if (!remaining) {
-                        return `
+            if (!remaining) {
+                return `
                             <div class="mt-2 flex items-center justify-end gap-2 text-[10px] uppercase font-black tracking-widest text-green-400">
                                 <span class="w-2 h-2 bg-green-400 rounded-full animate-pulse"></span>
                                 Eligible for free shipping
                             </div>
                         `;
-                    }
-                    return `
+            }
+            return `
                         <div class="mt-2 w-full max-w-xs">
                             <div class="flex justify-between text-[9px] uppercase font-black tracking-widest text-zinc-600 mb-1">
                                 <span>Free Shipping:</span>
@@ -670,7 +865,7 @@ window.renderCart = () => {
                             </div>
                         </div>
                     `;
-                })()}
+        })()}
 
                 <div class="text-[12px] text-white font-black uppercase tracking-widest">
                     Total:
@@ -753,7 +948,7 @@ window.reopenDesign = async (index) => {
 window.closePage = () => {
     const fileInputs = document.querySelectorAll('input[type="file"]');
     fileInputs.forEach(input => {
-        input.value = ""; 
+        input.value = "";
     });
     if (studioState) {
         studioState.tempUpload = null;
@@ -761,13 +956,23 @@ window.closePage = () => {
     if (studioState.isRehydrating && !document.getElementById("content-layer").innerHTML) return;
     history.pushState("", document.title, window.location.pathname + window.location.search);
     const contentLayer = document.getElementById("content-layer");
+
+    const mv = contentLayer?.querySelector('model-viewer');
+    if (mv) {
+        try { mv.src = ''; } catch (e) { }
+        mv.remove();
+    }
+
     contentLayer.classList.replace('opacity-100', 'opacity-0');
     contentLayer.classList.add('pointer-events-none');
+
     setTimeout(() => {
         const pivot = document.getElementById("expansion-pivot");
         pivot.style.width = "0"; pivot.style.height = "0"; pivot.style.opacity = "0";
         document.getElementById("page-overlay").style.zIndex = "-1";
         document.body.style.overflow = "auto";
+
+        contentLayer.innerHTML = '';
     }, 400);
 };
 
@@ -842,7 +1047,7 @@ window.expandIntelligence = (group) => {
     };
 
     const info = data[group];
-    
+
     const content = `
         <div class="min-h-screen bg-black text-white p-8 md:p-24 relative overflow-y-auto">
             <div class="max-w-4xl mx-auto">
@@ -884,7 +1089,7 @@ window.expandIntelligence = (group) => {
 };
 
 window.clearQueue = () => {
-    if(confirm("SYSTEM OVERRIDE: Clear logs?")) {
+    if (confirm("SYSTEM OVERRIDE: Clear logs?")) {
         studioState.productionQueue = [];
         localStorage.removeItem('uk_studio_queue_local');
         renderHUD();
@@ -893,11 +1098,11 @@ window.clearQueue = () => {
 };
 
 window.deleteLogItem = (index) => {
-    if(!confirm("SYSTEM: Delete build log " + studioState.productionQueue[index]?.id + "?")) return;
-    
+    if (!confirm("SYSTEM: Delete build log " + studioState.productionQueue[index]?.id + "?")) return;
+
     const actualIndex = studioState.productionQueue.length - 1 - index;
     studioState.productionQueue.splice(actualIndex, 1);
-    
+
     localStorage.setItem('uk_studio_queue_local', JSON.stringify(studioState.productionQueue));
     renderCart();
     renderHUD();
@@ -909,11 +1114,11 @@ let currentOrderingIndex = null;
 window.orderItem = (index) => {
     currentOrderingIndex = index;
     window.checkSavedCustomer();
-    
+
     const modal = document.getElementById('customer-modal');
     modal.classList.remove('opacity-0', 'pointer-events-none');
     document.getElementById('modal-content').classList.remove('scale-95');
-    
+
     const finalBtn = document.getElementById('confirm-order-btn');
     if (finalBtn) {
         finalBtn.onclick = (e) => window.finalizeOrderWithCustomerData(e);
@@ -932,12 +1137,12 @@ window.orderAllItems = () => {
     }
 
     studioState.isBulkOrder = true;
-    
+
     const modal = document.getElementById('customer-modal');
     modal.classList.remove('opacity-0', 'pointer-events-none');
-    
+
     window.checkSavedCustomer();
-    
+
     console.log(`[SYSTEM] Bulk Mode Activated: ${studioState.productionQueue.length} items in queue.`);
 };
 
@@ -974,7 +1179,7 @@ window.handleContactSubmit = async (e) => {
     e.preventDefault();
     const btn = e.target.querySelector('button');
     const originalText = btn.innerText;
-    
+
     btn.innerText = "TRANSMITTING...";
     btn.disabled = true;
 
@@ -989,9 +1194,9 @@ window.handleContactSubmit = async (e) => {
 
 window.finalizeOrderWithCustomerData = async (e) => {
     if (e) e.preventDefault();
-    
+
     const confirmBtn = document.getElementById('confirm-order-btn');
-    if (confirmBtn.disabled) return; 
+    if (confirmBtn.disabled) return;
     const originalText = confirmBtn.innerText;
     confirmBtn.disabled = true;
     confirmBtn.innerText = studioState.isBulkOrder ? "TRANSMITTING BATCH..." : "UPLOADING...";
@@ -1007,9 +1212,9 @@ window.finalizeOrderWithCustomerData = async (e) => {
             while (studioState.productionQueue.length > 0) {
                 const item = studioState.productionQueue[0];
                 item.customer = customer;
-                
+
                 confirmBtn.innerText = `SENDING (${studioState.productionQueue.length} REMAINING)`;
-                
+
                 await window.sendToDiscord(item, 0);
                 await new Promise(r => setTimeout(r, 400));
             }
@@ -1045,11 +1250,11 @@ window.finalizeOrderWithCustomerData = async (e) => {
 window.addEventListener('keydown', (e) => {
     if (e.key === "Escape") {
         console.log("[SYSTEM] ESC sequence detected. Closing active overlays.");
-        
+
         window.closePage();
-        
+
         window.closeCustomerModal();
-        
+
         if (typeof window.closeContactForm === 'function') {
             window.closeContactForm();
         }
