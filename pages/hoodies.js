@@ -1,26 +1,79 @@
 export function render() {
-  const __TEXT_COLORS = ['#FFFFFF', '#000000', '#9333EA', '#3B82F6', '#22C55E', '#EAB308', '#F97316', '#EF4444', '#A1A1AA', '#D4D4D8', '#06B6D4', '#EC4899', '#10B981', '#6366F1', '#F43F5E', '#71717A'];
+  const __TEXT_COLORS = [
+    '#FFFFFF', '#000000', '#9333EA', '#3B82F6', '#22C55E', '#EAB308', '#F97316', '#EF4444',
+    '#A1A1AA', '#D4D4D8', '#06B6D4', '#EC4899', '#10B981', '#6366F1', '#F43F5E', '#71717A'
+  ];
+
   const __unit = (window?.computeUnitPriceFromTable?.({ product: { slug: 'hoodies' }, config: {} }) ?? 0);
   const __price = new Intl.NumberFormat('en-GB', { style: 'currency', currency: 'GBP' }).format(__unit);
+
   const folder = 'hoodies';
   const images = ['1.jpeg', '2.jpeg', '3.jpeg', '4.jpeg', '5.jpeg', '6.jpeg', '7.jpeg', '8.jpeg', '9.jpeg', '10.jpeg'];
-  const frontPrintPresetFiles = ['ukr-logo-front.png','ukd-logo-front.png'];
-  const backPrintPresetFiles = ['ukr-logo-back.png','ukd-logo-back.png'];
+
+  const frontPrintPresetFiles = ['ukr-logo-front.png', 'ukd-logo-front.png'];
+  const backPrintPresetFiles = ['ukr-logo-back.png', 'ukd-logo-back.png'];
+
   const s = window.HOODIE_STATE || {};
+  const isPrint = (s.mode || 'print') === 'print';
+
   const frontTextColor = s.frontTextColor || '#FFFFFF';
   const backTopTextColor = s.backTopTextColor || '#FFFFFF';
   const backEmbTextColor = s.backEmbTextColor || '#FFFFFF';
+
+  const frontPrintTint = s.frontPrintTint || '#FFFFFF';
+  const frontLabel = s.frontLabel || 'None';
+
+  const bodyColor = s.bodyColor || '#000000';
+
+  const BODY_COLORS = [
+    '#000000', '#FFFFFF', '#4B5563', '#991B1B', '#1E3A8A', '#166534', '#EAB308', '#D946EF',
+    '#F97316', '#06B6D4', '#8B5CF6', '#EC4899', '#10B981', '#6366F1', '#F43F5E', '#71717A',
+    '#3F3F46', '#27272A', '#52525B', '#A1A1AA', '#D4D4D8', '#E4E4E7', '#F4F4F5', '#FAFAFA',
+    '#7F1D1D', '#991B1B', '#B91C1C', '#DC2626', '#EF4444', '#F87171', '#FCA5A5', '#FECACA',
+    '#7C2D12', '#9A3412', '#C2410C', '#EA580C', '#FB923C', '#FDBA74', '#FED7AA', '#78350F',
+    '#92400E', '#B45309', '#D97706'
+  ];
+
   setTimeout(() => {
-      if (typeof window.enable3DViewer === 'function') {
-        window.enable3DViewer('hoodies', 'default');
-        window.__hoodiesShowPreview?.('3d');
-      }
-    }, 50);
+    if (typeof window.enable3DViewer === 'function') {
+      window.enable3DViewer('hoodies', 'default');
+      window.__hoodiesShowPreview?.('3d');
+    }
+  }, 50);
+
+  // Shared UI system (match t-shirts)
+  const PANEL = 'bg-zinc-900/40 border border-zinc-800 rounded-3xl';
+  const SECTION = 'bg-black/30 border border-zinc-800 rounded-2xl';
+  const SECTION_HEAD = 'flex items-center justify-between gap-4 px-6 py-4 border-b border-zinc-800';
+  const SECTION_BODY = 'p-6 space-y-4';
+  const TITLE = 'text-[10px] font-black uppercase tracking-[0.3em] text-zinc-400';
+  const SUB = 'text-[9px] font-black uppercase tracking-[0.25em] text-zinc-600';
+  const ACTION = 'text-[9px] font-black uppercase tracking-widest text-zinc-600 hover:text-red-400 transition';
+  const INPUT = 'w-full bg-black/60 border border-zinc-800 p-4 rounded-2xl text-xs font-mono outline-none focus:border-purple-500 transition';
+  const BTN_PRESET = 'aspect-square rounded-2xl border border-zinc-800 bg-black overflow-hidden hover:border-purple-500 transition relative group';
+  const HR = 'h-px bg-gradient-to-r from-transparent via-zinc-800 to-transparent';
+
+  const SWATCH_GRID = 'grid grid-cols-8 gap-2 max-h-48 overflow-y-auto p-2 border border-zinc-800 rounded-xl bg-black/25';
+  const SIZE_BTN =
+    'py-3 bg-black/60 border border-zinc-800 rounded-2xl text-[10px] font-black uppercase tracking-widest hover:border-purple-500 transition';
+
+  // ✅ New: “Preset text” buttons that never overflow:
+  // - no fixed height
+  // - internal padding
+  // - truncation + clamp
+  // - full text on hover via title
+  const PRESET_TEXT_BTN =
+    'w-full min-w-0 px-4 py-4 rounded-2xl border border-zinc-800 bg-black hover:border-purple-500 transition text-left overflow-hidden';
+  const PRESET_TEXT_MAIN =
+    'text-[10px] font-black uppercase tracking-widest text-white leading-tight line-clamp-2 break-words';
+  const PRESET_TEXT_SUB =
+    'text-[9px] text-zinc-600 font-bold uppercase tracking-wider mt-1 truncate';
+
   return `
     <div class="min-h-screen bg-black text-white p-4 md:p-12 relative">
       <div class="flex flex-col md:flex-row md:justify-between md:items-center gap-6 mb-10">
         <div>
-          <span class="text-[10px] text-purple-500 font-bold tracking-[0.3em] uppercase">Apparel / Studio</span>
+          <span class="text-[10px] text-purple-500 font-bold tracking-[0.3em] uppercase italic">Apparel / Studio</span>
           <h1 class="heading-font text-4xl md:text-6xl font-black uppercase tracking-tighter mt-2">Custom Hoodies</h1>
           <div class="inline-flex items-center gap-3 px-4 py-2 rounded-full border border-zinc-800 bg-zinc-900/40 mt-3">
             <span class="text-[8px] uppercase tracking-[0.4em] font-black text-zinc-500">Price</span>
@@ -36,18 +89,18 @@ export function render() {
       </div>
 
       <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-        <div class="lg:col-span-7 space-y-6">
+
+        <!-- LEFT: PREVIEW -->
+        <div class="lg:col-span-7 space-y-6 lg:sticky lg:top-10">
           <div id="preview-stage" class="aspect-[4/5] bg-zinc-900/20 border border-zinc-800 rounded-3xl relative overflow-hidden">
             <div id="hoodies-preview-2d" data-preview="2d" class="hidden absolute inset-0">
               <div class="absolute inset-0 blueprint-grid opacity-30"></div>
-
               <img
                 src="./images/${folder}/1.jpeg"
                 id="product-base-image"
                 class="absolute inset-0 w-full h-full object-contain z-10 p-8 transition-all duration-500"
                 onerror="this.src='https://via.placeholder.com/800x1000?text=HOODIE_DATA_MISSING'"
               />
-
             </div>
 
             <div id="hoodies-preview-3d" data-preview="3d" class="absolute inset-0 p-4"></div>
@@ -56,11 +109,11 @@ export function render() {
               <button onclick="window.hoodiesShowStudio()"
                 class="bg-black/60 backdrop-blur-md px-4 py-2 rounded-full border border-white/10 text-[9px] font-bold uppercase tracking-widest hover:border-purple-500 transition">Studio</button>
               <button onclick="window.hoodiesShow3D()"
-                class="bg-black/60 backdrop-blur-md px-4 py-2 rounded-full border border-white/10 text-[9px] font-bold uppercase tracking-widest hover:border-purple-500 transition">3D</button>
+                class="bg-white text-black px-4 py-2 rounded-full border border-white/10 text-[9px] font-bold uppercase tracking-widest transition">3D</button>
             </div>
           </div>
 
-          <div class="flex gap-3 overflow-x-auto pb-2 no-scrollbar">
+          <div class="flex gap-3 overflow-x-auto pb-2 themed-scroll-x">
             ${images.map(img => `
               <button
                 onclick="document.getElementById('product-base-image') && (document.getElementById('product-base-image').src='./images/${folder}/${img}')"
@@ -71,7 +124,7 @@ export function render() {
             `).join('')}
           </div>
 
-          <div class="bg-zinc-900/40 border border-zinc-800 rounded-2xl p-6">
+          <div class="${PANEL} p-6">
             <div class="grid grid-cols-3 gap-4">
               <div class="text-center p-3 border border-zinc-800 rounded-xl">
                 <p class="text-[8px] text-zinc-500 uppercase">Composition</p>
@@ -89,124 +142,302 @@ export function render() {
           </div>
         </div>
 
+        <!-- RIGHT: CONFIGURATOR -->
         <div class="lg:col-span-5 space-y-6">
 
-          <div class="bg-zinc-900/40 border border-zinc-800 rounded-3xl p-8">
-            <div class="flex items-center justify-between gap-4 mb-6">
-              <div>
-                <div class="text-[10px] font-black uppercase tracking-[0.25em] text-zinc-500">Customization</div>
-                <div class="text-[9px] font-black uppercase tracking-[0.35em] text-zinc-700 mt-1">Front + Back</div>
-              </div>
-
-              <div class="inline-flex items-center rounded-full border border-zinc-800 bg-black p-1">
-                <button id="tab-print"
-                  onclick="window.setHoodieMode('print')"
-                  class="px-4 py-2 rounded-full text-[10px] font-black uppercase tracking-widest bg-white text-black transition">
-                  Print
-                </button>
-                <button id="tab-emb"
-                  onclick="window.setHoodieMode('embroidered')"
-                  class="px-4 py-2 rounded-full text-[10px] font-black uppercase tracking-widest text-zinc-300 hover:text-white transition">
-                  Embroidered
-                </button>
-              </div>
-            </div>
-
-            <div class="space-y-4">
-              <div class="flex items-end justify-between gap-4">
-                <label class="text-[10px] font-black uppercase text-zinc-500 tracking-widest block">Front Logo <span class="text-zinc-700">(required)</span></label>
-                <div class="text-[9px] font-black uppercase tracking-[0.3em] text-zinc-700">MODE: <span id="ui-front-mode-label">PRINT</span></div>
-              </div>
-
-              <div id="panel-front-print">
-                <div class="grid grid-cols-3 gap-3">
-                  ${frontPrintPresetFiles.map((f) => `
-                    <button
-                      onclick="window.setHoodieFrontPrintPreset('${f}', this)"
-                      class="aspect-square rounded-xl border border-zinc-800 bg-black overflow-hidden hover:border-purple-500 transition relative group"
-                      title="${f}"
-                    >
-                      <img
-                        src="${'./images/hoodie/presets/front/' + f}"
-                        onerror="this.onerror=null; this.src='${'./images/hoodies/presets/front/' + f}'"
-                        class="w-full h-full object-cover opacity-70 group-hover:opacity-100 transition"
-                      />
-                      <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition"></div>
-                    </button>
-                  `).join('')}
+          <div class="${PANEL} overflow-hidden">
+            <div class="px-8 py-7">
+              <div class="flex items-center justify-between gap-4">
+                <div>
+                  <div class="text-[10px] font-black uppercase tracking-[0.25em] text-zinc-500">Customization</div>
+                  <div class="text-[9px] font-black uppercase tracking-[0.35em] text-zinc-700 mt-1">Front + Back</div>
                 </div>
 
-                <div class="mt-4 flex items-center justify-between">
-                  <div class="text-[9px] text-zinc-500 font-black uppercase tracking-widest">
-                    Active: <span id="hoodie-front-label" class="text-zinc-300">None</span>
-                  </div>
-                  <button onclick="window.clearHoodieFrontPrintPreset()"
-                    class="text-[9px] font-black uppercase tracking-widest text-zinc-600 hover:text-red-400 transition">
-                    Clear
+                <div class="inline-flex items-center rounded-full border border-zinc-800 bg-black p-1">
+                  <button id="tab-print"
+                    onclick="window.setHoodieMode('print')"
+                    class="${isPrint
+                      ? 'px-4 py-2 rounded-full text-[10px] font-black uppercase tracking-widest bg-white text-black transition'
+                      : 'px-4 py-2 rounded-full text-[10px] font-black uppercase tracking-widest text-zinc-300 hover:text-white transition'}">
+                    Print
                   </button>
-                </div>
-              </div>
-
-              <div id="panel-front-embroidered" class="hidden">
-                <div class="grid grid-cols-2 gap-3">
-                  <button onclick="window.setHoodieFrontTextPreset('UnknownRiderz', this)"
-                    class="active-front px-4 py-4 rounded-2xl border border-zinc-800 bg-black hover:border-purple-500 transition text-left">
-                    <div class="text-[10px] font-black uppercase tracking-widest">UnknownRiderz</div>
-                    <div class="text-[9px] text-zinc-600 font-bold uppercase tracking-widest mt-1">UR</div>
+                  <button id="tab-emb"
+                    onclick="window.setHoodieMode('embroidered')"
+                    class="${!isPrint
+                      ? 'px-4 py-2 rounded-full text-[10px] font-black uppercase tracking-widest bg-white text-black transition'
+                      : 'px-4 py-2 rounded-full text-[10px] font-black uppercase tracking-widest text-zinc-300 hover:text-white transition'}">
+                    Embroidered
                   </button>
-                  <button onclick="window.setHoodieFrontTextPreset('UnknownDriverz', this)"
-                    class="px-4 py-4 rounded-2xl border border-zinc-800 bg-black hover:border-purple-500 transition text-left opacity-80 hover:opacity-100">
-                    <div class="text-[10px] font-black uppercase tracking-widest">UnknownDriverz</div>
-                    <div class="text-[9px] text-zinc-600 font-bold uppercase tracking-widest mt-1">UD</div>
-                  </button>
-                </div>
-
-                <div class="mt-4">
-                  <div class="text-[8px] text-zinc-400 uppercase font-bold mb-2 tracking-[0.35em]">Front Embroidery Colour</div>
-                  <div data-textcolor-group class="grid grid-cols-8 gap-2 p-2 border border-zinc-800 rounded-xl">
-                    ${__TEXT_COLORS.map((color) => `
-                      <div
-                        data-swatch
-                        onclick="window.setHoodieTextColorFor('front','${color}', this)"
-                        style="background-color:${color}"
-                        class="aspect-square rounded-md border border-white/10 cursor-pointer hover:scale-110 transition ${color === frontTextColor ? 'ring-2 ring-purple-500' : ''}"
-                        title="${color}"
-                      ></div>
-                    `).join('')}
-                  </div>
                 </div>
               </div>
             </div>
 
-            <div class="my-7 h-px bg-zinc-800/80"></div>
+            <div class="px-8 pb-8 space-y-5">
+              <div class="space-y-4">
 
-            <div class="space-y-4">
-              <div class="flex items-end justify-between gap-4">
-                <label class="text-[10px] font-black uppercase text-zinc-500 tracking-widest block">Back Options <span class="text-zinc-700">(optional)</span></label>
-                <div class="text-[9px] font-black uppercase tracking-[0.3em] text-zinc-700">MODE: <span id="ui-back-mode-label">PRINT</span></div>
-              </div>
+                <!-- FRONT LOGO -->
+                <div class="${SECTION} overflow-hidden">
+                  <div class="${SECTION_HEAD}">
+                    <div class="min-w-0">
+                      <div class="${TITLE}">Front Logo</div>
+                      <div class="${SUB}">${isPrint ? 'Required • Print' : 'Required • Emb'}</div>
+                    </div>
+                    <div class="text-[9px] font-black uppercase tracking-widest text-zinc-500">
+                      Active: <span id="hoodie-front-label" class="text-zinc-300">${isPrint ? (frontLabel || 'None') : (s.frontTextPreset || 'UnknownRiderz')}</span>
+                    </div>
+                  </div>
 
-              <div id="panel-print">
-                <div class="space-y-4">
-                  <div class="bg-black/40 border border-zinc-800 rounded-2xl p-5">
-                    <p class="text-[8px] text-zinc-400 uppercase font-bold mb-2 tracking-[0.35em]">Back Top Text</p>
-                    <input
-                      id="hoodie-back-top-input"
-                      type="text"
-                      placeholder="ENTER BACK TOP TEXT..."
-                      oninput="window.setHoodieBackTopText(this.value)"
-                      class="w-full bg-black border border-zinc-800 p-4 rounded-xl text-xs font-mono outline-none focus:border-purple-500 transition"
-                    />
+                  <div class="${SECTION_BODY}">
+                    <!-- Print presets -->
+                    <div id="panel-front-print" class="${isPrint ? '' : 'hidden'} space-y-3">
+                      <div class="grid grid-cols-3 gap-3">
+                        ${frontPrintPresetFiles.map((f) => `
+                          <button
+                            onclick="window.setHoodieFrontPrintPreset('${f}', this)"
+                            class="${BTN_PRESET} ${f === s.frontPrintFile ? 'ring-2 ring-purple-500' : ''}"
+                            title="${f}"
+                          >
+                            <img
+                              src="${'./images/hoodie/presets/front/' + f}"
+                              onerror="this.onerror=null; this.src='${'./images/hoodies/presets/front/' + f}'"
+                              class="w-full h-full object-cover opacity-70 group-hover:opacity-100 transition"
+                            />
+                          </button>
+                        `).join('')}
+                      </div>
+                    </div>
 
-                    <div class="mt-4">
-                      <div class="text-[8px] text-zinc-400 uppercase font-bold mb-2 tracking-[0.35em]">Back Top Text Colour</div>
-                      <div data-textcolor-group class="grid grid-cols-8 gap-2 p-2 border border-zinc-800 rounded-xl">
+                    <!-- Emb text presets (no overflow) -->
+                    <div id="panel-front-embroidered" class="${isPrint ? 'hidden' : ''} space-y-3">
+                      <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                        <button
+                          onclick="window.setHoodieFrontTextPreset('UnknownRiderz', this)"
+                          class="active-front ${PRESET_TEXT_BTN}"
+                          title="UnknownRiderz"
+                        >
+                          <div class="${PRESET_TEXT_MAIN}">UnknownRiderz</div>
+                          <div class="${PRESET_TEXT_SUB}">Front embroidery preset</div>
+                        </button>
+
+                        <button
+                          onclick="window.setHoodieFrontTextPreset('UnknownDriverz', this)"
+                          class="${PRESET_TEXT_BTN} opacity-90 hover:opacity-100"
+                          title="UnknownDriverz"
+                        >
+                          <div class="${PRESET_TEXT_MAIN}">UnknownDriverz</div>
+                          <div class="${PRESET_TEXT_SUB}">Front embroidery preset</div>
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- FRONT COLOUR -->
+                <div class="${SECTION} overflow-hidden">
+                  <div class="${SECTION_HEAD}">
+                    <div class="min-w-0">
+                      <div id="ui-front-colour-title" class="${TITLE}">${isPrint ? 'Logo Tint' : 'Front Embroidery Colour'}</div>
+                      <div id="ui-front-colour-sub" class="${SUB}">${isPrint ? 'Text only' : 'Thread'}</div>
+                    </div>
+
+                    <div class="text-[9px] font-black uppercase tracking-widest text-zinc-700">
+                      <span id="hoodie-front-tint-label" class="${isPrint ? '' : 'hidden'}">${frontPrintTint}</span>
+                      <span id="hoodie-front-emb-colour-label" class="${isPrint ? 'hidden' : ''}">${frontTextColor}</span>
+                    </div>
+                  </div>
+
+                  <div class="${SECTION_BODY}">
+                    <div id="panel-front-tint" class="${isPrint ? '' : 'hidden'}">
+                      <div class="${SWATCH_GRID}" data-frontprinttint-group>
+                        ${__TEXT_COLORS.map((color) => `
+                          <div
+                            data-frontprinttint
+                            onclick="window.setHoodieFrontPrintTint('${color}', this)"
+                            style="background-color:${color}"
+                            class="aspect-square rounded-md border border-white/10 cursor-pointer hover:scale-105 transition ${color === frontPrintTint ? 'ring-2 ring-purple-500' : ''}"
+                            title="${color}"
+                          ></div>
+                        `).join('')}
+                      </div>
+                    </div>
+
+                    <div id="panel-front-emb-colour" class="${isPrint ? 'hidden' : ''}">
+                      <div class="${SWATCH_GRID}" data-textcolor-group>
                         ${__TEXT_COLORS.map((color) => `
                           <div
                             data-swatch
-                            onclick="window.setHoodieTextColorFor('backTop','${color}', this)"
+                            onclick="window.setHoodieTextColorFor('front','${color}', this)"
                             style="background-color:${color}"
-                            class="aspect-square rounded-md border border-white/10 cursor-pointer hover:scale-110 transition ${color === backTopTextColor ? 'ring-2 ring-purple-500' : ''}"
+                            class="aspect-square rounded-md border border-white/10 cursor-pointer hover:scale-105 transition ${color === frontTextColor ? 'ring-2 ring-purple-500' : ''}"
+                            title="${color}"
+                          ></div>
+                        `).join('')}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="${HR}"></div>
+
+                <!-- BACK OPTIONS -->
+                <div class="grid grid-cols-1 gap-4">
+
+                  <!-- Back: Print top text OR Emb preset + colour (stacked, scroll-safe) -->
+                  <div class="${SECTION} overflow-hidden">
+                    <div class="${SECTION_HEAD}">
+                      <div class="min-w-0">
+                        <div class="${TITLE}">${isPrint ? 'Back Top Text' : 'Back Embroidery'}</div>
+                        <div class="${SUB}">Optional</div>
+                      </div>
+                      <div class="text-[9px] font-black uppercase tracking-widest text-zinc-700">
+                        <span id="${isPrint ? 'ui-back-top-colour-label' : 'hoodie-emb-back-label'}">${
+                          isPrint
+                            ? backTopTextColor
+                            : (s.embBackText ? s.embBackText.replaceAll('/n', ' / ').replaceAll('\n', ' / ') : 'None')
+                        }</span>
+                      </div>
+                    </div>
+
+                    <div class="${SECTION_BODY}">
+                      <!-- PRINT -->
+                      <div id="panel-print" class="${isPrint ? '' : 'hidden'} space-y-4">
+                        <input
+                          id="hoodie-back-top-input"
+                          type="text"
+                          placeholder="ENTER BACK TOP TEXT..."
+                          oninput="window.setHoodieBackTopText(this.value)"
+                          class="${INPUT}"
+                        />
+                        <div data-textcolor-group class="${SWATCH_GRID}">
+                          ${__TEXT_COLORS.map((color) => `
+                            <div
+                              data-swatch
+                              onclick="window.setHoodieTextColorFor('backTop','${color}', this)"
+                              style="background-color:${color}"
+                              class="aspect-square rounded-md border border-white/10 cursor-pointer hover:scale-105 transition ${color === backTopTextColor ? 'ring-2 ring-purple-500' : ''}"
+                              title="${color}"
+                            ></div>
+                          `).join('')}
+                        </div>
+                      </div>
+
+                      <!-- EMB -->
+                      <div id="panel-embroidered" class="${isPrint ? 'hidden' : ''} space-y-4">
+                        <div class="grid grid-cols-1 gap-3">
+                          <!-- Presets in a bounded scroll box -->
+                          <div class="border border-zinc-800 rounded-2xl bg-black/25 p-3 max-h-52 overflow-y-auto">
+                            <div id="emb-back-grid" class="grid grid-cols-1 sm:grid-cols-2 gap-3"></div>
+                          </div>
+
+                          <!-- Colour swatches (bounded) -->
+                          <div class="space-y-2">
+                            <div class="flex items-center justify-between">
+                              <div class="${SUB}">Back Embroidery Colour</div>
+                              <div class="text-[9px] font-black uppercase tracking-widest text-zinc-700">
+                                <span id="hoodie-emb-back-colour-label">${backEmbTextColor}</span>
+                              </div>
+                            </div>
+
+                            <div class="${SWATCH_GRID}" data-textcolor-group>
+                              ${__TEXT_COLORS.map((color) => `
+                                <div
+                                  data-swatch
+                                  onclick="window.setHoodieTextColorFor('backEmb','${color}', this)"
+                                  style="background-color:${color}"
+                                  class="aspect-square rounded-md border border-white/10 cursor-pointer hover:scale-105 transition ${color === backEmbTextColor ? 'ring-2 ring-purple-500' : ''}"
+                                  title="${color}"
+                                ></div>
+                              `).join('')}
+                            </div>
+                          </div>
+
+                          <div class="flex items-center justify-end">
+                            <button onclick="window.clearHoodieEmbroideredBack()" class="${ACTION}">Clear</button>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Back image (Print only) -->
+                  <div class="${SECTION} overflow-hidden">
+                    <div class="${SECTION_HEAD}">
+                      <div class="min-w-0">
+                        <div class="${TITLE}">Back Image</div>
+                        <div class="${SUB}">${isPrint ? 'Optional • Print' : 'Disabled in Emb'}</div>
+                      </div>
+
+                      <div class="text-[9px] text-zinc-500 font-black uppercase tracking-widest">
+                        ${isPrint
+                          ? `Active: <span id="hoodie-back-image-label" class="text-zinc-300">${s.backImageLabel || 'None'}</span>`
+                          : `<span class="text-zinc-700">N/A</span>`
+                        }
+                      </div>
+                    </div>
+
+                    <div class="${SECTION_BODY}">
+                      <div id="panel-back-print" class="${isPrint ? '' : 'hidden'} space-y-4">
+                        <div class="grid grid-cols-3 gap-3">
+                          ${backPrintPresetFiles.map((f) => `
+                            <button
+                              onclick="window.setHoodieBackPrintPreset('${f}', this)"
+                              class="${BTN_PRESET}"
+                              title="${f}"
+                            >
+                              <img
+                                src="${'./images/hoodie/presets/print/' + f}"
+                                onerror="this.onerror=null; this.src='${'./images/hoodies/presets/print/' + f}'"
+                                class="w-full h-full object-cover opacity-70 group-hover:opacity-100 transition"
+                              />
+                            </button>
+                          `).join('')}
+                        </div>
+
+                        <div id="image-upload-zone"
+                          onclick="document.getElementById('artwork-upload-input') && document.getElementById('artwork-upload-input').click()"
+                          class="aspect-video bg-black/50 border-2 border-dashed border-zinc-800 rounded-2xl flex items-center justify-center hover:border-purple-500 cursor-pointer overflow-hidden transition"
+                        >
+                          <input type="file" id="artwork-upload-input" class="hidden" accept="image/*"
+                            onchange="window.handleImageUpload(this); window.setHoodieBackImageFromUpload();">
+                          <div id="image-preview-container" class="w-full h-full flex items-center justify-center">
+                            <div class="text-center px-4">
+                              <span class="text-zinc-600 text-[9px] uppercase font-bold tracking-widest">Click to Upload Artwork</span>
+                            </div>
+                          </div>
+                        </div>
+
+                        <div class="flex items-center justify-end">
+                          <button onclick="window.clearHoodieBackImage()" class="${ACTION}">Clear image</button>
+                        </div>
+                      </div>
+
+                      <div class="${isPrint ? 'hidden' : ''} text-[10px] text-zinc-600 font-bold uppercase tracking-widest">
+                        Back images are only available in PRINT mode.
+                      </div>
+                    </div>
+                  </div>
+
+                </div>
+
+                <div class="${HR}"></div>
+
+                <!-- COLOUR + SIZE/SPEC -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div class="${SECTION} overflow-hidden">
+                    <div class="${SECTION_HEAD}">
+                      <div>
+                        <div class="${TITLE}">Hoodie Colour</div>
+                        <div class="${SUB}">Body</div>
+                      </div>
+                    </div>
+                    <div class="${SECTION_BODY}">
+                      <div class="${SWATCH_GRID}">
+                        ${BODY_COLORS.map((color) => `
+                          <div
+                            onclick="window.setHoodieBodyColor('${color}', this)"
+                            data-color="${color}"
+                            style="background-color:${color}"
+                            class="aspect-square rounded-md border border-white/10 cursor-pointer hover:scale-105 transition ${color === bodyColor ? 'active-hoodie-color ring-2 ring-purple-500' : ''}"
                             title="${color}"
                           ></div>
                         `).join('')}
@@ -214,120 +445,45 @@ export function render() {
                     </div>
                   </div>
 
-                  <div class="bg-black/40 border border-zinc-800 rounded-2xl p-5">
-                    <div class="flex items-center justify-between mb-4">
-                      <span class="text-[8px] text-zinc-400 uppercase font-bold tracking-[0.35em]">Back Image</span>
-                      <div class="text-[9px] text-zinc-500 font-black uppercase tracking-widest">
-                        Active: <span id="hoodie-back-image-label" class="text-zinc-300">None</span>
+                  <div class="space-y-4">
+                    <div class="${SECTION} overflow-hidden">
+                      <div class="${SECTION_HEAD}">
+                        <div>
+                          <div class="${TITLE}">Size</div>
+                          <div class="${SUB}">Fit</div>
+                        </div>
                       </div>
-                    </div>
-
-                    <div class="grid grid-cols-3 gap-3 mb-4">
-                      ${backPrintPresetFiles.map((f) => `
-                        <button
-                          onclick="window.setHoodieBackPrintPreset('${f}', this)"
-                          class="aspect-square rounded-xl border border-zinc-800 bg-black overflow-hidden hover:border-purple-500 transition relative group"
-                          title="${f}"
-                        >
-                          <img
-                            src="${'./images/hoodie/presets/print/' + f}"
-                            onerror="this.onerror=null; this.src='${'./images/hoodies/presets/print/' + f}'"
-                            class="w-full h-full object-cover opacity-70 group-hover:opacity-100 transition"
-                          />
-                          <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition"></div>
-                        </button>
-                      `).join('')}
-                    </div>
-
-                    <div id="image-upload-zone"
-                      onclick="document.getElementById('artwork-upload-input') && document.getElementById('artwork-upload-input').click()"
-                      class="aspect-video bg-black border-2 border-dashed border-zinc-800 rounded-xl flex items-center justify-center hover:border-purple-500 cursor-pointer overflow-hidden"
-                    >
-                      <input type="file" id="artwork-upload-input" class="hidden" accept="image/*"
-                        onchange="window.handleImageUpload(this); window.setHoodieBackImageFromUpload();">
-                      <div id="image-preview-container" class="w-full h-full flex items-center justify-center">
-                        <div class="text-center px-4">
-                          <span class="text-zinc-600 text-[9px] uppercase font-bold tracking-widest">Click to Upload Artwork</span>
+                      <div class="${SECTION_BODY}">
+                        <div class="grid grid-cols-4 gap-2">
+                          ${['XS', 'S', 'M', 'L', 'XL', '2XL', '3XL', '4XL'].map(sz => `
+                            <button
+                              onclick="window.updateSelection(this, 'active-size')"
+                              class="${SIZE_BTN} ${sz === (s.size || 'L') ? 'active-size ring-2 ring-purple-500 bg-zinc-100 text-black' : ''}"
+                            >
+                              ${sz}
+                            </button>
+                          `).join('')}
                         </div>
                       </div>
                     </div>
 
-                    <div class="mt-3 flex items-center justify-end">
-                      <button onclick="window.clearHoodieBackImage()" class="text-[9px] font-black uppercase tracking-widest text-zinc-600 hover:text-red-400 transition">
-                        Clear image
-                      </button>
+                    <div class="${SECTION} overflow-hidden">
+                      <div class="${SECTION_HEAD}">
+                        <div>
+                          <div class="${TITLE}">Spec</div>
+                          <div class="${SUB}">Material</div>
+                        </div>
+                      </div>
+                      <div class="p-6">
+                        <div class="text-[10px] font-bold text-zinc-200 uppercase tracking-widest">
+                          80% Cotton • 20% Poly • Kangaroo Pouch • Double Lined Hood
+                        </div>
+                      </div>
                     </div>
                   </div>
                 </div>
-              </div>
 
-              <div id="panel-embroidered" class="hidden">
-                <p class="text-[9px] text-zinc-500 font-bold uppercase tracking-wider mb-4">
-                  Choose a preset for back embroidery (supports multi-line).
-                </p>
-
-                <div id="emb-back-grid" class="grid grid-cols-2 gap-3"></div>
-
-                <div class="mt-4">
-                  <div class="text-[8px] text-zinc-400 uppercase font-bold mb-2 tracking-[0.35em]">Back Embroidery Colour</div>
-                  <div data-textcolor-group class="grid grid-cols-8 gap-2 p-2 border border-zinc-800 rounded-xl">
-                    ${__TEXT_COLORS.map((color) => `
-                      <div
-                        data-swatch
-                        onclick="window.setHoodieTextColorFor('backEmb','${color}', this)"
-                        style="background-color:${color}"
-                        class="aspect-square rounded-md border border-white/10 cursor-pointer hover:scale-110 transition ${color === backEmbTextColor ? 'ring-2 ring-purple-500' : ''}"
-                        title="${color}"
-                      ></div>
-                    `).join('')}
-                  </div>
-                </div>
-
-                <div class="mt-4 flex items-center justify-between">
-                  <div class="text-[9px] text-zinc-500 font-black uppercase tracking-widest">
-                    Active: <span id="hoodie-emb-back-label" class="text-zinc-300">None</span>
-                  </div>
-                  <button onclick="window.clearHoodieEmbroideredBack()" class="text-[9px] font-black uppercase tracking-widest text-zinc-600 hover:text-red-400 transition">
-                    Clear
-                  </button>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div class="bg-zinc-900/40 border border-zinc-800 rounded-3xl p-8 space-y-6">
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div>
-                <label class="text-[10px] font-black uppercase text-zinc-500 tracking-widest block mb-4">Hoodie Colour</label>
-                <div class="grid grid-cols-8 gap-2 max-h-48 overflow-y-auto p-2 border border-zinc-800 rounded-xl">
-                  ${[
-                    '#000000', '#FFFFFF', '#4B5563', '#991B1B', '#1E3A8A', '#166534', '#EAB308', '#D946EF',
-                    '#F97316', '#06B6D4', '#8B5CF6', '#EC4899', '#10B981', '#6366F1', '#F43F5E', '#71717A',
-                    '#3F3F46', '#27272A', '#52525B', '#A1A1AA', '#D4D4D8', '#E4E4E7', '#F4F4F5', '#FAFAFA',
-                    '#7F1D1D', '#991B1B', '#B91C1C', '#DC2626', '#EF4444', '#F87171', '#FCA5A5', '#FECACA',
-                    '#7C2D12', '#9A3412', '#C2410C', '#EA580C', '#FB923C', '#FDBA74', '#FED7AA', '#78350F',
-                    '#92400E', '#B45309', '#D97706'
-                  ].map((color, i) => `
-                    <div
-                      onclick="window.setHoodieBodyColor('${color}', this)"
-                      data-color="${color}"
-                      style="background-color:${color}"
-                      class="aspect-square rounded-md border border-zinc-700 cursor-pointer hover:scale-110 transition ${i === 0 ? 'active-hoodie-color' : ''}"
-                      title="${color}"
-                    ></div>
-                  `).join('')}
-                </div>
-              </div>
-
-              <div>
-                <label class="text-[10px] font-black uppercase text-zinc-500 tracking-widest block mb-4">Size</label>
-                <div class="grid grid-cols-4 gap-2">
-                  ${['XS', 'S', 'M', 'L', 'XL', '2XL', '3XL', '4XL'].map(size => `
-                    <button onclick="window.updateSelection(this, 'active-size')"
-                      class="py-3 bg-black border border-zinc-800 rounded-xl text-[10px] font-bold hover:border-purple-500 transition ${size === 'L' ? 'active-size' : ''}">${size}</button>
-                  `).join('')}
-                </div>
-              </div>
+              </div><!-- /space-y-4 -->
             </div>
           </div>
 
@@ -355,6 +511,16 @@ export function render() {
   `;
 }
 
+// ---------- HARD FAIL VALIDATION (shared) ----------
+window.__hardFail = (msg, field = '') => ({ ok: false, msg, field });
+window.__ok = () => ({ ok: true });
+
+window.__len = (v) => String(v ?? '').trim().length;
+
+// optional: consistent trim
+window.__trim = (v) => String(v ?? '').trim();
+
+
 window.HOODIE_EMB_BACK_PRESETS = window.HOODIE_EMB_BACK_PRESETS || [
   'EAT\nSLEEP\nRIDE\nREPEAT',
   'EAT\nSLEEP\nDRIVE\nREPEAT',
@@ -364,7 +530,9 @@ window.HOODIE_STATE = window.HOODIE_STATE || {
   mode: 'print',
   frontTextPreset: 'UnknownRiderz',
   frontPrintFile: null,
+  frontPrintRawDataURL: null,   // NEW
   frontPrintDataURL: null,
+  frontPrintTint: '#FFFFFF',    // NEW
   frontLabel: 'None',
   bodyColor: '#000000',
   frontTextColor: '#FFFFFF',
@@ -374,6 +542,92 @@ window.HOODIE_STATE = window.HOODIE_STATE || {
   backImage: null,
   backImageLabel: 'None',
   embBackText: null
+};
+
+window.tintNearWhiteOnlyToDataURL = window.tintNearWhiteOnlyToDataURL || (async ({
+  src,
+  color = '#ffffff',
+  threshold = 235,
+  feather = 20,
+  onlyBelow = 0.55,
+  size = 1024
+}) => {
+  if (!src) return null;
+
+  let dataUrl = src;
+  if (!String(src).startsWith('data:image')) dataUrl = await window.fetchAsDataURL(src);
+
+  const img = new Image();
+  img.crossOrigin = 'anonymous';
+  img.src = dataUrl;
+  await new Promise((res, rej) => { img.onload = res; img.onerror = rej; });
+
+  const c = document.createElement('canvas');
+  c.width = size;
+  c.height = size;
+  const ctx = c.getContext('2d');
+
+  ctx.clearRect(0, 0, size, size);
+  ctx.drawImage(img, 0, 0, size, size);
+
+  const imageData = ctx.getImageData(0, 0, size, size);
+  const d = imageData.data;
+
+  const hex = String(color).replace('#', '').trim();
+  const rr = parseInt(hex.length === 3 ? hex[0] + hex[0] : hex.slice(0, 2), 16);
+  const gg = parseInt(hex.length === 3 ? hex[1] + hex[1] : hex.slice(2, 4), 16);
+  const bb = parseInt(hex.length === 3 ? hex[2] + hex[2] : hex.slice(4, 6), 16);
+
+  const yCut = Math.floor(size * Math.max(0, Math.min(1, onlyBelow)));
+
+  for (let y = 0; y < size; y++) {
+    for (let x = 0; x < size; x++) {
+      const i = (y * size + x) * 4;
+      const a = d[i + 3];
+      if (a === 0) continue;
+      if (y < yCut) continue;
+
+      const r = d[i], g = d[i + 1], b = d[i + 2];
+      const minc = Math.min(r, g, b);
+      if (minc < (threshold - feather)) continue;
+
+      const t = Math.max(0, Math.min(1, (minc - (threshold - feather)) / Math.max(1, feather)));
+
+      d[i] = Math.round(r * (1 - t) + rr * t);
+      d[i + 1] = Math.round(g * (1 - t) + gg * t);
+      d[i + 2] = Math.round(b * (1 - t) + bb * t);
+    }
+  }
+
+  ctx.putImageData(imageData, 0, 0);
+  return c.toDataURL('image/png');
+});
+
+window.setHoodieFrontPrintTint = async (hex, btn) => {
+  // UI ring
+  const group = btn?.closest?.('[data-frontprinttint-group]');
+  if (group) group.querySelectorAll('[data-frontprinttint]').forEach(el => el.classList.remove('ring-2', 'ring-purple-500'));
+  btn?.classList.add('ring-2', 'ring-purple-500');
+
+  window.HOODIE_STATE.frontPrintTint = hex;
+
+  const lbl = document.getElementById('hoodie-front-tint-label');
+  if (lbl) lbl.textContent = hex;
+
+  // re-tint from RAW (prevents compounding)
+  const raw = window.HOODIE_STATE.frontPrintRawDataURL || window.HOODIE_STATE.frontPrintDataURL;
+  if (raw) {
+    const tinted = await window.tintNearWhiteOnlyToDataURL({
+      src: raw,
+      color: hex,
+      threshold: 240,
+      feather: 25,
+      onlyBelow: 0.55
+    });
+
+    window.HOODIE_STATE.frontPrintDataURL = tinted || raw;
+    window.applyHoodieTo3D?.();
+  }
 };
 
 window.HOODIE_3D = window.HOODIE_3D || {
@@ -512,7 +766,7 @@ window.applyHoodieTo3D = async () => {
 
   try {
     window.setMaterialBaseColor?.(mv, window.HOODIE_3D.bodyMaterialName, window.HOODIE_STATE.bodyColor);
-  } catch (_) {}
+  } catch (_) { }
 
   if (window.HOODIE_STATE.mode === 'print') {
     try {
@@ -570,6 +824,7 @@ window.applyHoodieTo3D = async () => {
       if (window.HOODIE_STATE.backImage) {
         const imgPng = await window.makeContainedImageTextureDataURL({
           src: window.HOODIE_STATE.backImage,
+          color: window.HOODIE_STATE.backEmbTextColor,
           size: 1024,
           padding: 90
         });
@@ -583,7 +838,7 @@ window.applyHoodieTo3D = async () => {
 
     try {
       await window.applyBaseColorTextureURI?.(mv, window.HOODIE_3D.backEmbTextMaterialName, window.__emptyTexture);
-    } catch (_) {}
+    } catch (_) { }
   } else {
     try {
       const t = String(window.HOODIE_STATE.embBackText || '').trim();
@@ -607,7 +862,7 @@ window.applyHoodieTo3D = async () => {
     try {
       await window.applyBaseColorTextureURI?.(mv, window.HOODIE_3D.backTopTextMaterialName, window.__emptyTexture);
       await window.applyBaseColorTextureURI?.(mv, window.HOODIE_3D.backImageMaterialName, window.__emptyTexture);
-    } catch (_) {}
+    } catch (_) { }
   }
 };
 
@@ -621,14 +876,14 @@ window.__hoodiesShowPreview = (mode) => {
 };
 
 window.hoodiesShow3D = () => {
-  try { window.__hoodiesShowPreview?.('3d'); } catch (_) {}
-  try { window.enable3DViewer?.('hoodies', 'default'); } catch (_) {}
+  try { window.__hoodiesShowPreview?.('3d'); } catch (_) { }
+  try { window.enable3DViewer?.('hoodies', 'default'); } catch (_) { }
 };
 
 window.hoodiesShowStudio = () => {
-  try { window.__hoodiesShowPreview?.('2d'); } catch (_) {}
-  try { window.disable3DViewer?.(); } catch (_) {}
-  try { window.__syncHoodieFront2D?.(); window.__updateHoodieBackPreview?.(); } catch (_) {}
+  try { window.__hoodiesShowPreview?.('2d'); } catch (_) { }
+  try { window.disable3DViewer?.(); } catch (_) { }
+  try { window.__syncHoodieFront2D?.(); window.__updateHoodieBackPreview?.(); } catch (_) { }
 };
 
 window.setHoodieMode = (mode) => {
@@ -659,6 +914,22 @@ window.setHoodieMode = (mode) => {
   if (lblFront) lblFront.textContent = isPrint ? 'PRINT' : 'EMB';
   if (lblBack) lblBack.textContent = isPrint ? 'PRINT' : 'EMB';
 
+    // Toggle FRONT colour card internals (print tint vs emb colour)
+  const frontTintPanel = document.getElementById('panel-front-tint');
+  const frontEmbColorPanel = document.getElementById('panel-front-emb-colour');
+  if (frontTintPanel) frontTintPanel.classList.toggle('hidden', !isPrint);
+  if (frontEmbColorPanel) frontEmbColorPanel.classList.toggle('hidden', isPrint);
+
+  const tintLbl = document.getElementById('hoodie-front-tint-label');
+  const embLbl = document.getElementById('hoodie-front-emb-colour-label');
+  if (tintLbl) tintLbl.classList.toggle('hidden', !isPrint);
+  if (embLbl) embLbl.classList.toggle('hidden', isPrint);
+
+  const tTitle = document.getElementById('ui-front-colour-title');
+  const tSub = document.getElementById('ui-front-colour-sub');
+  if (tTitle) tTitle.textContent = isPrint ? 'Logo Tint' : 'Front Embroidery Colour';
+  if (tSub) tSub.textContent = isPrint ? 'Text only' : 'Thread';
+  
   window.__syncHoodieFront2D?.();
   window.__updateHoodieBackPreview?.();
 
@@ -692,11 +963,26 @@ window.setHoodieFrontPrintPreset = async (fileName, btn) => {
     }
 
     window.HOODIE_STATE.frontPrintFile = fileName;
-    window.HOODIE_STATE.frontPrintDataURL = dataUrl;
+    window.HOODIE_STATE.frontPrintRawDataURL = dataUrl; // NEW (raw)
     window.HOODIE_STATE.frontLabel = fileName;
+
+    // apply tint to near-white text under logo
+    const tint = window.HOODIE_STATE.frontPrintTint || '#FFFFFF';
+    const tinted = await window.tintNearWhiteOnlyToDataURL({
+      src: dataUrl,
+      color: tint,
+      threshold: 240,
+      feather: 25,
+      onlyBelow: 0.55
+    });
+
+    window.HOODIE_STATE.frontPrintDataURL = tinted || dataUrl;
 
     const label = document.getElementById('hoodie-front-label');
     if (label) label.textContent = fileName;
+
+    const tintLbl = document.getElementById('hoodie-front-tint-label');
+    if (tintLbl) tintLbl.textContent = tint;
 
     window.__syncHoodieFront2D?.();
     window.applyHoodieTo3D?.();
@@ -707,6 +993,7 @@ window.setHoodieFrontPrintPreset = async (fileName, btn) => {
 
 window.clearHoodieFrontPrintPreset = () => {
   window.HOODIE_STATE.frontPrintFile = null;
+  window.HOODIE_STATE.frontPrintRawDataURL = null; // NEW
   window.HOODIE_STATE.frontPrintDataURL = null;
   window.HOODIE_STATE.frontLabel = 'None';
 
@@ -730,13 +1017,39 @@ window.setHoodieBodyColor = (hex, btn) => {
 window.setHoodieTextColorFor = (target, hex, btn) => {
   const t = String(target || '').trim();
 
+  // Ring only inside the current swatch group
   const group = btn?.closest?.('[data-textcolor-group]');
   if (group) group.querySelectorAll('[data-swatch]').forEach(el => el.classList.remove('ring-2', 'ring-purple-500'));
   btn?.classList.add('ring-2', 'ring-purple-500');
 
-  if (t === 'front') window.HOODIE_STATE.frontTextColor = hex;
-  else if (t === 'backTop') window.HOODIE_STATE.backTopTextColor = hex;
-  else if (t === 'backEmb') window.HOODIE_STATE.backEmbTextColor = hex;
+  if (t === 'front') {
+    window.HOODIE_STATE.frontTextColor = hex;
+
+    // ✅ Update the label in the front colour card (Emb mode)
+    const lbl = document.getElementById('hoodie-front-colour-label');
+    if (lbl) lbl.textContent = hex;
+  }
+  else if (t === 'backTop') {
+    window.HOODIE_STATE.backTopTextColor = hex;
+
+    // ✅ If you have a back-top label, update it too (optional)
+    const lbl = document.getElementById('ui-back-top-colour-label');
+    if (lbl) lbl.textContent = hex;
+  }
+  else if (t === 'backEmb') {
+    window.HOODIE_STATE.backEmbTextColor = hex;
+
+    // ✅ If you have a back-emb label, update it too (optional)
+    const lbl = document.getElementById('hoodie-front-emb-colour-label');
+    if (lbl) lbl.textContent = hex;
+    
+  }
+  else if (t === 'backEmb') {
+    window.HOODIE_STATE.backEmbTextColor = hex;
+
+    const lbl = document.getElementById('hoodie-emb-back-colour-label');
+    if (lbl) lbl.textContent = hex;
+  }
 
   window.__syncHoodieFront2D?.();
   window.applyHoodieTo3D?.();
@@ -929,7 +1242,11 @@ window.saveHoodieConfig = () => {
       return;
     }
   }
-
+  const v = window.validateHoodieConfig?.();
+  if (v && !v.ok) {
+    alert(v.msg);
+    return;
+  }
   const size = document.querySelector('.active-size')?.innerText || 'L';
   const color = window.HOODIE_STATE.bodyColor || document.querySelector('.active-hoodie-color')?.dataset?.color || '#000000';
 
@@ -986,4 +1303,56 @@ window.on3DModelReady = (slug, mv) => {
   }
 
   window.applyHoodieTo3D?.();
+};
+
+window.validateHoodieConfig = () => {
+  const s = window.HOODIE_STATE || {};
+  const mode = (s.mode === 'embroidered') ? 'embroidered' : 'print';
+
+  // Required: body colour + size (size comes from UI but validate anyway)
+  if (!window.__trim(s.bodyColor)) return window.__hardFail('Please choose a hoodie colour.', 'bodyColor');
+
+  // Required: front selection depends on mode
+  if (mode === 'print') {
+    // Must have a front preset selected
+    if (!window.__trim(s.frontPrintFile) && !window.__trim(s.frontLabel) && !s.frontPrintDataURL) {
+      return window.__hardFail('Front logo is required for PRINT hoodies.', 'frontPrintFile');
+    }
+  } else {
+    // Must have a front embroidery text preset
+    if (!window.__trim(s.frontTextPreset)) {
+      return window.__hardFail('Front logo text is required for EMBROIDERED hoodies.', 'frontTextPreset');
+    }
+  }
+
+  // Print mode rules
+  if (mode === 'print') {
+    // Back top text limits (optional)
+    if (window.__len(s.backTopText) > 28) {
+      return window.__hardFail('Back top text is too long (max 28 characters).', 'backTopText');
+    }
+
+    // If back image exists, it must look like an image dataURL
+    if (s.backImage && !String(s.backImage).startsWith('data:image')) {
+      return window.__hardFail('Back image must be a valid uploaded image.', 'backImage');
+    }
+  }
+
+  // Embroidered mode rules
+  if (mode === 'embroidered') {
+    // Back emb text is optional BUT if present validate length/lines
+    const emb = window.__trim(s.embBackText);
+    if (emb) {
+      const lines = emb.replaceAll('/n', '\n').split('\n').map(l => l.trim()).filter(Boolean);
+
+      if (lines.length > 4) {
+        return window.__hardFail('Back embroidery supports up to 4 lines.', 'embBackText');
+      }
+      if (emb.length > 44) {
+        return window.__hardFail('Back embroidery text is too long (max 44 characters).', 'embBackText');
+      }
+    }
+  }
+
+  return window.__ok();
 };

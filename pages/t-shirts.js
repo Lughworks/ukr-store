@@ -1,5 +1,8 @@
 export function render() {
-  const __TEXT_COLORS = ['#FFFFFF', '#000000', '#9333EA', '#3B82F6', '#22C55E', '#EAB308', '#F97316', '#EF4444', '#A1A1AA', '#D4D4D8', '#06B6D4', '#EC4899', '#10B981', '#6366F1', '#F43F5E', '#71717A'];
+  const __TEXT_COLORS = [
+    '#FFFFFF', '#000000', '#9333EA', '#3B82F6', '#22C55E', '#EAB308', '#F97316', '#EF4444',
+    '#A1A1AA', '#D4D4D8', '#06B6D4', '#EC4899', '#10B981', '#6366F1', '#F43F5E', '#71717A'
+  ];
 
   const __unit = (window?.computeUnitPriceFromTable?.({ product: { slug: 't-shirts' }, config: {} }) ?? 0);
   const __price = new Intl.NumberFormat('en-GB', { style: 'currency', currency: 'GBP' }).format(__unit);
@@ -22,6 +25,7 @@ export function render() {
   const frontLogoLabel = s.frontLogoLabel || 'None';
   const backTopTextColor = s.backTopTextColor || '#FFFFFF';
   const backBottomTextColor = s.backBottomTextColor || '#FFFFFF';
+  const frontLogoTint = s.frontLogoTint || '#FFFFFF';
 
   const BODY_COLORS = [
     '#000000', '#FFFFFF', '#4B5563', '#991B1B', '#1E3A8A', '#166534', '#EAB308', '#D946EF',
@@ -32,9 +36,35 @@ export function render() {
     '#92400E', '#B45309', '#D97706'
   ];
 
+  // System
+  const PANEL = 'bg-zinc-900/40 border border-zinc-800 rounded-3xl';
+  const SECTION = 'bg-black/30 border border-zinc-800 rounded-2xl';
+  const SECTION_HEAD = 'flex items-center justify-between gap-4 px-6 py-4 border-b border-zinc-800';
+  const SECTION_BODY = 'p-6 space-y-4';
+  const TITLE = 'text-[10px] font-black uppercase tracking-[0.3em] text-zinc-400';
+  const SUB = 'text-[9px] font-black uppercase tracking-[0.25em] text-zinc-600';
+  const ACTION = 'text-[9px] font-black uppercase tracking-widest text-zinc-600 hover:text-red-400 transition';
+  const INPUT = 'w-full bg-black/60 border border-zinc-800 p-4 rounded-2xl text-xs font-mono outline-none focus:border-purple-500 transition';
+  const BTN_PRESET = 'aspect-square rounded-2xl border border-zinc-800 bg-black overflow-hidden hover:border-purple-500 transition relative group';
+  const HR = 'h-px bg-gradient-to-r from-transparent via-zinc-800 to-transparent';
+
+  // Swatches exactly like your Body Colour section
+  const SWATCH_GRID = 'grid grid-cols-8 gap-2 max-h-48 overflow-y-auto p-2 border border-zinc-800 rounded-xl bg-black/25';
+
+  const SIZE_BTN =
+    'py-3 bg-black/60 border border-zinc-800 rounded-2xl text-[10px] font-black uppercase tracking-widest hover:border-purple-500 transition';
+
+  // ✅ Same “safe preset layout” system (like hoodies)
+  const PRESET_TEXT_BTN =
+    'w-full min-w-0 px-4 py-4 rounded-2xl border border-zinc-800 bg-black hover:border-purple-500 transition text-left overflow-hidden';
+  const PRESET_TEXT_MAIN =
+    'text-[10px] font-black uppercase tracking-widest text-white leading-tight line-clamp-2 break-words';
+  const PRESET_TEXT_SUB =
+    'text-[9px] text-zinc-600 font-bold uppercase tracking-wider mt-1 truncate';
+
   return `
     <div class="min-h-screen bg-black text-white p-4 md:p-12 relative">
-      <div class="flex flex-col md:flex-row md:justify-between md:items-center gap-6 mb-12">
+      <div class="flex flex-col md:flex-row md:justify-between md:items-center gap-6 mb-10">
         <div>
           <span class="text-[10px] text-purple-500 font-bold tracking-[0.3em] uppercase italic">Apparel / Studio</span>
           <h1 class="heading-font text-4xl md:text-6xl font-black uppercase tracking-tighter mt-2">Custom T-Shirts</h1>
@@ -53,9 +83,9 @@ export function render() {
 
       <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
 
-        <div class="lg:col-span-7 space-y-6">
+        <!-- LEFT: PREVIEW (sticky) -->
+        <div class="lg:col-span-7 space-y-6 lg:sticky lg:top-10">
           <div id="preview-stage" class="aspect-[4/5] bg-zinc-900/20 border border-zinc-800 rounded-3xl relative overflow-hidden">
-
             <div id="tshirts-preview-2d" data-preview="2d" class="hidden absolute inset-0 z-10">
               <div class="absolute inset-0 blueprint-grid opacity-30"></div>
               <img
@@ -80,7 +110,7 @@ export function render() {
             </div>
           </div>
 
-          <div class="flex gap-4 overflow-x-auto pb-2 no-scrollbar">
+          <div class="flex gap-4 overflow-x-auto pb-2 themed-scroll-x">
             ${images.map(img => `
               <button
                 onclick="document.getElementById('product-base-image') && (document.getElementById('product-base-image').src='./images/${folder}/${img}')"
@@ -90,185 +120,273 @@ export function render() {
               </button>
             `).join('')}
           </div>
-
-          <div class="bg-zinc-900/40 border border-zinc-800 rounded-2xl p-6">
-            <div class="grid grid-cols-3 gap-4">
-              <div class="text-center p-3 border border-zinc-800 rounded-xl">
-                <p class="text-[8px] text-zinc-500 uppercase">Weight</p>
-                <p class="text-[10px] font-bold">240GSM Organic</p>
-              </div>
-              <div class="text-center p-3 border border-zinc-800 rounded-xl">
-                <p class="text-[8px] text-zinc-500 uppercase">Fit</p>
-                <p class="text-[10px] font-bold">Boxy / Oversized</p>
-              </div>
-              <div class="text-center p-3 border border-zinc-800 rounded-xl">
-                <p class="text-[8px] text-zinc-500 uppercase">Stitching</p>
-                <p class="text-[10px] font-bold">Double Needle</p>
-              </div>
-            </div>
-          </div>
         </div>
 
+        <!-- RIGHT: CONFIGURATOR -->
         <div class="lg:col-span-5 space-y-6">
-          <div class="bg-zinc-900/40 border border-zinc-800 rounded-3xl p-8">
-            <div class="flex items-center justify-between gap-4 mb-6">
-              <div>
-                <div class="text-[10px] font-black uppercase tracking-[0.25em] text-zinc-500">Customization</div>
-                <div class="text-[9px] font-black uppercase tracking-[0.35em] text-zinc-700 mt-1">Front + Back</div>
-              </div>
-              <div class="text-[9px] font-black uppercase tracking-[0.3em] text-zinc-700">
-                MODE: <span class="text-zinc-300">PRINT</span>
-              </div>
-            </div>
-
-            <div class="space-y-4">
-              <label class="text-[10px] font-black uppercase text-zinc-500 tracking-widest block">Front Logo <span class="text-zinc-700">(required)</span></label>
-              <div id="panel-front-logo">
-                <div class="grid grid-cols-3 gap-3">
-                  ${frontLogoPresetFiles.map((f) => `
-                    <button
-                      onclick="window.setTShirtFrontLogoPreset('${f}', this)"
-                      class="aspect-square rounded-xl border border-zinc-800 bg-black overflow-hidden hover:border-purple-500 transition relative group ${f === s.frontLogoFile ? 'ring-2 ring-purple-500' : ''}"
-                    >
-                      <img
-                        src="${'./images/t-shirts/presets/front/' + f}"
-                        onerror="this.src='./images/t-shirt/presets/front/${f}'"
-                        class="w-full h-full object-cover opacity-70 group-hover:opacity-100 transition"
-                      />
-                    </button>
-                  `).join('')}
-                </div>
-                <div class="mt-4 flex items-center justify-between">
-                  <div class="text-[9px] text-zinc-500 font-black uppercase tracking-widest">
-                    Active: <span id="tshirt-front-label" class="text-zinc-300">${frontLogoLabel}</span>
-                  </div>
-                  <button onclick="window.clearTShirtFrontLogoPreset()" class="text-[9px] font-black uppercase tracking-widest text-zinc-600 hover:text-red-400 transition">Clear</button>
-                </div>
-              </div>
-            </div>
-
-            <div class="my-7 h-px bg-zinc-800/80"></div>
-
-            <div class="space-y-4">
-              <label class="text-[10px] font-black uppercase text-zinc-500 tracking-widest block">Back Options <span class="text-zinc-700">(optional)</span></label>
-              
-              <div class="bg-black/40 border border-zinc-800 rounded-2xl p-5">
-                <p class="text-[8px] text-zinc-400 uppercase font-bold mb-2 tracking-[0.35em]">Back Top Text</p>
-                <input
-                  id="tshirt-back-top-input"
-                  type="text"
-                  placeholder="ENTER BACK TOP TEXT..."
-                  oninput="window.setTShirtBackTopText(this.value)"
-                  class="w-full bg-black border border-zinc-800 p-4 rounded-xl text-xs font-mono outline-none focus:border-purple-500 transition"
-                />
-                <div class="mt-4">
-                  <div class="flex items-center justify-between mb-2">
-                    <div class="text-[9px] font-black uppercase tracking-widest text-zinc-500">Top Text Colour</div>
-                    <div class="text-[9px] font-black uppercase tracking-widest text-zinc-700">
-                      <span id="back-top-text-colour-label">${backTopTextColor}</span>
-                    </div>
-                  </div>
-                  <div data-textcolor-group class="grid grid-cols-8 gap-2 p-2 border border-zinc-800 rounded-xl">
-                    ${__TEXT_COLORS.map((color) => `
-                      <div
-                        data-swatch
-                        onclick="window.setTShirtTextColorFor('backTop','${color}', this)"
-                        style="background-color:${color}"
-                        class="aspect-square rounded-md border border-white/10 cursor-pointer hover:scale-110 transition ${color === backTopTextColor ? 'ring-2 ring-purple-500' : ''}"
-                      ></div>
-                    `).join('')}
-                  </div>
-                </div>
-              </div>
-
-              <div class="bg-black/40 border border-zinc-800 rounded-2xl p-5">
-                <p class="text-[8px] text-zinc-400 uppercase font-bold mb-2 tracking-[0.35em]">Back Bottom Text</p>
-                <input
-                  id="tshirt-back-bottom-input"
-                  type="text"
-                  placeholder="ENTER BACK BOTTOM TEXT..."
-                  oninput="window.setTShirtBackBottomText(this.value)"
-                  class="w-full bg-black border border-zinc-800 p-4 rounded-xl text-xs font-mono outline-none focus:border-purple-500 transition"
-                />
-                <div class="mt-4">
-                   <div class="flex items-center justify-between mb-2">
-                    <div class="text-[9px] font-black uppercase tracking-widest text-zinc-500">Bottom Text Colour</div>
-                    <div class="text-[9px] font-black uppercase tracking-widest text-zinc-700">
-                      <span id="back-bottom-text-colour-label">${backBottomTextColor}</span>
-                    </div>
-                  </div>
-                  <div data-textcolor-group class="grid grid-cols-8 gap-2 p-2 border border-zinc-800 rounded-xl">
-                    ${__TEXT_COLORS.map((color) => `
-                      <div
-                        data-swatch
-                        onclick="window.setTShirtTextColorFor('backBottom','${color}', this)"
-                        style="background-color:${color}"
-                        class="aspect-square rounded-md border border-white/10 cursor-pointer hover:scale-110 transition ${color === backBottomTextColor ? 'ring-2 ring-purple-500' : ''}"
-                      ></div>
-                    `).join('')}
-                  </div>
-                </div>
-              </div>
-
-              <div class="bg-black/40 border border-zinc-800 rounded-2xl p-5">
-                <div class="flex items-center justify-between mb-4">
-                  <span class="text-[8px] text-zinc-400 uppercase font-bold tracking-[0.35em]">Back Image</span>
-                  <div class="text-[9px] text-zinc-500 font-black uppercase tracking-widest">
-                    Active: <span id="tshirt-back-image-label" class="text-zinc-300">${s.backImageLabel || 'None'}</span>
-                  </div>
-                </div>
-                <div class="grid grid-cols-3 gap-3 mb-4">
-                  ${backImagePresetFiles.map((f) => `
-                    <button
-                      onclick="window.setTShirtBackImagePreset('${f}', this)"
-                      class="aspect-square rounded-xl border border-zinc-800 bg-black overflow-hidden hover:border-purple-500 transition relative group"
-                    >
-                      <img src="./images/t-shirts/presets/back/${f}" onerror="this.src='./images/t-shirt/presets/back/${f}'" class="w-full h-full object-cover opacity-70 group-hover:opacity-100 transition" />
-                    </button>
-                  `).join('')}
-                </div>
-                <div id="tshirt-image-upload-zone" onclick="document.getElementById('tshirt-artwork-upload-input').click()" class="aspect-video bg-black border-2 border-dashed border-zinc-800 rounded-xl flex items-center justify-center hover:border-purple-500 cursor-pointer overflow-hidden">
-                  <input type="file" id="tshirt-artwork-upload-input" class="hidden" accept="image/*" onchange="window.handleImageUpload(this); window.setTShirtBackImageFromUpload();">
-                  <div id="tshirt-image-preview-container" class="w-full h-full flex items-center justify-center font-bold text-[9px] text-zinc-600 uppercase tracking-widest">Click to Upload</div>
-                </div>
-                <div class="mt-3 flex items-center justify-end">
-                  <button onclick="window.clearTShirtBackImage()" class="text-[9px] font-black uppercase tracking-widest text-zinc-600 hover:text-red-400 transition">Clear image</button>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div class="bg-zinc-900/40 border border-zinc-800 rounded-3xl p-8 space-y-6">
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div>
-                <label class="text-[10px] font-black uppercase text-zinc-500 tracking-widest block mb-4">T-Shirt Colour</label>
-                <div class="grid grid-cols-8 gap-2 max-h-48 overflow-y-auto p-2 border border-zinc-800 rounded-xl">
-                  ${BODY_COLORS.map((color) => `
-                    <div
-                      onclick="window.setTShirtBodyColor('${color}', this)"
-                      style="background-color:${color}"
-                      class="aspect-square rounded-md border border-zinc-700 cursor-pointer hover:scale-110 transition ${color === bodyColor ? 'active-tee-color ring-2 ring-purple-500' : ''}"
-                    ></div>
-                  `).join('')}
-                </div>
-              </div>
-              <div class="space-y-6">
+          <div class="${PANEL} overflow-hidden">
+            <div class="px-8 py-7">
+              <div class="flex items-start justify-between gap-6">
                 <div>
-                  <label class="text-[10px] font-black uppercase text-zinc-500 tracking-widest block mb-4">Size</label>
-                  <div class="grid grid-cols-4 gap-2">
-                    ${['XS', 'S', 'M', 'L', 'XL', '2XL', '3XL', '4XL', '5XL'].map(size => `
-                      <button onclick="window.updateSelection(this, 'active-size')"
-                        class="py-3 bg-black border border-zinc-800 rounded-xl text-[10px] font-bold hover:border-purple-500 transition ${size === (s.size || 'L') ? 'active-size bg-white text-black' : ''}">
-                        ${size}
-                      </button>
-                    `).join('')}
-                  </div>
+                  <div class="text-[10px] font-black uppercase tracking-[0.25em] text-zinc-500">Configurator</div>
+                  <div class="text-[9px] font-black uppercase tracking-[0.35em] text-zinc-700 mt-1">PRINT • FRONT + BACK</div>
                 </div>
-                <div class="bg-black/40 border border-zinc-800 rounded-2xl p-5">
-                  <div class="text-[8px] text-zinc-400 uppercase font-bold tracking-[0.35em]">Spec</div>
-                  <div class="mt-2 text-[10px] font-bold text-zinc-200 uppercase tracking-widest">240GSM Organic • Boxy Fit</div>
+                <div class="text-[9px] font-black uppercase tracking-[0.3em] text-zinc-700">
+                  MODE: <span class="text-zinc-300">PRINT</span>
                 </div>
               </div>
+            </div>
+
+            <!-- ✅ NEW: same “stacked option cards” layout as hoodies -->
+            <div class="px-8 pb-8 space-y-5">
+              <div class="space-y-4">
+
+                <!-- FRONT LOGO (preset) -->
+                <div id="panel-front-logo" class="${SECTION} overflow-hidden">
+                  <div class="${SECTION_HEAD}">
+                    <div class="min-w-0">
+                      <div class="${TITLE}">Front Logo</div>
+                      <div class="${SUB}">Required</div>
+                    </div>
+                    <div class="text-[9px] font-black uppercase tracking-widest text-zinc-500">
+                      Active: <span id="tshirt-front-label" class="text-zinc-300">${frontLogoLabel}</span>
+                    </div>
+                  </div>
+
+                  <div class="${SECTION_BODY}">
+                    <div class="grid grid-cols-3 gap-3">
+                      ${frontLogoPresetFiles.map((f) => `
+                        <button
+                          onclick="window.setTShirtFrontLogoPreset('${f}', this)"
+                          class="${BTN_PRESET} ${f === s.frontLogoFile ? 'ring-2 ring-purple-500' : ''}"
+                          title="${f}"
+                        >
+                          <img
+                            src="${'./images/t-shirts/presets/front/' + f}"
+                            onerror="this.src='./images/t-shirt/presets/front/${f}'"
+                            class="w-full h-full object-cover opacity-70 group-hover:opacity-100 transition"
+                          />
+                        </button>
+                      `).join('')}
+                    </div>
+                  </div>
+                </div>
+
+                <!-- FRONT LOGO TINT -->
+                <div class="${SECTION} overflow-hidden">
+                  <div class="${SECTION_HEAD}">
+                    <div class="min-w-0">
+                      <div class="${TITLE}">Logo Tint</div>
+                      <div class="${SUB}">Text Only</div>
+                    </div>
+                    <div class="text-[9px] font-black uppercase tracking-widest text-zinc-700">
+                      <span id="front-logo-colour-label">${frontLogoTint}</span>
+                    </div>
+                  </div>
+
+                  <div class="${SECTION_BODY}">
+                    <div data-frontlogocolor-group class="${SWATCH_GRID}">
+                      ${__TEXT_COLORS.map((color) => `
+                        <div
+                          data-frontlogocolor
+                          onclick="window.setTShirtFrontLogoTint('${color}', this)"
+                          style="background-color:${color}"
+                          class="aspect-square rounded-md border border-white/10 cursor-pointer hover:scale-105 transition ${color === frontLogoTint ? 'ring-2 ring-purple-500' : ''}"
+                          title="${color}"
+                        ></div>
+                      `).join('')}
+                    </div>
+                  </div>
+                </div>
+
+                <div class="${HR}"></div>
+
+                <!-- BACK TEXT (stacked, no overflow) -->
+                <div class="grid grid-cols-1 gap-4">
+
+                  <div class="${SECTION} overflow-hidden">
+                    <div class="${SECTION_HEAD}">
+                      <div class="min-w-0">
+                        <div class="${TITLE}">Back Top Text</div>
+                        <div class="${SUB}">Optional</div>
+                      </div>
+                      <div class="text-[9px] font-black uppercase tracking-widest text-zinc-700">
+                        <span id="back-top-text-colour-label">${backTopTextColor}</span>
+                      </div>
+                    </div>
+
+                    <div class="${SECTION_BODY}">
+                      <input
+                        id="tshirt-back-top-input"
+                        type="text"
+                        placeholder="ENTER BACK TOP TEXT..."
+                        oninput="window.setTShirtBackTopText(this.value)"
+                        class="${INPUT}"
+                      />
+                      <div data-textcolor-group class="${SWATCH_GRID}">
+                        ${__TEXT_COLORS.map((color) => `
+                          <div
+                            data-swatch
+                            onclick="window.setTShirtTextColorFor('backTop','${color}', this)"
+                            style="background-color:${color}"
+                            class="aspect-square rounded-md border border-white/10 cursor-pointer hover:scale-105 transition ${color === backTopTextColor ? 'ring-2 ring-purple-500' : ''}"
+                            title="${color}"
+                          ></div>
+                        `).join('')}
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="${SECTION} overflow-hidden">
+                    <div class="${SECTION_HEAD}">
+                      <div class="min-w-0">
+                        <div class="${TITLE}">Back Bottom Text</div>
+                        <div class="${SUB}">Optional</div>
+                      </div>
+                      <div class="text-[9px] font-black uppercase tracking-widest text-zinc-700">
+                        <span id="back-bottom-text-colour-label">${backBottomTextColor}</span>
+                      </div>
+                    </div>
+
+                    <div class="${SECTION_BODY}">
+                      <input
+                        id="tshirt-back-bottom-input"
+                        type="text"
+                        placeholder="ENTER BACK BOTTOM TEXT..."
+                        oninput="window.setTShirtBackBottomText(this.value)"
+                        class="${INPUT}"
+                      />
+                      <div data-textcolor-group class="${SWATCH_GRID}">
+                        ${__TEXT_COLORS.map((color) => `
+                          <div
+                            data-swatch
+                            onclick="window.setTShirtTextColorFor('backBottom','${color}', this)"
+                            style="background-color:${color}"
+                            class="aspect-square rounded-md border border-white/10 cursor-pointer hover:scale-105 transition ${color === backBottomTextColor ? 'ring-2 ring-purple-500' : ''}"
+                            title="${color}"
+                          ></div>
+                        `).join('')}
+                      </div>
+                    </div>
+                  </div>
+
+                </div>
+
+                <div class="${HR}"></div>
+
+                <!-- BACK IMAGE (stacked) -->
+                <div class="${SECTION} overflow-hidden">
+                  <div class="${SECTION_HEAD}">
+                    <div class="min-w-0">
+                      <div class="${TITLE}">Back Image</div>
+                      <div class="${SUB}">Optional</div>
+                    </div>
+                    <div class="text-[9px] text-zinc-500 font-black uppercase tracking-widest">
+                      Active: <span id="tshirt-back-image-label" class="text-zinc-300">${s.backImageLabel || 'None'}</span>
+                    </div>
+                  </div>
+
+                  <div class="${SECTION_BODY}">
+                    <div class="grid grid-cols-3 gap-3">
+                      ${backImagePresetFiles.map((f) => `
+                        <button
+                          onclick="window.setTShirtBackImagePreset('${f}', this)"
+                          class="${BTN_PRESET}"
+                          title="${f}"
+                        >
+                          <img
+                            src="./images/t-shirts/presets/back/${f}"
+                            onerror="this.src='./images/t-shirt/presets/back/${f}'"
+                            class="w-full h-full object-cover opacity-70 group-hover:opacity-100 transition"
+                          />
+                        </button>
+                      `).join('')}
+                    </div>
+
+                    <div
+                      id="tshirt-image-upload-zone"
+                      onclick="document.getElementById('tshirt-artwork-upload-input').click()"
+                      class="aspect-video bg-black/50 border-2 border-dashed border-zinc-800 rounded-2xl flex items-center justify-center hover:border-purple-500 cursor-pointer overflow-hidden transition"
+                    >
+                      <input type="file" id="tshirt-artwork-upload-input" class="hidden" accept="image/*"
+                        onchange="window.handleImageUpload(this); window.setTShirtBackImageFromUpload();">
+                      <div id="tshirt-image-preview-container" class="w-full h-full flex items-center justify-center font-black text-[9px] text-zinc-600 uppercase tracking-widest">
+                        Click to Upload
+                      </div>
+                    </div>
+
+                    <div class="flex items-center justify-end pt-2">
+                      <button onclick="window.clearTShirtBackImage()" class="${ACTION}">Clear image</button>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="${HR} my-2"></div>
+
+                <!-- COLOUR + SIZE (unchanged) -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+
+                  <div class="${SECTION} overflow-hidden">
+                    <div class="${SECTION_HEAD}">
+                      <div>
+                        <div class="${TITLE}">T-Shirt Colour</div>
+                        <div class="${SUB}">Body</div>
+                      </div>
+                    </div>
+                    <div class="${SECTION_BODY}">
+                      <div class="${SWATCH_GRID}">
+                        ${BODY_COLORS.map((color) => `
+                          <div
+                            onclick="window.setTShirtBodyColor('${color}', this)"
+                            style="background-color:${color}"
+                            class="aspect-square rounded-md border border-white/10 cursor-pointer hover:scale-105 transition ${color === bodyColor ? 'active-tee-color ring-2 ring-purple-500' : ''}"
+                            title="${color}"
+                          ></div>
+                        `).join('')}
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="space-y-4">
+                    <div class="${SECTION} overflow-hidden">
+                      <div class="${SECTION_HEAD}">
+                        <div>
+                          <div class="${TITLE}">Size</div>
+                          <div class="${SUB}">Fit</div>
+                        </div>
+                      </div>
+                      <div class="${SECTION_BODY}">
+                        <div class="grid grid-cols-4 gap-2">
+                          ${['XS', 'S', 'M', 'L', 'XL', '2XL', '3XL', '4XL', '5XL'].map(size => `
+                            <button
+                              onclick="window.updateSelection(this, 'active-size')"
+                              class="${SIZE_BTN} ${size === (s.size || 'L') ? 'active-size ring-2 ring-purple-500 bg-zinc-100 text-black' : ''}"
+                            >
+                              ${size}
+                            </button>
+                          `).join('')}
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="${SECTION} overflow-hidden">
+                      <div class="${SECTION_HEAD}">
+                        <div>
+                          <div class="${TITLE}">Spec</div>
+                          <div class="${SUB}">Material</div>
+                        </div>
+                      </div>
+                      <div class="p-6">
+                        <div class="text-[10px] font-bold text-zinc-200 uppercase tracking-widest">
+                          240GSM Organic • Boxy Fit • Double Needle
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                </div>
+
+              </div><!-- /stack -->
             </div>
           </div>
 
@@ -277,6 +395,7 @@ export function render() {
             Add to Cart
           </button>
         </div>
+
       </div>
     </div>
   `;
@@ -286,6 +405,8 @@ window.TSHIRT_STATE = window.TSHIRT_STATE || {
   bodyColor: '#000000',
   size: 'L',
   frontLogoFile: null,
+  frontLogoTint: '#FFFFFF',
+  frontLogoRawDataURL: null,
   frontLogoDataURL: null,
   frontLogoLabel: 'None',
   backTopText: '',
@@ -524,6 +645,38 @@ window.applyTShirtTo3D = async () => {
   }
 };
 
+window.tintImageToDataURL = window.tintImageToDataURL || (async ({ src, color = '#ffffff', size = 1024 }) => {
+  if (!src) return null;
+
+  // Ensure we have a dataURL
+  let dataUrl = src;
+  if (!String(src).startsWith('data:image')) dataUrl = await window.fetchAsDataURL_TShirt(src);
+
+  const img = new Image();
+  img.crossOrigin = 'anonymous';
+  img.src = dataUrl;
+  await new Promise((res, rej) => { img.onload = res; img.onerror = rej; });
+
+  const c = document.createElement('canvas');
+  c.width = size;
+  c.height = size;
+  const ctx = c.getContext('2d');
+
+  // Draw the original (keeps alpha shape)
+  ctx.clearRect(0, 0, size, size);
+  ctx.drawImage(img, 0, 0, size, size);
+
+  // Tint only the existing pixels (alpha mask)
+  ctx.globalCompositeOperation = 'source-in';
+  ctx.fillStyle = color;
+  ctx.fillRect(0, 0, size, size);
+
+  // Reset for safety
+  ctx.globalCompositeOperation = 'source-over';
+
+  return c.toDataURL('image/png');
+});
+
 window.setTShirtBodyColor = (hex, btn) => {
   document.querySelectorAll('.active-tee-color').forEach(el => el.classList.remove('active-tee-color'));
   btn?.classList.add('active-tee-color');
@@ -567,14 +720,26 @@ window.setTShirtFrontLogoPreset = async (fileName, btn) => {
     }
 
     window.TSHIRT_STATE.frontLogoFile = fileName;
-    window.TSHIRT_STATE.frontLogoDataURL = dataUrl;
+    window.TSHIRT_STATE.frontLogoRawDataURL = dataUrl; // IMPORTANT: keep raw
     window.TSHIRT_STATE.frontLogoLabel = fileName;
+
+    const tint = window.TSHIRT_STATE.frontLogoTint || '#FFFFFF';
+
+    const tinted = await window.tintNearWhiteOnlyToDataURL({
+      src: dataUrl,        // tint from raw
+      color: tint,
+      threshold: 240,
+      feather: 25,
+      onlyBelow: 0.55
+    });
+
+    window.TSHIRT_STATE.frontLogoDataURL = tinted || dataUrl;
 
     const label = document.getElementById('tshirt-front-label');
     if (label) label.textContent = fileName;
 
-    const imgEl = document.getElementById('preview-front-img');
-    if (imgEl) imgEl.src = dataUrl;
+    const tintLbl = document.getElementById('front-logo-colour-label');
+    if (tintLbl) tintLbl.textContent = tint;
 
     window.applyTShirtTo3D?.();
   } catch (e) {
@@ -582,10 +747,107 @@ window.setTShirtFrontLogoPreset = async (fileName, btn) => {
   }
 };
 
+window.setTShirtFrontLogoTint = async (hex, btn) => {
+  // UI ring in this swatch group
+  const group = btn?.closest?.('[data-frontlogocolor-group]');
+  if (group) group.querySelectorAll('[data-frontlogocolor]').forEach(el => el.classList.remove('ring-2', 'ring-purple-500'));
+  btn?.classList.add('ring-2', 'ring-purple-500');
+
+  window.TSHIRT_STATE.frontLogoTint = hex;
+
+  const lbl = document.getElementById('front-logo-colour-label');
+  if (lbl) lbl.textContent = hex;
+
+  // Re-tint from RAW (so it doesn't compound / degrade)
+  const raw = window.TSHIRT_STATE.frontLogoRawDataURL || window.TSHIRT_STATE.frontLogoDataURL;
+  if (raw) {
+    const tinted = await window.tintNearWhiteOnlyToDataURL({
+      src: raw,
+      color: hex,
+      threshold: 240,
+      feather: 25,
+      onlyBelow: 0.55
+    });
+
+    window.TSHIRT_STATE.frontLogoDataURL = tinted || raw;
+  }
+
+  window.applyTShirtTo3D?.();
+};
+
+window.tintNearWhiteOnlyToDataURL = window.tintNearWhiteOnlyToDataURL || (async ({
+  src,
+  color = '#ffffff',
+  threshold = 235,      // 0-255: higher = stricter "must be very white"
+  feather = 20,         // softness around threshold
+  onlyBelow = 0.55,     // 0..1: only tint below this Y fraction (text under logo)
+  size = 1024
+}) => {
+  if (!src) return null;
+
+  let dataUrl = src;
+  if (!String(src).startsWith('data:image')) dataUrl = await window.fetchAsDataURL_TShirt(src);
+
+  const img = new Image();
+  img.crossOrigin = 'anonymous';
+  img.src = dataUrl;
+  await new Promise((res, rej) => { img.onload = res; img.onerror = rej; });
+
+  const c = document.createElement('canvas');
+  c.width = size;
+  c.height = size;
+  const ctx = c.getContext('2d');
+
+  ctx.clearRect(0, 0, size, size);
+  ctx.drawImage(img, 0, 0, size, size);
+
+  const imageData = ctx.getImageData(0, 0, size, size);
+  const d = imageData.data;
+
+  // parse hex -> rgb
+  const hex = String(color).replace('#', '').trim();
+  const rr = parseInt(hex.length === 3 ? hex[0] + hex[0] : hex.slice(0, 2), 16);
+  const gg = parseInt(hex.length === 3 ? hex[1] + hex[1] : hex.slice(2, 4), 16);
+  const bb = parseInt(hex.length === 3 ? hex[2] + hex[2] : hex.slice(4, 6), 16);
+
+  const yCut = Math.floor(size * Math.max(0, Math.min(1, onlyBelow)));
+
+  for (let y = 0; y < size; y++) {
+    for (let x = 0; x < size; x++) {
+      const i = (y * size + x) * 4;
+      const a = d[i + 3];
+      if (a === 0) continue;
+
+      // optional: only tint bottom region where text sits
+      if (y < yCut) continue;
+
+      const r = d[i], g = d[i + 1], b = d[i + 2];
+
+      // "whiteness" proxy: minimum channel value
+      const minc = Math.min(r, g, b);
+
+      // if not white enough, skip
+      if (minc < (threshold - feather)) continue;
+
+      // blend strength as it approaches white
+      const t = Math.max(0, Math.min(1, (minc - (threshold - feather)) / Math.max(1, feather)));
+
+      // mix original towards tint (keeps shading)
+      d[i]     = Math.round(r * (1 - t) + rr * t);
+      d[i + 1] = Math.round(g * (1 - t) + gg * t);
+      d[i + 2] = Math.round(b * (1 - t) + bb * t);
+    }
+  }
+
+  ctx.putImageData(imageData, 0, 0);
+  return c.toDataURL('image/png');
+});
+
 window.clearTShirtFrontLogoPreset = () => {
   window.TSHIRT_STATE.frontLogoFile = null;
   window.TSHIRT_STATE.frontLogoDataURL = null;
   window.TSHIRT_STATE.frontLogoLabel = 'None';
+  window.TSHIRT_STATE.frontLogoRawDataURL = null;
 
   const label = document.getElementById('tshirt-front-label');
   if (label) label.textContent = 'None';
@@ -692,7 +954,11 @@ window.saveTShirtConfig = () => {
     alert('Front logo is required (choose one of the 2 logo presets).');
     return;
   }
-
+  const v = window.validateTShirtConfig?.();
+  if (v && !v.ok) {
+    alert(v.msg);
+    return;
+  }
   const size = document.querySelector('.active-size')?.innerText || window.TSHIRT_STATE.size || 'L';
   const color = window.TSHIRT_STATE.bodyColor || document.querySelector('.active-tee-color')?.dataset?.color || '#000000';
   window.TSHIRT_STATE.size = size;
@@ -740,4 +1006,30 @@ window.on3DModelReady = (slug, mv) => {
   }
 
   window.applyTShirtTo3D?.();
+};
+
+window.validateTShirtConfig = () => {
+  const s = window.TSHIRT_STATE || {};
+
+  if (!window.__trim(s.bodyColor)) return window.__hardFail('Please choose a t-shirt colour.', 'bodyColor');
+
+  // Required: front logo preset
+  if (!window.__trim(s.frontLogoFile) && !window.__trim(s.frontLogoLabel) && !s.frontLogoDataURL) {
+    return window.__hardFail('Front logo is required (choose one of the logo presets).', 'frontLogoFile');
+  }
+
+  // Optional text limits
+  if (window.__len(s.backTopText) > 28) {
+    return window.__hardFail('Back top text is too long (max 28 characters).', 'backTopText');
+  }
+  if (window.__len(s.backBottomText) > 28) {
+    return window.__hardFail('Back bottom text is too long (max 28 characters).', 'backBottomText');
+  }
+
+  // If back image exists it must be a dataURL (upload or fetched preset -> your code stores dataURL)
+  if (s.backImage && !String(s.backImage).startsWith('data:image')) {
+    return window.__hardFail('Back image must be a valid image.', 'backImage');
+  }
+
+  return window.__ok();
 };

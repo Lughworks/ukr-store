@@ -5,6 +5,93 @@ body {
     overflow-x: hidden;
 }
 
+:root{
+  --sb-track: rgba(255,255,255,0.06);
+  --sb-thumb: rgba(168, 85, 247, 0.55);   /* purple-500-ish */
+  --sb-thumb-hover: rgba(168, 85, 247, 0.85);
+  --sb-size: 10px;
+  --sb-radius: 999px;
+}
+
+/* Firefox */
+html{
+  scrollbar-width: thin;
+  scrollbar-color: var(--sb-thumb) var(--sb-track);
+  scrollbar-gutter: stable;
+}
+*{
+  scrollbar-width: thin;
+  scrollbar-color: var(--sb-thumb) var(--sb-track);
+}
+
+/* Chromium / Safari */
+*::-webkit-scrollbar{
+  width: var(--sb-size);
+  height: var(--sb-size);
+}
+*::-webkit-scrollbar-track{
+  background: var(--sb-track);
+  border-radius: var(--sb-radius);
+}
+*::-webkit-scrollbar-thumb{
+  background: var(--sb-thumb);
+  border-radius: var(--sb-radius);
+  border: 2px solid transparent;
+  background-clip: padding-box;
+}
+*::-webkit-scrollbar-thumb:hover{
+  background: var(--sb-thumb-hover);
+  background-clip: padding-box;
+}
+
+.themed-scroll-x{
+  scrollbar-gutter: stable both-edges;
+}
+
+/* Firefox */
+.themed-scroll-x{
+  scrollbar-width: thin;
+  scrollbar-color: var(--sb-thumb) rgba(255,255,255,0.14);
+}
+
+/* Chromium / Safari */
+.themed-scroll-x::-webkit-scrollbar{
+  height: 12px; /* 👈 key difference vs vertical */
+}
+
+.themed-scroll-x::-webkit-scrollbar-track{
+  background: rgba(255,255,255,0.10);
+  border-radius: 999px;
+}
+
+.themed-scroll-x::-webkit-scrollbar-thumb{
+  background: linear-gradient(
+    90deg,
+    rgba(168,85,247,0.45),
+    rgba(168,85,247,0.85)
+  );
+  border-radius: 999px;
+  border: 3px solid transparent;
+  background-clip: padding-box;
+}
+
+.themed-scroll-x::-webkit-scrollbar-thumb:hover{
+  background: linear-gradient(
+    90deg,
+    rgba(168,85,247,0.75),
+    rgba(168,85,247,1)
+  );
+}
+
+/* Your existing "no-scrollbar" helper (works everywhere) */
+.no-scrollbar{
+  -ms-overflow-style: none;   /* IE/old Edge */
+  scrollbar-width: none;      /* Firefox */
+}
+.no-scrollbar::-webkit-scrollbar{
+  display: none;              /* Chromium/Safari */
+}
+
 .heading-font {
     font-family: 'Inter', sans-serif;
 }
