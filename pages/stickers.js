@@ -9,9 +9,9 @@ export function render() {
                     <span class="text-[10px] text-purple-500 font-bold tracking-[0.3em] uppercase italic">Merchandise / Division 02</span>
                     <h1 class="heading-font text-4xl md:text-6xl font-black uppercase tracking-tighter mt-2">Custom Stickers</h1>
                     <div class="inline-flex items-center gap-3 px-4 py-2 rounded-full border border-zinc-800 bg-zinc-900/40">
-  <span class="text-[8px] uppercase tracking-[0.4em] font-black text-zinc-500">Pack Price</span>
-  <span id="price-value" class="text-[11px] font-black uppercase tracking-widest text-purple-400">${__price}</span>
-</div>
+                        <span class="text-[8px] uppercase tracking-[0.4em] font-black text-zinc-500">Pack Price</span>
+                        <span id="price-value" class="text-[11px] font-black uppercase tracking-widest text-purple-400">${__price}</span>
+                    </div>
                 </div>
                 <button onclick="window.closePage()" class="group flex items-center gap-3 bg-zinc-900 hover:bg-white hover:text-black transition-all px-6 py-3 rounded-full border border-zinc-800">
                     <span class="text-[10px] font-bold uppercase tracking-widest text-inherit">Back to Studio</span>
@@ -35,13 +35,13 @@ export function render() {
                             <text id="sticker-text-bg" x="50%" y="55%" text-anchor="middle" dominant-baseline="middle"
                                   class="heading-font italic font-black"
                                   style="font-size: 80px; fill: white; stroke: white; stroke-width: 3px; stroke-linejoin: round; paint-order: stroke;">
-                                UE STUDIO
+                                UR?
                             </text>
 
                             <text id="sticker-text-main" x="50%" y="55%" text-anchor="middle" dominant-baseline="middle"
                                   class="heading-font italic font-black"
                                   style="font-size: 80px; fill: #000000; transition: fill 0.3s ease;">
-                                UE STUDIO
+                                UR?
                             </text>
                         </svg>
                     </div>
@@ -62,11 +62,6 @@ export function render() {
                                 <button onclick="window.setStickerText('UnknownDriverz')" class="text-[8px] font-black px-3 py-2 bg-zinc-800 hover:bg-white hover:text-black rounded-xl transition-all border border-zinc-700 uppercase tracking-tighter">UnknownDriverz</button>
                             </div>
                         </div>
-
-                        <input type="text" id="sticker-input" 
-                            oninput="window.setStickerText(this.value)" 
-                            placeholder="OR ENTER CUSTOM SLOGAN" 
-                            class="w-full bg-black border border-zinc-800 p-4 rounded-xl text-xs font-mono outline-none focus:border-purple-500 transition">
                     </div>
 
                     <div class="bg-zinc-900/40 border border-zinc-800 p-8 rounded-3xl">
@@ -114,7 +109,7 @@ export function render() {
 }
 
 window.setStickerText = (val) => {
-    const text = val.toUpperCase() || 'UE STUDIO';
+    const text = val.toUpperCase() || 'UR?';
     document.getElementById('sticker-text-bg').textContent = text;
     document.getElementById('sticker-text-main').textContent = text;
     

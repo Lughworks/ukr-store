@@ -2,6 +2,12 @@ export function render() {
     const __unit = (window?.computeUnitPriceFromTable?.({ product: { slug: 'hats' }, config: {} }) ?? 0);
     const __price = new Intl.NumberFormat('en-GB', { style: 'currency', currency: 'GBP' }).format(__unit);
 
+    setTimeout(() => {
+        if (typeof window.enable3DViewer === 'function') {
+            window.enable3DViewer('hats', 'default');
+        }
+    }, 50);
+
     return `
     <div class="min-h-screen bg-black text-white p-4 md:p-12 relative">
       <div class="flex justify-between items-center mb-12">
@@ -23,41 +29,7 @@ export function render() {
       <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
         <div class="lg:col-span-7">
           <div id="preview-stage" class="aspect-square bg-zinc-900/20 border border-zinc-800 rounded-[3rem] flex items-center justify-center p-8 relative overflow-hidden">
-            <div data-preview="2d" class="absolute inset-0">
-              <div class="absolute inset-0 blueprint-grid opacity-20"></div>
-
-              <svg id="hat-svg-engine" viewBox="0 0 500 500" class="w-full h-full drop-shadow-2xl">
-                <defs>
-                  <pattern id="logo-pattern-fill" x="0" y="0" width="120" height="120" patternUnits="userSpaceOnUse">
-                    <image id="svg-logo-pattern-img" href="" x="0" y="0" width="120" height="120" preserveAspectRatio="xMidYMid slice"></image>
-                  </pattern>
-
-                  <clipPath id="hat-clip">
-                    <path d="M250,120 C180,120 100,160 80,240 C75,260 70,300 70,320 L430,320 C430,300 425,260 420,240 C400,160 320,120 250,120 Z"></path>
-                    <path d="M70,320 C70,350 120,400 250,400 C380,400 430,350 430,320 L70,320 Z"></path>
-                  </clipPath>
-                </defs>
-
-                <rect id="svg-hat-body" width="500" height="500" fill="#303030ff" clip-path="url(#hat-clip)"></rect>
-                <path d="M250,120 C180,120 100,160 80,240 C75,260 70,300 70,320 L430,320 C430,300 425,260 420,240 C400,160 320,120 250,120 Z" fill="black" opacity="0.4"></path>
-
-                <text
-                  id="svg-logo-target"
-                  x="50%"
-                  y="275"
-                  text-anchor="middle"
-                  class="heading-font italic font-black"
-                  style="font-size: 110px; fill: #ffffff; transition: fill 0.3s ease;"
-                >UR?</text>
-              </svg>
-            </div>
-
-            <div data-preview="3d" class="preview-hidden absolute inset-0 p-4"></div>
-
-            <div class="absolute bottom-6 left-6 z-30 flex gap-2">
-              <button onclick="window.disable3DViewer()" class="bg-black/60 backdrop-blur-md px-4 py-2 rounded-full border border-white/10 text-[9px] font-bold uppercase tracking-widest hover:border-purple-500 transition">Studio</button>
-              <button onclick="window.enable3DViewer('hats','default')" class="bg-black/60 backdrop-blur-md px-4 py-2 rounded-full border border-white/10 text-[9px] font-bold uppercase tracking-widest hover:border-purple-500 transition">3D</button>
-            </div>
+            <div data-preview="3d" class="absolute inset-0 p-4"></div>
           </div>
         </div>
 

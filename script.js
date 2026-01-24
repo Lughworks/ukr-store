@@ -36,8 +36,7 @@ window.MODEL_MAP = {
     'hoodies': {
         label: 'Hoodie',
         variants: {
-            down: './assets/models/hood-down.glb',
-            up: './assets/models/hood-up.glb'
+            default: './assets/models/hoodie.glb'
         }
     },
     't-shirts': {
@@ -141,7 +140,7 @@ window.enable3DViewer = (slug, variant = 'default') => {
             mv.setAttribute('camera-controls', '');
             mv.setAttribute('touch-action', 'pan-y');
             mv.setAttribute('shadow-intensity', '1');
-            mv.setAttribute('exposure', '1');
+            mv.setAttribute('exposure', '2');
             mv.setAttribute('environment-image', 'neutral');
 
             mv.setAttribute('reveal', 'manual');
@@ -263,7 +262,7 @@ window.makeTextTextureDataURL = ({
         size -= 2;
     } while (size > 10);
 
-    ctx.shadowColor = 'rgba(0,0,0,0.6)';
+    ctx.shadowColor = 'rgba(0, 0, 0, 0)';
     ctx.shadowBlur = size * 0.12;
     ctx.shadowOffsetY = size * 0.08;
 

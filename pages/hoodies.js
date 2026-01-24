@@ -1,138 +1,989 @@
 export function render() {
-    const __unit = (window?.computeUnitPriceFromTable?.({ product: { slug: 'hoodies' }, config: {} }) ?? 0);
-    const __price = new Intl.NumberFormat('en-GB', { style: 'currency', currency: 'GBP' }).format(__unit);
-    const folder = 'hoodies';
-    const images = ['1.jpeg', '2.jpeg', '3.jpeg', '4.jpeg', '5.jpeg', '6.jpeg', '7.jpeg', '8.jpeg', '9.jpeg', '10.jpeg'];
-
-    return `
-        <div class="min-h-screen bg-black text-white p-4 md:p-12 relative">
-            <div class="flex justify-between items-center mb-12">
-                <div>
-                    <span class="text-[10px] text-purple-500 font-bold tracking-[0.3em] uppercase">Apparel / Studio</span>
-                    <h1 class="heading-font text-4xl md:text-6xl font-black uppercase tracking-tighter mt-2">Custom Hoodies</h1>
-                    <div class="inline-flex items-center gap-3 px-4 py-2 rounded-full border border-zinc-800 bg-zinc-900/40">
-                    <span class="text-[8px] uppercase tracking-[0.4em] font-black text-zinc-500">Price</span>
-                    <span class="text-[11px] font-black uppercase tracking-widest text-purple-400">${__price}</span>
-                </div>
-                </div>
-                <button onclick="window.closePage()" class="group flex items-center gap-3 bg-zinc-900 hover:bg-white hover:text-black transition-all px-6 py-3 rounded-full border border-zinc-800">
-                    <span class="text-[10px] font-bold uppercase tracking-widest">Back to Studio</span>
-                    <span class="text-xl group-hover:rotate-90 transition-transform">×</span>
-                </button>
-            </div>
-
-            <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-                
-                <div class="lg:col-span-7 space-y-6">
-                    <div id="preview-stage" class="aspect-[4/5] bg-zinc-900/20 border border-zinc-800 rounded-3xl relative overflow-hidden">
-                    <div data-preview="2d" class="absolute inset-0">
-                        <div class="absolute inset-0 blueprint-grid opacity-30"></div>
-                        <img src="./images/${folder}/1.jpeg" id="product-base-image" class="absolute inset-0 w-full h-full object-contain z-10 p-8 transition-all duration-500" onerror="this.src='https://via.placeholder.com/800x1000?text=HOODIE_DATA_MISSING'">
-                        <div class="absolute inset-0 z-20 flex items-center justify-center pointer-events-none">
-                            <span id="preview-text-front" class="text-3xl md:text-5xl font-black uppercase italic text-white drop-shadow-2xl text-center px-12"></span>
-                        </div>
-                    </div>
-                    <div data-preview="3d" class="hidden absolute inset-0 p-4"></div>
-
-                    <div class="absolute bottom-6 left-6 z-30 flex gap-2">
-                        <button onclick="window.disable3DViewer()" class="bg-black/60 backdrop-blur-md px-4 py-2 rounded-full border border-white/10 text-[9px] font-bold uppercase tracking-widest hover:border-purple-500 transition">Studio</button>
-                        <button onclick="window.enable3DViewer('hoodies','default')" class="bg-black/60 backdrop-blur-md px-4 py-2 rounded-full border border-white/10 text-[9px] font-bold uppercase tracking-widest hover:border-purple-500 transition">3D</button>
-                    </div>
-                    <div class="absolute bottom-6 right-6 z-30 flex gap-2">
-                        <button onclick="window.set3DVariant('hoodies','down')" class="bg-black/60 backdrop-blur-md px-3 py-2 rounded-full border border-white/10 text-[9px] font-bold uppercase tracking-widest hover:border-purple-500 transition">Hood Down</button>
-                        <button onclick="window.set3DVariant('hoodies','up')" class="bg-black/60 backdrop-blur-md px-3 py-2 rounded-full border border-white/10 text-[9px] font-bold uppercase tracking-widest hover:border-purple-500 transition">Hood Up</button></div>
-                    </div>
-
-                    <div class="flex gap-4 overflow-x-auto pb-2 no-scrollbar">${images.map(img => `<button onclick="document.getElementById('product-base-image').src='./images/${folder}/${img}'"class="w-24 h-24 flex-shrink-0 bg-zinc-900/40 border border-zinc-800 rounded-2xl overflow-hidden hover:border-purple-500 transition-all group"><img src="./images/${folder}/${img}" class="w-full h-full object-cover opacity-50 group-hover:opacity-100 transition-opacity"></button>`).join('')}</div>
-
-                    <div class="bg-zinc-900/40 border border-zinc-800 rounded-2xl p-6">
-                        <div class="grid grid-cols-3 gap-4">
-                            <div class="text-center p-3 border border-zinc-800 rounded-xl">
-                                <p class="text-[8px] text-zinc-500 uppercase">Composition</p>
-                                <p class="text-[10px] font-bold">80% Cotton / 20% Poly</p>
-                            </div>
-                            <div class="text-center p-3 border border-zinc-800 rounded-xl">
-                                <p class="text-[8px] text-zinc-500 uppercase">Pocket</p>
-                                <p class="text-[10px] font-bold">Kangaroo Pouch</p>
-                            </div>
-                            <div class="text-center p-3 border border-zinc-800 rounded-xl">
-                                <p class="text-[8px] text-zinc-500 uppercase">Hood</p>
-                                <p class="text-[10px] font-bold">Double Lined</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="lg:col-span-5 space-y-6">
-                    <div class="bg-zinc-900/40 border border-zinc-800 rounded-3xl p-8">
-                        <label class="text-[10px] font-black uppercase text-zinc-500 tracking-widest block mb-4">Color & Size</label>
-                        <div class="grid grid-cols-8 gap-2 mb-6 max-h-48 overflow-y-auto p-2 border border-zinc-800 rounded-xl">${['#000000', '#FFFFFF', '#4B5563', '#991B1B', '#1E3A8A', '#166534', '#EAB308', '#D946EF', '#F97316', '#06B6D4', '#8B5CF6', '#EC4899', '#10B981', '#6366F1', '#F43F5E', '#71717A', '#3F3F46', '#27272A', '#52525B', '#A1A1AA', '#D4D4D8', '#E4E4E7', '#F4F4F5', '#FAFAFA', '#7F1D1D', '#991B1B', '#B91C1C', '#DC2626', '#EF4444', '#F87171', '#FCA5A5', '#FECACA', '#7C2D12', '#9A3412', '#C2410C', '#EA580C', '#F97316', '#FB923C', '#FDBA74', '#FED7AA', '#78350F', '#92400E', '#B45309', '#D97706'].map((color, i) => `<div onclick="window.updateSelection(this, 'active-color')" data-color="${color}" style="background-color: ${color}" class="aspect-square rounded-md border border-zinc-700 cursor-pointer hover:scale-110 transition ${i === 0 ? 'active-color' : ''}"></div>`).join('')}</div>
-                        <div class="grid grid-cols-4 gap-2">${['XS', 'S', 'M', 'L', 'XL', '2XL', '3XL', '4XL'].map(size => `<button onclick="window.updateSelection(this, 'active-size')" class="py-3 bg-black border border-zinc-800 rounded-xl text-[10px] font-bold hover:border-purple-500 transition ${size === 'L' ? 'active-size' : ''}">${size}</button>`).join('')}</div>
-                    </div>
-
-                    <div class="bg-zinc-900/40 border border-zinc-800 rounded-3xl p-8">
-                        <label class="text-[10px] font-black uppercase text-zinc-500 tracking-widest block mb-6">Design Elements</label>
-                        <div class="space-y-4">
-                            <div>
-                                <p class="text-[8px] text-zinc-400 uppercase font-bold mb-2">Front Chest Text</p>
-                                <input type="text" placeholder="ENTER FRONT TEXT..." 
-                                    oninput="document.getElementById('preview-text-front').innerText = this.value"
-                                    class="w-full bg-black border border-zinc-800 p-4 rounded-xl text-xs font-mono outline-none focus:border-purple-500 transition">
-                            </div>
-                            <select id="font-front" class="w-full bg-zinc-800 border-none p-4 rounded-xl text-[10px] font-bold uppercase text-zinc-400">
-                                <option>Standard Bold</option>
-                                <option>Gothic Script</option>
-                                <option>Modern Sans</option>
-                            </select>
-
-                            <div>
-                                <p class="text-[8px] text-zinc-400 uppercase font-bold mb-2">Rear Back Text</p>
-                                <input type="text" placeholder="ENTER BACK TEXT..." class="w-full bg-black border border-zinc-800 p-4 rounded-xl text-xs font-mono outline-none focus:border-purple-500 transition mb-3">
-                                <select id="font-rear" class="w-full bg-zinc-800 border-none p-4 rounded-xl text-[10px] font-bold uppercase text-zinc-400">
-                                    <option>Standard Bold</option>
-                                    <option>Gothic Script</option>
-                                    <option>Modern Sans</option>
-                                </select>
-                                
-                                <div class="bg-zinc-900/40 border border-zinc-800 rounded-2xl p-6 mt-4">
-                                    <span class="text-[10px] font-black uppercase tracking-widest text-zinc-500 block mb-4">Visual Assets</span>
-                                    <div id="image-upload-zone" onclick="document.getElementById('artwork-upload-input').click()"
-                                        class="aspect-video bg-black border-2 border-dashed border-zinc-800 rounded-xl flex items-center justify-center hover:border-purple-500 cursor-pointer overflow-hidden">
-                                        <input type="file" id="artwork-upload-input" class="hidden" accept="image/*" onchange="window.handleImageUpload(this)">
-                                        <div id="image-preview-container" class="w-full h-full flex items-center justify-center">
-                                            <div class="text-center px-4">
-                                                <span class="text-zinc-600 text-[9px] uppercase font-bold">Click to Upload Artwork</span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <button onclick="window.saveHoodieConfig()" 
-                        class="w-full bg-white text-black py-6 rounded-2xl font-black uppercase text-xs tracking-[0.3em] hover:bg-purple-600 hover:text-white transition-all shadow-2xl active:scale-95">
-                        Add to Cart
-                    </button>
-                </div>
-            </div>
+  const __TEXT_COLORS = ['#FFFFFF', '#000000', '#9333EA', '#3B82F6', '#22C55E', '#EAB308', '#F97316', '#EF4444', '#A1A1AA', '#D4D4D8', '#06B6D4', '#EC4899', '#10B981', '#6366F1', '#F43F5E', '#71717A'];
+  const __unit = (window?.computeUnitPriceFromTable?.({ product: { slug: 'hoodies' }, config: {} }) ?? 0);
+  const __price = new Intl.NumberFormat('en-GB', { style: 'currency', currency: 'GBP' }).format(__unit);
+  const folder = 'hoodies';
+  const images = ['1.jpeg', '2.jpeg', '3.jpeg', '4.jpeg', '5.jpeg', '6.jpeg', '7.jpeg', '8.jpeg', '9.jpeg', '10.jpeg'];
+  const frontPrintPresetFiles = ['ukr-logo-front.png','ukd-logo-front.png'];
+  const backPrintPresetFiles = ['ukr-logo-back.png','ukd-logo-back.png'];
+  const s = window.HOODIE_STATE || {};
+  const frontTextColor = s.frontTextColor || '#FFFFFF';
+  const backTopTextColor = s.backTopTextColor || '#FFFFFF';
+  const backEmbTextColor = s.backEmbTextColor || '#FFFFFF';
+  setTimeout(() => {
+      if (typeof window.enable3DViewer === 'function') {
+        window.enable3DViewer('hoodies', 'default');
+        window.__hoodiesShowPreview?.('3d');
+      }
+    }, 50);
+  return `
+    <div class="min-h-screen bg-black text-white p-4 md:p-12 relative">
+      <div class="flex flex-col md:flex-row md:justify-between md:items-center gap-6 mb-10">
+        <div>
+          <span class="text-[10px] text-purple-500 font-bold tracking-[0.3em] uppercase">Apparel / Studio</span>
+          <h1 class="heading-font text-4xl md:text-6xl font-black uppercase tracking-tighter mt-2">Custom Hoodies</h1>
+          <div class="inline-flex items-center gap-3 px-4 py-2 rounded-full border border-zinc-800 bg-zinc-900/40 mt-3">
+            <span class="text-[8px] uppercase tracking-[0.4em] font-black text-zinc-500">Price</span>
+            <span class="text-[11px] font-black uppercase tracking-widest text-purple-400">${__price}</span>
+          </div>
         </div>
-    `;
+
+        <button onclick="window.closePage()"
+          class="group flex items-center justify-center gap-3 bg-zinc-900 hover:bg-white hover:text-black transition-all px-6 py-3 rounded-full border border-zinc-800 self-start md:self-auto">
+          <span class="text-[10px] font-bold uppercase tracking-widest">Back to Studio</span>
+          <span class="text-xl group-hover:rotate-90 transition-transform">×</span>
+        </button>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+        <div class="lg:col-span-7 space-y-6">
+          <div id="preview-stage" class="aspect-[4/5] bg-zinc-900/20 border border-zinc-800 rounded-3xl relative overflow-hidden">
+            <div id="hoodies-preview-2d" data-preview="2d" class="hidden absolute inset-0">
+              <div class="absolute inset-0 blueprint-grid opacity-30"></div>
+
+              <img
+                src="./images/${folder}/1.jpeg"
+                id="product-base-image"
+                class="absolute inset-0 w-full h-full object-contain z-10 p-8 transition-all duration-500"
+                onerror="this.src='https://via.placeholder.com/800x1000?text=HOODIE_DATA_MISSING'"
+              />
+
+            </div>
+
+            <div id="hoodies-preview-3d" data-preview="3d" class="absolute inset-0 p-4"></div>
+
+            <div class="absolute bottom-6 left-6 z-30 flex gap-2">
+              <button onclick="window.hoodiesShowStudio()"
+                class="bg-black/60 backdrop-blur-md px-4 py-2 rounded-full border border-white/10 text-[9px] font-bold uppercase tracking-widest hover:border-purple-500 transition">Studio</button>
+              <button onclick="window.hoodiesShow3D()"
+                class="bg-black/60 backdrop-blur-md px-4 py-2 rounded-full border border-white/10 text-[9px] font-bold uppercase tracking-widest hover:border-purple-500 transition">3D</button>
+            </div>
+          </div>
+
+          <div class="flex gap-3 overflow-x-auto pb-2 no-scrollbar">
+            ${images.map(img => `
+              <button
+                onclick="document.getElementById('product-base-image') && (document.getElementById('product-base-image').src='./images/${folder}/${img}')"
+                class="w-24 h-24 flex-shrink-0 bg-zinc-900/40 border border-zinc-800 rounded-2xl overflow-hidden hover:border-purple-500 transition-all group"
+              >
+                <img src="./images/${folder}/${img}" class="w-full h-full object-cover opacity-60 group-hover:opacity-100 transition-opacity">
+              </button>
+            `).join('')}
+          </div>
+
+          <div class="bg-zinc-900/40 border border-zinc-800 rounded-2xl p-6">
+            <div class="grid grid-cols-3 gap-4">
+              <div class="text-center p-3 border border-zinc-800 rounded-xl">
+                <p class="text-[8px] text-zinc-500 uppercase">Composition</p>
+                <p class="text-[10px] font-bold">80% Cotton / 20% Poly</p>
+              </div>
+              <div class="text-center p-3 border border-zinc-800 rounded-xl">
+                <p class="text-[8px] text-zinc-500 uppercase">Pocket</p>
+                <p class="text-[10px] font-bold">Kangaroo Pouch</p>
+              </div>
+              <div class="text-center p-3 border border-zinc-800 rounded-xl">
+                <p class="text-[8px] text-zinc-500 uppercase">Hood</p>
+                <p class="text-[10px] font-bold">Double Lined</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="lg:col-span-5 space-y-6">
+
+          <div class="bg-zinc-900/40 border border-zinc-800 rounded-3xl p-8">
+            <div class="flex items-center justify-between gap-4 mb-6">
+              <div>
+                <div class="text-[10px] font-black uppercase tracking-[0.25em] text-zinc-500">Customization</div>
+                <div class="text-[9px] font-black uppercase tracking-[0.35em] text-zinc-700 mt-1">Front + Back</div>
+              </div>
+
+              <div class="inline-flex items-center rounded-full border border-zinc-800 bg-black p-1">
+                <button id="tab-print"
+                  onclick="window.setHoodieMode('print')"
+                  class="px-4 py-2 rounded-full text-[10px] font-black uppercase tracking-widest bg-white text-black transition">
+                  Print
+                </button>
+                <button id="tab-emb"
+                  onclick="window.setHoodieMode('embroidered')"
+                  class="px-4 py-2 rounded-full text-[10px] font-black uppercase tracking-widest text-zinc-300 hover:text-white transition">
+                  Embroidered
+                </button>
+              </div>
+            </div>
+
+            <div class="space-y-4">
+              <div class="flex items-end justify-between gap-4">
+                <label class="text-[10px] font-black uppercase text-zinc-500 tracking-widest block">Front Logo <span class="text-zinc-700">(required)</span></label>
+                <div class="text-[9px] font-black uppercase tracking-[0.3em] text-zinc-700">MODE: <span id="ui-front-mode-label">PRINT</span></div>
+              </div>
+
+              <div id="panel-front-print">
+                <div class="grid grid-cols-3 gap-3">
+                  ${frontPrintPresetFiles.map((f) => `
+                    <button
+                      onclick="window.setHoodieFrontPrintPreset('${f}', this)"
+                      class="aspect-square rounded-xl border border-zinc-800 bg-black overflow-hidden hover:border-purple-500 transition relative group"
+                      title="${f}"
+                    >
+                      <img
+                        src="${'./images/hoodie/presets/front/' + f}"
+                        onerror="this.onerror=null; this.src='${'./images/hoodies/presets/front/' + f}'"
+                        class="w-full h-full object-cover opacity-70 group-hover:opacity-100 transition"
+                      />
+                      <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition"></div>
+                    </button>
+                  `).join('')}
+                </div>
+
+                <div class="mt-4 flex items-center justify-between">
+                  <div class="text-[9px] text-zinc-500 font-black uppercase tracking-widest">
+                    Active: <span id="hoodie-front-label" class="text-zinc-300">None</span>
+                  </div>
+                  <button onclick="window.clearHoodieFrontPrintPreset()"
+                    class="text-[9px] font-black uppercase tracking-widest text-zinc-600 hover:text-red-400 transition">
+                    Clear
+                  </button>
+                </div>
+              </div>
+
+              <div id="panel-front-embroidered" class="hidden">
+                <div class="grid grid-cols-2 gap-3">
+                  <button onclick="window.setHoodieFrontTextPreset('UnknownRiderz', this)"
+                    class="active-front px-4 py-4 rounded-2xl border border-zinc-800 bg-black hover:border-purple-500 transition text-left">
+                    <div class="text-[10px] font-black uppercase tracking-widest">UnknownRiderz</div>
+                    <div class="text-[9px] text-zinc-600 font-bold uppercase tracking-widest mt-1">UR</div>
+                  </button>
+                  <button onclick="window.setHoodieFrontTextPreset('UnknownDriverz', this)"
+                    class="px-4 py-4 rounded-2xl border border-zinc-800 bg-black hover:border-purple-500 transition text-left opacity-80 hover:opacity-100">
+                    <div class="text-[10px] font-black uppercase tracking-widest">UnknownDriverz</div>
+                    <div class="text-[9px] text-zinc-600 font-bold uppercase tracking-widest mt-1">UD</div>
+                  </button>
+                </div>
+
+                <div class="mt-4">
+                  <div class="text-[8px] text-zinc-400 uppercase font-bold mb-2 tracking-[0.35em]">Front Embroidery Colour</div>
+                  <div data-textcolor-group class="grid grid-cols-8 gap-2 p-2 border border-zinc-800 rounded-xl">
+                    ${__TEXT_COLORS.map((color) => `
+                      <div
+                        data-swatch
+                        onclick="window.setHoodieTextColorFor('front','${color}', this)"
+                        style="background-color:${color}"
+                        class="aspect-square rounded-md border border-white/10 cursor-pointer hover:scale-110 transition ${color === frontTextColor ? 'ring-2 ring-purple-500' : ''}"
+                        title="${color}"
+                      ></div>
+                    `).join('')}
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="my-7 h-px bg-zinc-800/80"></div>
+
+            <div class="space-y-4">
+              <div class="flex items-end justify-between gap-4">
+                <label class="text-[10px] font-black uppercase text-zinc-500 tracking-widest block">Back Options <span class="text-zinc-700">(optional)</span></label>
+                <div class="text-[9px] font-black uppercase tracking-[0.3em] text-zinc-700">MODE: <span id="ui-back-mode-label">PRINT</span></div>
+              </div>
+
+              <div id="panel-print">
+                <div class="space-y-4">
+                  <div class="bg-black/40 border border-zinc-800 rounded-2xl p-5">
+                    <p class="text-[8px] text-zinc-400 uppercase font-bold mb-2 tracking-[0.35em]">Back Top Text</p>
+                    <input
+                      id="hoodie-back-top-input"
+                      type="text"
+                      placeholder="ENTER BACK TOP TEXT..."
+                      oninput="window.setHoodieBackTopText(this.value)"
+                      class="w-full bg-black border border-zinc-800 p-4 rounded-xl text-xs font-mono outline-none focus:border-purple-500 transition"
+                    />
+
+                    <div class="mt-4">
+                      <div class="text-[8px] text-zinc-400 uppercase font-bold mb-2 tracking-[0.35em]">Back Top Text Colour</div>
+                      <div data-textcolor-group class="grid grid-cols-8 gap-2 p-2 border border-zinc-800 rounded-xl">
+                        ${__TEXT_COLORS.map((color) => `
+                          <div
+                            data-swatch
+                            onclick="window.setHoodieTextColorFor('backTop','${color}', this)"
+                            style="background-color:${color}"
+                            class="aspect-square rounded-md border border-white/10 cursor-pointer hover:scale-110 transition ${color === backTopTextColor ? 'ring-2 ring-purple-500' : ''}"
+                            title="${color}"
+                          ></div>
+                        `).join('')}
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="bg-black/40 border border-zinc-800 rounded-2xl p-5">
+                    <div class="flex items-center justify-between mb-4">
+                      <span class="text-[8px] text-zinc-400 uppercase font-bold tracking-[0.35em]">Back Image</span>
+                      <div class="text-[9px] text-zinc-500 font-black uppercase tracking-widest">
+                        Active: <span id="hoodie-back-image-label" class="text-zinc-300">None</span>
+                      </div>
+                    </div>
+
+                    <div class="grid grid-cols-3 gap-3 mb-4">
+                      ${backPrintPresetFiles.map((f) => `
+                        <button
+                          onclick="window.setHoodieBackPrintPreset('${f}', this)"
+                          class="aspect-square rounded-xl border border-zinc-800 bg-black overflow-hidden hover:border-purple-500 transition relative group"
+                          title="${f}"
+                        >
+                          <img
+                            src="${'./images/hoodie/presets/print/' + f}"
+                            onerror="this.onerror=null; this.src='${'./images/hoodies/presets/print/' + f}'"
+                            class="w-full h-full object-cover opacity-70 group-hover:opacity-100 transition"
+                          />
+                          <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition"></div>
+                        </button>
+                      `).join('')}
+                    </div>
+
+                    <div id="image-upload-zone"
+                      onclick="document.getElementById('artwork-upload-input') && document.getElementById('artwork-upload-input').click()"
+                      class="aspect-video bg-black border-2 border-dashed border-zinc-800 rounded-xl flex items-center justify-center hover:border-purple-500 cursor-pointer overflow-hidden"
+                    >
+                      <input type="file" id="artwork-upload-input" class="hidden" accept="image/*"
+                        onchange="window.handleImageUpload(this); window.setHoodieBackImageFromUpload();">
+                      <div id="image-preview-container" class="w-full h-full flex items-center justify-center">
+                        <div class="text-center px-4">
+                          <span class="text-zinc-600 text-[9px] uppercase font-bold tracking-widest">Click to Upload Artwork</span>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="mt-3 flex items-center justify-end">
+                      <button onclick="window.clearHoodieBackImage()" class="text-[9px] font-black uppercase tracking-widest text-zinc-600 hover:text-red-400 transition">
+                        Clear image
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div id="panel-embroidered" class="hidden">
+                <p class="text-[9px] text-zinc-500 font-bold uppercase tracking-wider mb-4">
+                  Choose a preset for back embroidery (supports multi-line).
+                </p>
+
+                <div id="emb-back-grid" class="grid grid-cols-2 gap-3"></div>
+
+                <div class="mt-4">
+                  <div class="text-[8px] text-zinc-400 uppercase font-bold mb-2 tracking-[0.35em]">Back Embroidery Colour</div>
+                  <div data-textcolor-group class="grid grid-cols-8 gap-2 p-2 border border-zinc-800 rounded-xl">
+                    ${__TEXT_COLORS.map((color) => `
+                      <div
+                        data-swatch
+                        onclick="window.setHoodieTextColorFor('backEmb','${color}', this)"
+                        style="background-color:${color}"
+                        class="aspect-square rounded-md border border-white/10 cursor-pointer hover:scale-110 transition ${color === backEmbTextColor ? 'ring-2 ring-purple-500' : ''}"
+                        title="${color}"
+                      ></div>
+                    `).join('')}
+                  </div>
+                </div>
+
+                <div class="mt-4 flex items-center justify-between">
+                  <div class="text-[9px] text-zinc-500 font-black uppercase tracking-widest">
+                    Active: <span id="hoodie-emb-back-label" class="text-zinc-300">None</span>
+                  </div>
+                  <button onclick="window.clearHoodieEmbroideredBack()" class="text-[9px] font-black uppercase tracking-widest text-zinc-600 hover:text-red-400 transition">
+                    Clear
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="bg-zinc-900/40 border border-zinc-800 rounded-3xl p-8 space-y-6">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div>
+                <label class="text-[10px] font-black uppercase text-zinc-500 tracking-widest block mb-4">Hoodie Colour</label>
+                <div class="grid grid-cols-8 gap-2 max-h-48 overflow-y-auto p-2 border border-zinc-800 rounded-xl">
+                  ${[
+                    '#000000', '#FFFFFF', '#4B5563', '#991B1B', '#1E3A8A', '#166534', '#EAB308', '#D946EF',
+                    '#F97316', '#06B6D4', '#8B5CF6', '#EC4899', '#10B981', '#6366F1', '#F43F5E', '#71717A',
+                    '#3F3F46', '#27272A', '#52525B', '#A1A1AA', '#D4D4D8', '#E4E4E7', '#F4F4F5', '#FAFAFA',
+                    '#7F1D1D', '#991B1B', '#B91C1C', '#DC2626', '#EF4444', '#F87171', '#FCA5A5', '#FECACA',
+                    '#7C2D12', '#9A3412', '#C2410C', '#EA580C', '#FB923C', '#FDBA74', '#FED7AA', '#78350F',
+                    '#92400E', '#B45309', '#D97706'
+                  ].map((color, i) => `
+                    <div
+                      onclick="window.setHoodieBodyColor('${color}', this)"
+                      data-color="${color}"
+                      style="background-color:${color}"
+                      class="aspect-square rounded-md border border-zinc-700 cursor-pointer hover:scale-110 transition ${i === 0 ? 'active-hoodie-color' : ''}"
+                      title="${color}"
+                    ></div>
+                  `).join('')}
+                </div>
+              </div>
+
+              <div>
+                <label class="text-[10px] font-black uppercase text-zinc-500 tracking-widest block mb-4">Size</label>
+                <div class="grid grid-cols-4 gap-2">
+                  ${['XS', 'S', 'M', 'L', 'XL', '2XL', '3XL', '4XL'].map(size => `
+                    <button onclick="window.updateSelection(this, 'active-size')"
+                      class="py-3 bg-black border border-zinc-800 rounded-xl text-[10px] font-bold hover:border-purple-500 transition ${size === 'L' ? 'active-size' : ''}">${size}</button>
+                  `).join('')}
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <button
+            onclick="window.saveHoodieConfig()"
+            class="w-full bg-white text-black py-6 rounded-2xl font-black uppercase text-xs tracking-[0.3em] hover:bg-purple-600 hover:text-white transition-all shadow-2xl active:scale-95">
+            Add to Cart
+          </button>
+
+        </div>
+      </div>
+    </div>
+
+    <script>
+      (function(){
+        try{
+          if (window.enable3DViewer) {
+            setTimeout(function(){
+              try { window.hoodiesShow3D && window.hoodiesShow3D(); } catch(e) {}
+            }, 0);
+          }
+        } catch(e) {}
+      })();
+    </script>
+  `;
 }
 
-window.saveHoodieConfig = () => {
-    window.saveDesignToQueue(
-        { slug: 'hoodies', label: 'Hoodie' }, {
-        front: document.querySelector('input[placeholder*=\'FRONT\']')?.value || 'No Text',
-        frontFont: document.getElementById('font-front').value,
-        back: document.querySelector('input[placeholder*=\'BACK\']')?.value || 'No Text',
-        backFont: document.getElementById('font-rear').value,
-        image: document.querySelector('#image-preview-container img')?.src || null,
-        color: document.querySelector('.active-color')?.dataset.color || 'Black',
-        size: document.querySelector('.active-size')?.innerText || 'L',
-        specs: 'Heavyweight Cotton'
-    }, {
-        text: document.querySelector('input[placeholder*=FRONT]')?.value || 'Custom Design'
+window.HOODIE_EMB_BACK_PRESETS = window.HOODIE_EMB_BACK_PRESETS || [
+  'EAT\nSLEEP\nRIDE\nREPEAT',
+  'EAT\nSLEEP\nDRIVE\nREPEAT',
+];
+
+window.HOODIE_STATE = window.HOODIE_STATE || {
+  mode: 'print',
+  frontTextPreset: 'UnknownRiderz',
+  frontPrintFile: null,
+  frontPrintDataURL: null,
+  frontLabel: 'None',
+  bodyColor: '#000000',
+  frontTextColor: '#FFFFFF',
+  backTopTextColor: '#FFFFFF',
+  backEmbTextColor: '#FFFFFF',
+  backTopText: '',
+  backImage: null,
+  backImageLabel: 'None',
+  embBackText: null
+};
+
+window.HOODIE_3D = window.HOODIE_3D || {
+  bodyMaterialName: 'hoodie-colour',
+  frontMaterialName: 'hoodie-front-pocket',
+  backImageMaterialName: 'hoodie-back-image',
+  backTopTextMaterialName: 'hoodie-back-text-top',
+  backEmbTextMaterialName: 'hoodie-back-text-full'
+};
+
+window.HOODIE_PRINT_PRESETS_BASE = window.HOODIE_PRINT_PRESETS_BASE || './images/hoodie/presets/print/';
+window.HOODIE_FRONT_PRINT_PRESETS_BASE = window.HOODIE_FRONT_PRINT_PRESETS_BASE || './images/hoodie/presets/front/';
+
+window.__HOODIE_IMAGE_CACHE = window.__HOODIE_IMAGE_CACHE || new Map();
+
+window.fetchAsDataURL = async (url) => {
+  const key = String(url || '');
+  if (!key) return null;
+
+  if (window.__HOODIE_IMAGE_CACHE.has(key)) return window.__HOODIE_IMAGE_CACHE.get(key);
+
+  const p = (async () => {
+    const res = await fetch(key, { cache: 'force-cache' });
+    if (!res.ok) throw new Error(`[HOODIES] Failed to fetch: ${key}`);
+    const blob = await res.blob();
+    return await new Promise((resolve) => {
+      const r = new FileReader();
+      r.onload = () => resolve(r.result);
+      r.readAsDataURL(blob);
+    });
+  })();
+
+  window.__HOODIE_IMAGE_CACHE.set(key, p);
+  return p;
+};
+
+window.__normalizeLines = (text) => {
+  const raw = String(text ?? '');
+  const t = raw.replaceAll('/n', '\n');
+  return t.split('\n').map(s => s.trim()).filter(Boolean);
+};
+
+window.makeMultilineTextTextureDataURL = ({ text, color = '#ffffff', fontFamily = 'Inter, Arial', weight = 900, size = 1024, maxWidth = 0.86, maxHeight = 0.80, lineGap = 1.10 }) => {
+  const c = document.createElement('canvas');
+  c.width = size;
+  c.height = size;
+  const ctx = c.getContext('2d');
+
+  ctx.clearRect(0, 0, size, size);
+
+  const lines = window.__normalizeLines(text);
+  if (!lines.length) return c.toDataURL('image/png');
+
+  const padX = Math.floor((1 - maxWidth) * size / 2);
+  const padY = Math.floor((1 - maxHeight) * size / 2);
+  const boxW = size - padX * 2;
+  const boxH = size - padY * 2;
+
+  let fontSize = Math.floor(size * 0.24);
+  const minFontSize = Math.floor(size * 0.06);
+
+  const fits = () => {
+    ctx.font = `${weight} ${fontSize}px ${fontFamily}`;
+    const widths = lines.map(l => ctx.measureText(l).width);
+    const w = Math.max(...widths);
+    const lineH = fontSize * lineGap;
+    const h = lineH * lines.length;
+    return w <= boxW && h <= boxH;
+  };
+
+  while (!fits() && fontSize > minFontSize) fontSize -= 6;
+
+  ctx.font = `${weight} ${fontSize}px ${fontFamily}`;
+  ctx.fillStyle = color;
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+
+  ctx.shadowColor = 'rgba(0,0,0,0.65)';
+  ctx.shadowBlur = 18;
+  ctx.shadowOffsetY = 10;
+
+  const lineH = fontSize * lineGap;
+  const totalH = lineH * lines.length;
+  const startY = (size / 2) - (totalH / 2) + (lineH / 2);
+
+  lines.forEach((l, idx) => ctx.fillText(l, size / 2, startY + idx * lineH));
+
+  return c.toDataURL('image/png');
+};
+
+window.makeContainedImageTextureDataURL = async ({ src, size = 1024, padding = 80 }) => {
+  if (!src) return null;
+
+  let dataUrl = src;
+  if (!String(src).startsWith('data:image')) dataUrl = await window.fetchAsDataURL(src);
+
+  const img = new Image();
+  img.crossOrigin = 'anonymous';
+  img.src = dataUrl;
+
+  await new Promise((res, rej) => {
+    img.onload = res;
+    img.onerror = rej;
+  });
+
+  const c = document.createElement('canvas');
+  c.width = size;
+  c.height = size;
+  const ctx = c.getContext('2d');
+  ctx.clearRect(0, 0, size, size);
+
+  const avail = size - padding * 2;
+  const iw = img.naturalWidth || img.width;
+  const ih = img.naturalHeight || img.height;
+
+  const scale = Math.min(avail / iw, avail / ih);
+  const w = Math.max(1, Math.floor(iw * scale));
+  const h = Math.max(1, Math.floor(ih * scale));
+  const x = Math.floor((size - w) / 2);
+  const y = Math.floor((size - h) / 2);
+
+  ctx.drawImage(img, x, y, w, h);
+  return c.toDataURL('image/png');
+};
+
+window.__emptyTexture = window.__emptyTexture || (() => {
+  const c = document.createElement('canvas');
+  c.width = 8;
+  c.height = 8;
+  return c.toDataURL('image/png');
+})();
+
+window.applyHoodieTo3D = async () => {
+  const mv = window.getActiveModelViewer?.();
+  if (!mv || !mv.model) return;
+
+  try {
+    window.setMaterialBaseColor?.(mv, window.HOODIE_3D.bodyMaterialName, window.HOODIE_STATE.bodyColor);
+  } catch (_) {}
+
+  if (window.HOODIE_STATE.mode === 'print') {
+    try {
+      if (window.HOODIE_STATE.frontPrintDataURL) {
+        const frontPng = await window.makeContainedImageTextureDataURL({
+          src: window.HOODIE_STATE.frontPrintDataURL,
+          size: 1024,
+          padding: 110
+        });
+        if (frontPng) await window.applyBaseColorTextureURI?.(mv, window.HOODIE_3D.frontMaterialName, frontPng);
+      } else {
+        await window.applyBaseColorTextureURI?.(mv, window.HOODIE_3D.frontMaterialName, window.__emptyTexture);
+      }
+    } catch (e) {
+      console.warn('[HOODIES] Front print apply failed:', e);
     }
-    );
+  } else {
+    try {
+      const frontText = String(window.HOODIE_STATE.frontTextPreset || 'UnknownRiderz');
+      const frontPng = window.makeMultilineTextTextureDataURL({
+        text: frontText,
+        color: window.HOODIE_STATE.frontTextColor,
+        size: 1024,
+        maxWidth: 0.86,
+        maxHeight: 0.60,
+        lineGap: 1.05
+      });
+      await window.applyBaseColorTextureURI?.(mv, window.HOODIE_3D.frontMaterialName, frontPng);
+    } catch (e) {
+      console.warn('[HOODIES] Front embroidered apply failed:', e);
+    }
+  }
+
+  if (window.HOODIE_STATE.mode === 'print') {
+    try {
+      const t = String(window.HOODIE_STATE.backTopText || '').trim();
+      if (t) {
+        const topPng = window.makeMultilineTextTextureDataURL({
+          text: t,
+          color: window.HOODIE_STATE.backTopTextColor,
+          size: 1024,
+          maxWidth: 0.92,
+          maxHeight: 0.45,
+          lineGap: 1.05
+        });
+        await window.applyBaseColorTextureURI?.(mv, window.HOODIE_3D.backTopTextMaterialName, topPng);
+      } else {
+        await window.applyBaseColorTextureURI?.(mv, window.HOODIE_3D.backTopTextMaterialName, window.__emptyTexture);
+      }
+    } catch (e) {
+      console.warn('[HOODIES] Back top text apply failed:', e);
+    }
+
+    try {
+      if (window.HOODIE_STATE.backImage) {
+        const imgPng = await window.makeContainedImageTextureDataURL({
+          src: window.HOODIE_STATE.backImage,
+          size: 1024,
+          padding: 90
+        });
+        if (imgPng) await window.applyBaseColorTextureURI?.(mv, window.HOODIE_3D.backImageMaterialName, imgPng);
+      } else {
+        await window.applyBaseColorTextureURI?.(mv, window.HOODIE_3D.backImageMaterialName, window.__emptyTexture);
+      }
+    } catch (e) {
+      console.warn('[HOODIES] Back image apply failed:', e);
+    }
+
+    try {
+      await window.applyBaseColorTextureURI?.(mv, window.HOODIE_3D.backEmbTextMaterialName, window.__emptyTexture);
+    } catch (_) {}
+  } else {
+    try {
+      const t = String(window.HOODIE_STATE.embBackText || '').trim();
+      if (t) {
+        const embPng = window.makeMultilineTextTextureDataURL({
+          text: t,
+          color: window.HOODIE_STATE.backEmbTextColor,
+          size: 1024,
+          maxWidth: 0.88,
+          maxHeight: 0.80,
+          lineGap: 1.12
+        });
+        await window.applyBaseColorTextureURI?.(mv, window.HOODIE_3D.backEmbTextMaterialName, embPng);
+      } else {
+        await window.applyBaseColorTextureURI?.(mv, window.HOODIE_3D.backEmbTextMaterialName, window.__emptyTexture);
+      }
+    } catch (e) {
+      console.warn('[HOODIES] Emb back apply failed:', e);
+    }
+
+    try {
+      await window.applyBaseColorTextureURI?.(mv, window.HOODIE_3D.backTopTextMaterialName, window.__emptyTexture);
+      await window.applyBaseColorTextureURI?.(mv, window.HOODIE_3D.backImageMaterialName, window.__emptyTexture);
+    } catch (_) {}
+  }
+};
+
+window.__hoodiesShowPreview = (mode) => {
+  const d2 = document.getElementById('hoodies-preview-2d');
+  const d3 = document.getElementById('hoodies-preview-3d');
+  const is3 = mode === '3d';
+
+  if (d2) d2.classList.toggle('hidden', is3);
+  if (d3) d3.classList.toggle('hidden', !is3);
+};
+
+window.hoodiesShow3D = () => {
+  try { window.__hoodiesShowPreview?.('3d'); } catch (_) {}
+  try { window.enable3DViewer?.('hoodies', 'default'); } catch (_) {}
+};
+
+window.hoodiesShowStudio = () => {
+  try { window.__hoodiesShowPreview?.('2d'); } catch (_) {}
+  try { window.disable3DViewer?.(); } catch (_) {}
+  try { window.__syncHoodieFront2D?.(); window.__updateHoodieBackPreview?.(); } catch (_) {}
+};
+
+window.setHoodieMode = (mode) => {
+  window.HOODIE_STATE.mode = (mode === 'embroidered') ? 'embroidered' : 'print';
+
+  const tabPrint = document.getElementById('tab-print');
+  const tabEmb = document.getElementById('tab-emb');
+  const isPrint = window.HOODIE_STATE.mode === 'print';
+
+  const activeTab = 'px-4 py-2 rounded-full text-[10px] font-black uppercase tracking-widest bg-white text-black transition';
+  const idleTab = 'px-4 py-2 rounded-full text-[10px] font-black uppercase tracking-widest text-zinc-300 hover:text-white transition';
+
+  if (tabPrint) tabPrint.className = isPrint ? activeTab : idleTab;
+  if (tabEmb) tabEmb.className = isPrint ? idleTab : activeTab;
+
+  const pPrint = document.getElementById('panel-print');
+  const pEmb = document.getElementById('panel-embroidered');
+  if (pPrint) pPrint.classList.toggle('hidden', !isPrint);
+  if (pEmb) pEmb.classList.toggle('hidden', isPrint);
+
+  const frontPrint = document.getElementById('panel-front-print');
+  const frontEmb = document.getElementById('panel-front-embroidered');
+  if (frontPrint) frontPrint.classList.toggle('hidden', !isPrint);
+  if (frontEmb) frontEmb.classList.toggle('hidden', isPrint);
+
+  const lblFront = document.getElementById('ui-front-mode-label');
+  const lblBack = document.getElementById('ui-back-mode-label');
+  if (lblFront) lblFront.textContent = isPrint ? 'PRINT' : 'EMB';
+  if (lblBack) lblBack.textContent = isPrint ? 'PRINT' : 'EMB';
+
+  window.__syncHoodieFront2D?.();
+  window.__updateHoodieBackPreview?.();
+
+  window.applyHoodieTo3D?.();
+};
+
+window.setHoodieFrontTextPreset = (preset, btn) => {
+  window.HOODIE_STATE.frontTextPreset = preset;
+
+  const wrap = btn?.parentElement;
+  if (wrap) [...wrap.querySelectorAll('button')].forEach(b => b.classList.remove('active-front'));
+  btn?.classList.add('active-front');
+
+  window.__syncHoodieFront2D?.();
+  window.applyHoodieTo3D?.();
+};
+
+window.setHoodieFrontPrintPreset = async (fileName, btn) => {
+  try {
+    const grid = btn?.parentElement;
+    if (grid) [...grid.querySelectorAll('button')].forEach(b => b.classList.remove('ring-2', 'ring-purple-500'));
+    btn?.classList.add('ring-2', 'ring-purple-500');
+
+    let url = `${window.HOODIE_FRONT_PRINT_PRESETS_BASE}${fileName}`;
+    let dataUrl = null;
+
+    try { dataUrl = await window.fetchAsDataURL(url); }
+    catch (_) {
+      url = `./images/hoodies/presets/front/${fileName}`;
+      dataUrl = await window.fetchAsDataURL(url);
+    }
+
+    window.HOODIE_STATE.frontPrintFile = fileName;
+    window.HOODIE_STATE.frontPrintDataURL = dataUrl;
+    window.HOODIE_STATE.frontLabel = fileName;
+
+    const label = document.getElementById('hoodie-front-label');
+    if (label) label.textContent = fileName;
+
+    window.__syncHoodieFront2D?.();
+    window.applyHoodieTo3D?.();
+  } catch (e) {
+    console.warn('[HOODIES] Front preset load failed:', e);
+  }
+};
+
+window.clearHoodieFrontPrintPreset = () => {
+  window.HOODIE_STATE.frontPrintFile = null;
+  window.HOODIE_STATE.frontPrintDataURL = null;
+  window.HOODIE_STATE.frontLabel = 'None';
+
+  const label = document.getElementById('hoodie-front-label');
+  if (label) label.textContent = 'None';
+
+  document.querySelectorAll('#panel-front-print button.ring-2').forEach(b => b.classList.remove('ring-2', 'ring-purple-500'));
+
+  window.__syncHoodieFront2D?.();
+  window.applyHoodieTo3D?.();
+};
+
+window.setHoodieBodyColor = (hex, btn) => {
+  document.querySelectorAll('.active-hoodie-color').forEach(el => el.classList.remove('active-hoodie-color'));
+  btn?.classList.add('active-hoodie-color');
+
+  window.HOODIE_STATE.bodyColor = hex;
+  window.applyHoodieTo3D?.();
+};
+
+window.setHoodieTextColorFor = (target, hex, btn) => {
+  const t = String(target || '').trim();
+
+  const group = btn?.closest?.('[data-textcolor-group]');
+  if (group) group.querySelectorAll('[data-swatch]').forEach(el => el.classList.remove('ring-2', 'ring-purple-500'));
+  btn?.classList.add('ring-2', 'ring-purple-500');
+
+  if (t === 'front') window.HOODIE_STATE.frontTextColor = hex;
+  else if (t === 'backTop') window.HOODIE_STATE.backTopTextColor = hex;
+  else if (t === 'backEmb') window.HOODIE_STATE.backEmbTextColor = hex;
+
+  window.__syncHoodieFront2D?.();
+  window.applyHoodieTo3D?.();
+};
+
+window.setHoodieBackTopText = (value) => {
+  window.HOODIE_STATE.backTopText = String(value || '');
+  window.__updateHoodieBackPreview?.();
+  window.applyHoodieTo3D?.();
+};
+
+window.setHoodieBackPrintPreset = async (fileName, btn) => {
+  try {
+    const grid = btn?.parentElement;
+    if (grid) [...grid.querySelectorAll('button')].forEach(b => b.classList.remove('ring-2', 'ring-purple-500'));
+    btn?.classList.add('ring-2', 'ring-purple-500');
+
+    let url = `${window.HOODIE_PRINT_PRESETS_BASE}${fileName}`;
+    let dataUrl = null;
+
+    try { dataUrl = await window.fetchAsDataURL(url); }
+    catch (_) {
+      url = `./images/hoodies/presets/print/${fileName}`;
+      dataUrl = await window.fetchAsDataURL(url);
+    }
+
+    window.HOODIE_STATE.backImage = dataUrl;
+    window.HOODIE_STATE.backImageLabel = fileName;
+
+    const label = document.getElementById('hoodie-back-image-label');
+    if (label) label.textContent = fileName;
+
+    window.__updateHoodieBackPreview?.();
+    window.applyHoodieTo3D?.();
+  } catch (e) {
+    console.warn('[HOODIES] Back preset load failed:', e);
+  }
+};
+
+window.setHoodieBackImageFromUpload = () => {
+  const src = document.querySelector('#image-preview-container img')?.src || null;
+  if (!src) return;
+
+  window.HOODIE_STATE.backImage = src;
+  window.HOODIE_STATE.backImageLabel = 'Upload';
+
+  const label = document.getElementById('hoodie-back-image-label');
+  if (label) label.textContent = 'Upload';
+
+  document.querySelectorAll('#panel-print button.ring-2').forEach(b => b.classList.remove('ring-2', 'ring-purple-500'));
+
+  window.__updateHoodieBackPreview?.();
+  window.applyHoodieTo3D?.();
+};
+
+window.clearHoodieBackImage = () => {
+  window.HOODIE_STATE.backImage = null;
+  window.HOODIE_STATE.backImageLabel = 'None';
+
+  const label = document.getElementById('hoodie-back-image-label');
+  if (label) label.textContent = 'None';
+
+  const container = document.getElementById('image-preview-container');
+  if (container) {
+    container.innerHTML = `
+      <div class="text-center px-4">
+        <span class="text-zinc-600 text-[9px] uppercase font-bold tracking-widest">Click to Upload Artwork</span>
+      </div>
+    `;
+  }
+  const input = document.getElementById('artwork-upload-input');
+  if (input) input.value = '';
+
+  document.querySelectorAll('#panel-print button.ring-2').forEach(b => b.classList.remove('ring-2', 'ring-purple-500'));
+
+  window.__updateHoodieBackPreview?.();
+  window.applyHoodieTo3D?.();
+};
+
+window.setHoodieEmbroideredBackPreset = (text, btn) => {
+  window.HOODIE_STATE.embBackText = text;
+
+  const grid = btn?.parentElement;
+  if (grid) [...grid.querySelectorAll('button')].forEach(b => b.classList.remove('ring-2', 'ring-purple-500'));
+  btn?.classList.add('ring-2', 'ring-purple-500');
+
+  const label = document.getElementById('hoodie-emb-back-label');
+  if (label) label.textContent = text.replaceAll('/n', ' / ').replaceAll('\n', ' / ');
+
+  window.__updateHoodieBackPreview?.();
+  window.applyHoodieTo3D?.();
+};
+
+window.setHoodieEmbroideredBackPresetByIndex = (idx, btn) => {
+  const list = window.HOODIE_EMB_BACK_PRESETS || [];
+  const i = Number(idx);
+  const raw = (Number.isFinite(i) && i >= 0 && i < list.length) ? list[i] : '';
+  const text = String(raw || '').replaceAll('/n', '\n');
+  window.setHoodieEmbroideredBackPreset(text, btn);
+};
+
+window.clearHoodieEmbroideredBack = () => {
+  window.HOODIE_STATE.embBackText = null;
+
+  const label = document.getElementById('hoodie-emb-back-label');
+  if (label) label.textContent = 'None';
+
+  document.querySelectorAll('#panel-embroidered button.ring-2').forEach(b => b.classList.remove('ring-2', 'ring-purple-500'));
+
+  window.__updateHoodieBackPreview?.();
+  window.applyHoodieTo3D?.();
+};
+
+window.__syncHoodieFront2D = () => {
+  const textWrap = document.getElementById('preview-front-text-wrap');
+  const imgWrap = document.getElementById('preview-front-img-wrap');
+  const textEl = document.getElementById('preview-front-text');
+  const imgEl = document.getElementById('preview-front-img');
+
+  if (window.HOODIE_STATE.mode === 'print') {
+    if (textWrap) textWrap.classList.add('hidden');
+    if (imgWrap) imgWrap.classList.remove('hidden');
+
+    if (imgEl) {
+      if (window.HOODIE_STATE.frontPrintDataURL) imgEl.src = window.HOODIE_STATE.frontPrintDataURL;
+      else if (window.HOODIE_STATE.frontPrintFile) imgEl.src = `${window.HOODIE_FRONT_PRINT_PRESETS_BASE}${window.HOODIE_STATE.frontPrintFile}`;
+      else imgEl.removeAttribute('src');
+    }
+  } else {
+    if (imgWrap) imgWrap.classList.add('hidden');
+    if (textWrap) textWrap.classList.remove('hidden');
+
+    if (textEl) {
+      textEl.textContent = String(window.HOODIE_STATE.frontTextPreset || 'UnknownRiderz').toUpperCase();
+      textEl.style.color = window.HOODIE_STATE.frontTextColor || '#FFFFFF';
+    }
+  }
+};
+
+window.__updateHoodieBackPreview = () => {
+  const el = document.getElementById('preview-back-line');
+  if (!el) return;
+
+  if (window.HOODIE_STATE.mode === 'print') {
+    const parts = [];
+    if (String(window.HOODIE_STATE.backTopText || '').trim()) parts.push(`TEXT: ${window.HOODIE_STATE.backTopText}`);
+    if (window.HOODIE_STATE.backImageLabel && window.HOODIE_STATE.backImageLabel !== 'None') parts.push(`IMAGE: ${window.HOODIE_STATE.backImageLabel}`);
+    el.textContent = parts.length ? parts.join(' • ') : 'None';
+  } else {
+    el.textContent = window.HOODIE_STATE.embBackText
+      ? `EMB: ${window.HOODIE_STATE.embBackText.replaceAll('/n', ' / ').replaceAll('\n', ' / ')}`
+      : 'None';
+  }
+};
+
+window.__mountEmbBackGrid = () => {
+  const grid = document.getElementById('emb-back-grid');
+  if (!grid) return;
+
+  grid.innerHTML = (window.HOODIE_EMB_BACK_PRESETS || []).map((t, i) => {
+    const label = String(t)
+      .replaceAll('/n', '\n')
+      .split('\n')
+      .map(s => s.trim())
+      .filter(Boolean)
+      .join(' / ');
+
+    return `
+      <button
+        onclick="window.setHoodieEmbroideredBackPresetByIndex(${i}, this)"
+        class="px-4 py-4 rounded-2xl border border-zinc-800 bg-black hover:border-purple-500 transition text-left"
+      >
+        <div class="text-[10px] font-black uppercase tracking-widest text-white">${label}</div>
+        <div class="text-[9px] text-zinc-600 font-bold uppercase tracking-wider mt-1">Back full embroidery</div>
+      </button>
+    `;
+  }).join('');
+};
+
+window.saveHoodieConfig = () => {
+  if (window.HOODIE_STATE.mode === 'print') {
+    if (!window.HOODIE_STATE.frontPrintDataURL) {
+      alert('Front logo (print preset) is required for PRINT builds.');
+      return;
+    }
+  } else {
+    const front = String(window.HOODIE_STATE.frontTextPreset || '').trim();
+    if (!front) {
+      alert('Front logo text is required for EMBROIDERED builds.');
+      return;
+    }
+  }
+
+  const size = document.querySelector('.active-size')?.innerText || 'L';
+  const color = window.HOODIE_STATE.bodyColor || document.querySelector('.active-hoodie-color')?.dataset?.color || '#000000';
+
+  const config = {
+    mode: window.HOODIE_STATE.mode,
+    bodyColor: color,
+    size,
+    specs: window.HOODIE_STATE.mode === 'print' ? 'Hoodie / Print' : 'Hoodie / Embroidered'
+  };
+
+  if (window.HOODIE_STATE.mode === 'print') {
+    config.frontPresetFile = window.HOODIE_STATE.frontPrintFile;
+    config.frontPreset = window.HOODIE_STATE.frontLabel || window.HOODIE_STATE.frontPrintFile || 'Front Preset';
+    config.frontImage = window.HOODIE_STATE.frontPrintDataURL;
+
+    config.backTopText = window.HOODIE_STATE.backTopText || '';
+    config.backTopTextColor = window.HOODIE_STATE.backTopTextColor || '#FFFFFF';
+    config.backImage = window.HOODIE_STATE.backImage || null;
+    config.backImageLabel = window.HOODIE_STATE.backImageLabel || 'None';
+  } else {
+    config.frontTextPreset = window.HOODIE_STATE.frontTextPreset;
+    config.frontTextColor = window.HOODIE_STATE.frontTextColor || '#FFFFFF';
+    config.backEmbText = window.HOODIE_STATE.embBackText || null;
+    config.backEmbTextColor = window.HOODIE_STATE.backEmbTextColor || '#FFFFFF';
+  }
+
+  const previewLabel =
+    window.HOODIE_STATE.mode === 'print'
+      ? `PRINT • FRONT ${window.HOODIE_STATE.frontLabel || 'Preset'}`
+      : `EMB • FRONT ${window.HOODIE_STATE.frontTextPreset || 'Text'}`;
+
+  window.saveDesignToQueue(
+    { slug: 'hoodies', label: 'Hoodie' },
+    config,
+    { text: previewLabel }
+  );
+};
+
+window.on3DModelReady = (slug, mv) => {
+  if (slug !== 'hoodies') return;
+
+  window.__mountEmbBackGrid?.();
+  window.setHoodieMode?.(window.HOODIE_STATE.mode);
+  window.__hoodiesShowPreview?.('3d');
+  window.__syncHoodieFront2D?.();
+  window.__updateHoodieBackPreview?.();
+
+  if (window.HOODIE_STATE.mode === 'print' && !window.HOODIE_STATE.frontPrintDataURL) {
+    const firstBtn = document.querySelector('#panel-front-print button');
+    if (firstBtn) {
+      const title = firstBtn.getAttribute('title') || null;
+      if (title) window.setHoodieFrontPrintPreset(title, firstBtn);
+    }
+  }
+
+  window.applyHoodieTo3D?.();
 };
