@@ -36,7 +36,6 @@ export function render() {
     '#92400E', '#B45309', '#D97706'
   ];
 
-  // System
   const PANEL = 'bg-zinc-900/40 border border-zinc-800 rounded-3xl';
   const SECTION = 'bg-black/30 border border-zinc-800 rounded-2xl';
   const SECTION_HEAD = 'flex items-center justify-between gap-4 px-6 py-4 border-b border-zinc-800';
@@ -47,20 +46,11 @@ export function render() {
   const INPUT = 'w-full bg-black/60 border border-zinc-800 p-4 rounded-2xl text-xs font-mono outline-none focus:border-purple-500 transition';
   const BTN_PRESET = 'aspect-square rounded-2xl border border-zinc-800 bg-black overflow-hidden hover:border-purple-500 transition relative group';
   const HR = 'h-px bg-gradient-to-r from-transparent via-zinc-800 to-transparent';
-
-  // Swatches exactly like your Body Colour section
   const SWATCH_GRID = 'grid grid-cols-8 gap-2 max-h-48 overflow-y-auto p-2 border border-zinc-800 rounded-xl bg-black/25';
-
-  const SIZE_BTN =
-    'py-3 bg-black/60 border border-zinc-800 rounded-2xl text-[10px] font-black uppercase tracking-widest hover:border-purple-500 transition';
-
-  // ✅ Same “safe preset layout” system (like hoodies)
-  const PRESET_TEXT_BTN =
-    'w-full min-w-0 px-4 py-4 rounded-2xl border border-zinc-800 bg-black hover:border-purple-500 transition text-left overflow-hidden';
-  const PRESET_TEXT_MAIN =
-    'text-[10px] font-black uppercase tracking-widest text-white leading-tight line-clamp-2 break-words';
-  const PRESET_TEXT_SUB =
-    'text-[9px] text-zinc-600 font-bold uppercase tracking-wider mt-1 truncate';
+  const SIZE_BTN ='py-3 bg-black/60 border border-zinc-800 rounded-2xl text-[10px] font-black uppercase tracking-widest hover:border-purple-500 transition';
+  const PRESET_TEXT_BTN ='w-full min-w-0 px-4 py-4 rounded-2xl border border-zinc-800 bg-black hover:border-purple-500 transition text-left overflow-hidden';
+  const PRESET_TEXT_MAIN ='text-[10px] font-black uppercase tracking-widest text-white leading-tight line-clamp-2 break-words';
+  const PRESET_TEXT_SUB ='text-[9px] text-zinc-600 font-bold uppercase tracking-wider mt-1 truncate';
 
   return `
     <div class="min-h-screen bg-black text-white p-4 md:p-12 relative">
@@ -83,7 +73,6 @@ export function render() {
 
       <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
 
-        <!-- LEFT: PREVIEW (sticky) -->
         <div class="lg:col-span-7 space-y-6 lg:sticky lg:top-10">
           <div id="preview-stage" class="aspect-[4/5] bg-zinc-900/20 border border-zinc-800 rounded-3xl relative overflow-hidden">
             <div id="tshirts-preview-2d" data-preview="2d" class="hidden absolute inset-0 z-10">
@@ -122,7 +111,6 @@ export function render() {
           </div>
         </div>
 
-        <!-- RIGHT: CONFIGURATOR -->
         <div class="lg:col-span-5 space-y-6">
           <div class="${PANEL} overflow-hidden">
             <div class="px-8 py-7">
@@ -137,11 +125,8 @@ export function render() {
               </div>
             </div>
 
-            <!-- ✅ NEW: same “stacked option cards” layout as hoodies -->
             <div class="px-8 pb-8 space-y-5">
               <div class="space-y-4">
-
-                <!-- FRONT LOGO (preset) -->
                 <div id="panel-front-logo" class="${SECTION} overflow-hidden">
                   <div class="${SECTION_HEAD}">
                     <div class="min-w-0">
@@ -172,7 +157,6 @@ export function render() {
                   </div>
                 </div>
 
-                <!-- FRONT LOGO TINT -->
                 <div class="${SECTION} overflow-hidden">
                   <div class="${SECTION_HEAD}">
                     <div class="min-w-0">
@@ -201,7 +185,6 @@ export function render() {
 
                 <div class="${HR}"></div>
 
-                <!-- BACK TEXT (stacked, no overflow) -->
                 <div class="grid grid-cols-1 gap-4">
 
                   <div class="${SECTION} overflow-hidden">
@@ -274,7 +257,6 @@ export function render() {
 
                 <div class="${HR}"></div>
 
-                <!-- BACK IMAGE (stacked) -->
                 <div class="${SECTION} overflow-hidden">
                   <div class="${SECTION_HEAD}">
                     <div class="min-w-0">
@@ -323,7 +305,6 @@ export function render() {
 
                 <div class="${HR} my-2"></div>
 
-                <!-- COLOUR + SIZE (unchanged) -->
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
 
                   <div class="${SECTION} overflow-hidden">
@@ -386,7 +367,7 @@ export function render() {
 
                 </div>
 
-              </div><!-- /stack -->
+              </div>
             </div>
           </div>
 
@@ -648,7 +629,6 @@ window.applyTShirtTo3D = async () => {
 window.tintImageToDataURL = window.tintImageToDataURL || (async ({ src, color = '#ffffff', size = 1024 }) => {
   if (!src) return null;
 
-  // Ensure we have a dataURL
   let dataUrl = src;
   if (!String(src).startsWith('data:image')) dataUrl = await window.fetchAsDataURL_TShirt(src);
 
@@ -662,16 +642,11 @@ window.tintImageToDataURL = window.tintImageToDataURL || (async ({ src, color = 
   c.height = size;
   const ctx = c.getContext('2d');
 
-  // Draw the original (keeps alpha shape)
   ctx.clearRect(0, 0, size, size);
   ctx.drawImage(img, 0, 0, size, size);
-
-  // Tint only the existing pixels (alpha mask)
   ctx.globalCompositeOperation = 'source-in';
   ctx.fillStyle = color;
   ctx.fillRect(0, 0, size, size);
-
-  // Reset for safety
   ctx.globalCompositeOperation = 'source-over';
 
   return c.toDataURL('image/png');
@@ -720,13 +695,13 @@ window.setTShirtFrontLogoPreset = async (fileName, btn) => {
     }
 
     window.TSHIRT_STATE.frontLogoFile = fileName;
-    window.TSHIRT_STATE.frontLogoRawDataURL = dataUrl; // IMPORTANT: keep raw
+    window.TSHIRT_STATE.frontLogoRawDataURL = dataUrl;
     window.TSHIRT_STATE.frontLogoLabel = fileName;
 
     const tint = window.TSHIRT_STATE.frontLogoTint || '#FFFFFF';
 
     const tinted = await window.tintNearWhiteOnlyToDataURL({
-      src: dataUrl,        // tint from raw
+      src: dataUrl,
       color: tint,
       threshold: 240,
       feather: 25,
@@ -748,7 +723,6 @@ window.setTShirtFrontLogoPreset = async (fileName, btn) => {
 };
 
 window.setTShirtFrontLogoTint = async (hex, btn) => {
-  // UI ring in this swatch group
   const group = btn?.closest?.('[data-frontlogocolor-group]');
   if (group) group.querySelectorAll('[data-frontlogocolor]').forEach(el => el.classList.remove('ring-2', 'ring-purple-500'));
   btn?.classList.add('ring-2', 'ring-purple-500');
@@ -758,7 +732,6 @@ window.setTShirtFrontLogoTint = async (hex, btn) => {
   const lbl = document.getElementById('front-logo-colour-label');
   if (lbl) lbl.textContent = hex;
 
-  // Re-tint from RAW (so it doesn't compound / degrade)
   const raw = window.TSHIRT_STATE.frontLogoRawDataURL || window.TSHIRT_STATE.frontLogoDataURL;
   if (raw) {
     const tinted = await window.tintNearWhiteOnlyToDataURL({
@@ -778,9 +751,9 @@ window.setTShirtFrontLogoTint = async (hex, btn) => {
 window.tintNearWhiteOnlyToDataURL = window.tintNearWhiteOnlyToDataURL || (async ({
   src,
   color = '#ffffff',
-  threshold = 235,      // 0-255: higher = stricter "must be very white"
-  feather = 20,         // softness around threshold
-  onlyBelow = 0.55,     // 0..1: only tint below this Y fraction (text under logo)
+  threshold = 235,
+  feather = 20,
+  onlyBelow = 0.55,
   size = 1024
 }) => {
   if (!src) return null;
@@ -804,7 +777,6 @@ window.tintNearWhiteOnlyToDataURL = window.tintNearWhiteOnlyToDataURL || (async 
   const imageData = ctx.getImageData(0, 0, size, size);
   const d = imageData.data;
 
-  // parse hex -> rgb
   const hex = String(color).replace('#', '').trim();
   const rr = parseInt(hex.length === 3 ? hex[0] + hex[0] : hex.slice(0, 2), 16);
   const gg = parseInt(hex.length === 3 ? hex[1] + hex[1] : hex.slice(2, 4), 16);
@@ -818,21 +790,16 @@ window.tintNearWhiteOnlyToDataURL = window.tintNearWhiteOnlyToDataURL || (async 
       const a = d[i + 3];
       if (a === 0) continue;
 
-      // optional: only tint bottom region where text sits
       if (y < yCut) continue;
 
       const r = d[i], g = d[i + 1], b = d[i + 2];
 
-      // "whiteness" proxy: minimum channel value
       const minc = Math.min(r, g, b);
 
-      // if not white enough, skip
       if (minc < (threshold - feather)) continue;
 
-      // blend strength as it approaches white
       const t = Math.max(0, Math.min(1, (minc - (threshold - feather)) / Math.max(1, feather)));
 
-      // mix original towards tint (keeps shading)
       d[i]     = Math.round(r * (1 - t) + rr * t);
       d[i + 1] = Math.round(g * (1 - t) + gg * t);
       d[i + 2] = Math.round(b * (1 - t) + bb * t);
@@ -1013,12 +980,10 @@ window.validateTShirtConfig = () => {
 
   if (!window.__trim(s.bodyColor)) return window.__hardFail('Please choose a t-shirt colour.', 'bodyColor');
 
-  // Required: front logo preset
   if (!window.__trim(s.frontLogoFile) && !window.__trim(s.frontLogoLabel) && !s.frontLogoDataURL) {
     return window.__hardFail('Front logo is required (choose one of the logo presets).', 'frontLogoFile');
   }
 
-  // Optional text limits
   if (window.__len(s.backTopText) > 28) {
     return window.__hardFail('Back top text is too long (max 28 characters).', 'backTopText');
   }
@@ -1026,7 +991,6 @@ window.validateTShirtConfig = () => {
     return window.__hardFail('Back bottom text is too long (max 28 characters).', 'backBottomText');
   }
 
-  // If back image exists it must be a dataURL (upload or fetched preset -> your code stores dataURL)
   if (s.backImage && !String(s.backImage).startsWith('data:image')) {
     return window.__hardFail('Back image must be a valid image.', 'backImage');
   }

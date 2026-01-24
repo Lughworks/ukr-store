@@ -7,13 +7,12 @@ body {
 
 :root{
   --sb-track: rgba(255,255,255,0.06);
-  --sb-thumb: rgba(168, 85, 247, 0.55);   /* purple-500-ish */
+  --sb-thumb: rgba(168, 85, 247, 0.55);
   --sb-thumb-hover: rgba(168, 85, 247, 0.85);
   --sb-size: 10px;
   --sb-radius: 999px;
 }
 
-/* Firefox */
 html{
   scrollbar-width: thin;
   scrollbar-color: var(--sb-thumb) var(--sb-track);
@@ -24,7 +23,6 @@ html{
   scrollbar-color: var(--sb-thumb) var(--sb-track);
 }
 
-/* Chromium / Safari */
 *::-webkit-scrollbar{
   width: var(--sb-size);
   height: var(--sb-size);
@@ -48,15 +46,13 @@ html{
   scrollbar-gutter: stable both-edges;
 }
 
-/* Firefox */
 .themed-scroll-x{
   scrollbar-width: thin;
   scrollbar-color: var(--sb-thumb) rgba(255,255,255,0.14);
 }
 
-/* Chromium / Safari */
 .themed-scroll-x::-webkit-scrollbar{
-  height: 12px; /* 👈 key difference vs vertical */
+  height: 12px;
 }
 
 .themed-scroll-x::-webkit-scrollbar-track{
@@ -83,13 +79,12 @@ html{
   );
 }
 
-/* Your existing "no-scrollbar" helper (works everywhere) */
 .no-scrollbar{
-  -ms-overflow-style: none;   /* IE/old Edge */
-  scrollbar-width: none;      /* Firefox */
+  -ms-overflow-style: none;
+  scrollbar-width: none;
 }
 .no-scrollbar::-webkit-scrollbar{
-  display: none;              /* Chromium/Safari */
+  display: none;
 }
 
 .heading-font {

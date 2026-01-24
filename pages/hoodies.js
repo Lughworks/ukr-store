@@ -41,7 +41,6 @@ export function render() {
     }
   }, 50);
 
-  // Shared UI system (match t-shirts)
   const PANEL = 'bg-zinc-900/40 border border-zinc-800 rounded-3xl';
   const SECTION = 'bg-black/30 border border-zinc-800 rounded-2xl';
   const SECTION_HEAD = 'flex items-center justify-between gap-4 px-6 py-4 border-b border-zinc-800';
@@ -54,20 +53,10 @@ export function render() {
   const HR = 'h-px bg-gradient-to-r from-transparent via-zinc-800 to-transparent';
 
   const SWATCH_GRID = 'grid grid-cols-8 gap-2 max-h-48 overflow-y-auto p-2 border border-zinc-800 rounded-xl bg-black/25';
-  const SIZE_BTN =
-    'py-3 bg-black/60 border border-zinc-800 rounded-2xl text-[10px] font-black uppercase tracking-widest hover:border-purple-500 transition';
-
-  // ✅ New: “Preset text” buttons that never overflow:
-  // - no fixed height
-  // - internal padding
-  // - truncation + clamp
-  // - full text on hover via title
-  const PRESET_TEXT_BTN =
-    'w-full min-w-0 px-4 py-4 rounded-2xl border border-zinc-800 bg-black hover:border-purple-500 transition text-left overflow-hidden';
-  const PRESET_TEXT_MAIN =
-    'text-[10px] font-black uppercase tracking-widest text-white leading-tight line-clamp-2 break-words';
-  const PRESET_TEXT_SUB =
-    'text-[9px] text-zinc-600 font-bold uppercase tracking-wider mt-1 truncate';
+  const SIZE_BTN ='py-3 bg-black/60 border border-zinc-800 rounded-2xl text-[10px] font-black uppercase tracking-widest hover:border-purple-500 transition';
+  const PRESET_TEXT_BTN ='w-full min-w-0 px-4 py-4 rounded-2xl border border-zinc-800 bg-black hover:border-purple-500 transition text-left overflow-hidden';
+  const PRESET_TEXT_MAIN ='text-[10px] font-black uppercase tracking-widest text-white leading-tight line-clamp-2 break-words';
+  const PRESET_TEXT_SUB ='text-[9px] text-zinc-600 font-bold uppercase tracking-wider mt-1 truncate';
 
   return `
     <div class="min-h-screen bg-black text-white p-4 md:p-12 relative">
@@ -90,7 +79,6 @@ export function render() {
 
       <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
 
-        <!-- LEFT: PREVIEW -->
         <div class="lg:col-span-7 space-y-6 lg:sticky lg:top-10">
           <div id="preview-stage" class="aspect-[4/5] bg-zinc-900/20 border border-zinc-800 rounded-3xl relative overflow-hidden">
             <div id="hoodies-preview-2d" data-preview="2d" class="hidden absolute inset-0">
@@ -142,7 +130,6 @@ export function render() {
           </div>
         </div>
 
-        <!-- RIGHT: CONFIGURATOR -->
         <div class="lg:col-span-5 space-y-6">
 
           <div class="${PANEL} overflow-hidden">
@@ -175,7 +162,6 @@ export function render() {
             <div class="px-8 pb-8 space-y-5">
               <div class="space-y-4">
 
-                <!-- FRONT LOGO -->
                 <div class="${SECTION} overflow-hidden">
                   <div class="${SECTION_HEAD}">
                     <div class="min-w-0">
@@ -188,7 +174,6 @@ export function render() {
                   </div>
 
                   <div class="${SECTION_BODY}">
-                    <!-- Print presets -->
                     <div id="panel-front-print" class="${isPrint ? '' : 'hidden'} space-y-3">
                       <div class="grid grid-cols-3 gap-3">
                         ${frontPrintPresetFiles.map((f) => `
@@ -207,7 +192,6 @@ export function render() {
                       </div>
                     </div>
 
-                    <!-- Emb text presets (no overflow) -->
                     <div id="panel-front-embroidered" class="${isPrint ? 'hidden' : ''} space-y-3">
                       <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
                         <button
@@ -232,7 +216,6 @@ export function render() {
                   </div>
                 </div>
 
-                <!-- FRONT COLOUR -->
                 <div class="${SECTION} overflow-hidden">
                   <div class="${SECTION_HEAD}">
                     <div class="min-w-0">
@@ -278,11 +261,7 @@ export function render() {
                 </div>
 
                 <div class="${HR}"></div>
-
-                <!-- BACK OPTIONS -->
                 <div class="grid grid-cols-1 gap-4">
-
-                  <!-- Back: Print top text OR Emb preset + colour (stacked, scroll-safe) -->
                   <div class="${SECTION} overflow-hidden">
                     <div class="${SECTION_HEAD}">
                       <div class="min-w-0">
@@ -299,7 +278,6 @@ export function render() {
                     </div>
 
                     <div class="${SECTION_BODY}">
-                      <!-- PRINT -->
                       <div id="panel-print" class="${isPrint ? '' : 'hidden'} space-y-4">
                         <input
                           id="hoodie-back-top-input"
@@ -321,15 +299,12 @@ export function render() {
                         </div>
                       </div>
 
-                      <!-- EMB -->
                       <div id="panel-embroidered" class="${isPrint ? 'hidden' : ''} space-y-4">
                         <div class="grid grid-cols-1 gap-3">
-                          <!-- Presets in a bounded scroll box -->
                           <div class="border border-zinc-800 rounded-2xl bg-black/25 p-3 max-h-52 overflow-y-auto">
                             <div id="emb-back-grid" class="grid grid-cols-1 sm:grid-cols-2 gap-3"></div>
                           </div>
 
-                          <!-- Colour swatches (bounded) -->
                           <div class="space-y-2">
                             <div class="flex items-center justify-between">
                               <div class="${SUB}">Back Embroidery Colour</div>
@@ -359,7 +334,6 @@ export function render() {
                     </div>
                   </div>
 
-                  <!-- Back image (Print only) -->
                   <div class="${SECTION} overflow-hidden">
                     <div class="${SECTION_HEAD}">
                       <div class="min-w-0">
@@ -421,7 +395,6 @@ export function render() {
 
                 <div class="${HR}"></div>
 
-                <!-- COLOUR + SIZE/SPEC -->
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div class="${SECTION} overflow-hidden">
                     <div class="${SECTION_HEAD}">
@@ -483,7 +456,7 @@ export function render() {
                   </div>
                 </div>
 
-              </div><!-- /space-y-4 -->
+              </div>
             </div>
           </div>
 
@@ -511,13 +484,9 @@ export function render() {
   `;
 }
 
-// ---------- HARD FAIL VALIDATION (shared) ----------
 window.__hardFail = (msg, field = '') => ({ ok: false, msg, field });
 window.__ok = () => ({ ok: true });
-
 window.__len = (v) => String(v ?? '').trim().length;
-
-// optional: consistent trim
 window.__trim = (v) => String(v ?? '').trim();
 
 
@@ -530,9 +499,9 @@ window.HOODIE_STATE = window.HOODIE_STATE || {
   mode: 'print',
   frontTextPreset: 'UnknownRiderz',
   frontPrintFile: null,
-  frontPrintRawDataURL: null,   // NEW
+  frontPrintRawDataURL: null,
   frontPrintDataURL: null,
-  frontPrintTint: '#FFFFFF',    // NEW
+  frontPrintTint: '#FFFFFF',
   frontLabel: 'None',
   bodyColor: '#000000',
   frontTextColor: '#FFFFFF',
@@ -604,7 +573,6 @@ window.tintNearWhiteOnlyToDataURL = window.tintNearWhiteOnlyToDataURL || (async 
 });
 
 window.setHoodieFrontPrintTint = async (hex, btn) => {
-  // UI ring
   const group = btn?.closest?.('[data-frontprinttint-group]');
   if (group) group.querySelectorAll('[data-frontprinttint]').forEach(el => el.classList.remove('ring-2', 'ring-purple-500'));
   btn?.classList.add('ring-2', 'ring-purple-500');
@@ -614,7 +582,6 @@ window.setHoodieFrontPrintTint = async (hex, btn) => {
   const lbl = document.getElementById('hoodie-front-tint-label');
   if (lbl) lbl.textContent = hex;
 
-  // re-tint from RAW (prevents compounding)
   const raw = window.HOODIE_STATE.frontPrintRawDataURL || window.HOODIE_STATE.frontPrintDataURL;
   if (raw) {
     const tinted = await window.tintNearWhiteOnlyToDataURL({
@@ -914,7 +881,6 @@ window.setHoodieMode = (mode) => {
   if (lblFront) lblFront.textContent = isPrint ? 'PRINT' : 'EMB';
   if (lblBack) lblBack.textContent = isPrint ? 'PRINT' : 'EMB';
 
-    // Toggle FRONT colour card internals (print tint vs emb colour)
   const frontTintPanel = document.getElementById('panel-front-tint');
   const frontEmbColorPanel = document.getElementById('panel-front-emb-colour');
   if (frontTintPanel) frontTintPanel.classList.toggle('hidden', !isPrint);
@@ -963,10 +929,9 @@ window.setHoodieFrontPrintPreset = async (fileName, btn) => {
     }
 
     window.HOODIE_STATE.frontPrintFile = fileName;
-    window.HOODIE_STATE.frontPrintRawDataURL = dataUrl; // NEW (raw)
+    window.HOODIE_STATE.frontPrintRawDataURL = dataUrl;
     window.HOODIE_STATE.frontLabel = fileName;
 
-    // apply tint to near-white text under logo
     const tint = window.HOODIE_STATE.frontPrintTint || '#FFFFFF';
     const tinted = await window.tintNearWhiteOnlyToDataURL({
       src: dataUrl,
@@ -993,7 +958,7 @@ window.setHoodieFrontPrintPreset = async (fileName, btn) => {
 
 window.clearHoodieFrontPrintPreset = () => {
   window.HOODIE_STATE.frontPrintFile = null;
-  window.HOODIE_STATE.frontPrintRawDataURL = null; // NEW
+  window.HOODIE_STATE.frontPrintRawDataURL = null;
   window.HOODIE_STATE.frontPrintDataURL = null;
   window.HOODIE_STATE.frontLabel = 'None';
 
@@ -1017,7 +982,6 @@ window.setHoodieBodyColor = (hex, btn) => {
 window.setHoodieTextColorFor = (target, hex, btn) => {
   const t = String(target || '').trim();
 
-  // Ring only inside the current swatch group
   const group = btn?.closest?.('[data-textcolor-group]');
   if (group) group.querySelectorAll('[data-swatch]').forEach(el => el.classList.remove('ring-2', 'ring-purple-500'));
   btn?.classList.add('ring-2', 'ring-purple-500');
@@ -1025,21 +989,18 @@ window.setHoodieTextColorFor = (target, hex, btn) => {
   if (t === 'front') {
     window.HOODIE_STATE.frontTextColor = hex;
 
-    // ✅ Update the label in the front colour card (Emb mode)
     const lbl = document.getElementById('hoodie-front-colour-label');
     if (lbl) lbl.textContent = hex;
   }
   else if (t === 'backTop') {
     window.HOODIE_STATE.backTopTextColor = hex;
 
-    // ✅ If you have a back-top label, update it too (optional)
     const lbl = document.getElementById('ui-back-top-colour-label');
     if (lbl) lbl.textContent = hex;
   }
   else if (t === 'backEmb') {
     window.HOODIE_STATE.backEmbTextColor = hex;
 
-    // ✅ If you have a back-emb label, update it too (optional)
     const lbl = document.getElementById('hoodie-front-emb-colour-label');
     if (lbl) lbl.textContent = hex;
     
@@ -1309,38 +1270,29 @@ window.validateHoodieConfig = () => {
   const s = window.HOODIE_STATE || {};
   const mode = (s.mode === 'embroidered') ? 'embroidered' : 'print';
 
-  // Required: body colour + size (size comes from UI but validate anyway)
   if (!window.__trim(s.bodyColor)) return window.__hardFail('Please choose a hoodie colour.', 'bodyColor');
 
-  // Required: front selection depends on mode
   if (mode === 'print') {
-    // Must have a front preset selected
     if (!window.__trim(s.frontPrintFile) && !window.__trim(s.frontLabel) && !s.frontPrintDataURL) {
       return window.__hardFail('Front logo is required for PRINT hoodies.', 'frontPrintFile');
     }
   } else {
-    // Must have a front embroidery text preset
     if (!window.__trim(s.frontTextPreset)) {
       return window.__hardFail('Front logo text is required for EMBROIDERED hoodies.', 'frontTextPreset');
     }
   }
 
-  // Print mode rules
   if (mode === 'print') {
-    // Back top text limits (optional)
     if (window.__len(s.backTopText) > 28) {
       return window.__hardFail('Back top text is too long (max 28 characters).', 'backTopText');
     }
 
-    // If back image exists, it must look like an image dataURL
     if (s.backImage && !String(s.backImage).startsWith('data:image')) {
       return window.__hardFail('Back image must be a valid uploaded image.', 'backImage');
     }
   }
 
-  // Embroidered mode rules
   if (mode === 'embroidered') {
-    // Back emb text is optional BUT if present validate length/lines
     const emb = window.__trim(s.embBackText);
     if (emb) {
       const lines = emb.replaceAll('/n', '\n').split('\n').map(l => l.trim()).filter(Boolean);
