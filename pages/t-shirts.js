@@ -285,18 +285,6 @@ export function render() {
                       `).join('')}
                     </div>
 
-                    <div
-                      id="tshirt-image-upload-zone"
-                      onclick="document.getElementById('tshirt-artwork-upload-input').click()"
-                      class="aspect-video bg-black/50 border-2 border-dashed border-zinc-800 rounded-2xl flex items-center justify-center hover:border-purple-500 cursor-pointer overflow-hidden transition"
-                    >
-                      <input type="file" id="tshirt-artwork-upload-input" class="hidden" accept="image/*"
-                        onchange="window.handleImageUpload(this); window.setTShirtBackImageFromUpload();">
-                      <div id="tshirt-image-preview-container" class="w-full h-full flex items-center justify-center font-black text-[9px] text-zinc-600 uppercase tracking-widest">
-                        Click to Upload
-                      </div>
-                    </div>
-
                     <div class="flex items-center justify-end pt-2">
                       <button onclick="window.clearTShirtBackImage()" class="${ACTION}">Clear image</button>
                     </div>

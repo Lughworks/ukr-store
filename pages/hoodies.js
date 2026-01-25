@@ -265,7 +265,7 @@ export function render() {
                   <div class="${SECTION} overflow-hidden">
                     <div class="${SECTION_HEAD}">
                       <div class="min-w-0">
-                        <div class="${TITLE}">${isPrint ? 'Back Top Text' : 'Back Embroidery'}</div>
+                        <div class="${TITLE}">${isPrint ? 'Back Text' : 'Back Embroidery'}</div>
                         <div class="${SUB}">Optional</div>
                       </div>
                       <div class="text-[9px] font-black uppercase tracking-widest text-zinc-700">
@@ -334,11 +334,11 @@ export function render() {
                     </div>
                   </div>
 
-                  <div class="${SECTION} overflow-hidden">
+                  <div id="section-back-image" class="${SECTION} overflow-hidden">
                     <div class="${SECTION_HEAD}">
                       <div class="min-w-0">
                         <div class="${TITLE}">Back Image</div>
-                        <div class="${SUB}">${isPrint ? 'Optional • Print' : 'Disabled in Emb'}</div>
+                        <div class="${SUB}">Optional • Print</div>
                       </div>
 
                       <div class="text-[9px] text-zinc-500 font-black uppercase tracking-widest">
@@ -383,10 +383,6 @@ export function render() {
                         <div class="flex items-center justify-end">
                           <button onclick="window.clearHoodieBackImage()" class="${ACTION}">Clear image</button>
                         </div>
-                      </div>
-
-                      <div class="${isPrint ? 'hidden' : ''} text-[10px] text-zinc-600 font-bold uppercase tracking-widest">
-                        Back images are only available in PRINT mode.
                       </div>
                     </div>
                   </div>
@@ -896,6 +892,11 @@ window.setHoodieMode = (mode) => {
   if (tTitle) tTitle.textContent = isPrint ? 'Logo Tint' : 'Front Embroidery Colour';
   if (tSub) tSub.textContent = isPrint ? 'Text only' : 'Thread';
   
+  const backImageSection = document.getElementById('section-back-image');
+  if (backImageSection) {
+    backImageSection.classList.toggle('hidden', !isPrint);
+  }
+
   window.__syncHoodieFront2D?.();
   window.__updateHoodieBackPreview?.();
 
