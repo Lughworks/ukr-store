@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Wheelie King - Sports Bike Edition</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=VT323&display=swap');
+        
+        body {
+            margin: 0;
+            overflow: hidden;
+            background-color: #f7f7f7;
+            touch-action: none;
+            user-select: none;
+            font-family: 'VT323', monospace;
+        }
+        canvas {
+            display: block;
+            image-rendering: pixelated;
+        }
+        .touch-zone {
+            position: absolute;
+            bottom: 0;
+            height: 100%;
+            width: 50%;
+            z-index: 10;
+        }
+        #left-zone { left: 0; }
+        #right-zone { right: 0; }
+    </style>
+</head>
+<body>
+
+    <div class="absolute top-0 left-0 w-full p-6 flex justify-between items-start pointer-events-none z-20">
+        <div class="text-[#535353]">
+            <h1 class="text-3xl font-bold tracking-widest">SUPER_BIKE_RUN</h1>
+            <p id="high-score" class="text-xl">HI 00000</p>
+        </div>
+        <div class="text-right text-[#535353]">
+            <p id="score" class="text-4xl font-bold">00000</p>
+        </div>
+    </div>
+
+    <div id="overlay" class="fixed inset-0 flex flex-col items-center justify-center z-50 bg-white/80">
+        <div class="p-8 border-4 border-[#535353] flex flex-col items-center bg-white">
+            <h2 id="overlay-title" class="text-[#535353] text-5xl font-bold mb-4 uppercase">SUPER BIKE</h2>
+            <p id="overlay-msg" class="text-[#535353] text-xl mb-6 text-center">WHEELIE over the potholes!<br>Only the front wheel is affected by gaps.</p>
+            <button id="start-btn" class="bg-[#535353] text-white px-8 py-3 text-2xl font-bold hover:bg-black transition-colors">
+                RIDE
+            </button>
+        </div>
+    </div>
+
+    <div id="left-zone" class="touch-zone"></div>
+    <div id="right-zone" class="touch-zone"></div>
+
+    <canvas id="gameCanvas"></canvas>
+
+    <script>
+        const canvas = document.getElementById('gameCanvas');
+        const ctx = canvas.getContext('2d');
+        const scoreEl = document.getElementById('score');
+        const highScoreEl = document.getElementById('high-score');
+        const overlay = document.getElementById('overlay');
+        const overlayTitle = document.getElementById('overlay-title');
+        const overlayMsg = document.getElementById('overlay-msg');
+        const startBtn = document.getElementById('start-btn');
+
+        const config = {
+            gravity: 0.25,      
+            torque: 0.35,       
+            friction: 0.96,     
+            groundY: 0.7,
+            speedIncrease: 0.0003,
+            bikeLength: 110
+        };
+
+        let state = {
+            angle: 0,
+            angularVelocity: 0,
+            distance: 0,
+            highScore: 0,
+            isGameOver: true,
+            keys: { left: false, right: false },
+            groundOffset: 0,
+            speed: 7,
+            obstacles: [],
+            lastObstacleTime: 0,
+            nightMode: false
+        };
+
+        function resize() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+            if (state.isGameOver) draw();
+        }
+        window.addEventListener('resize', resize);
+        resize();
+
+        window.addEventListener('keydown', (e) => {
+            if (e.key === 'a' || e.key === 'ArrowLeft') state.keys.left = true;
+            if (e.key === 'd' || e.key === 'ArrowRight') state.keys.right = true;
+            if ((e.key === ' ' || e.key === 'Enter') && state.isGameOver) resetGame();
+        });
+        window.addEventListener('keyup', (e) => {
+            if (e.key === 'a' || e.key === 'ArrowLeft') state.keys.left = false;
+            if (e.key === 'd' || e.key === 'ArrowRight') state.keys.right = false;
+        });
+
+        const lZone = document.getElementById('left-zone');
+        const rZone = document.getElementById('right-zone');
+
+        const handleTouch = (side, active, e) => {
+            if (e) e.preventDefault();
+            state.keys[side] = active;
+            if (state.isGameOver && active) resetGame();
+        };
+
+        lZone.addEventListener('touchstart', (e) => handleTouch('left', true, e), {passive: false});
+        lZone.addEventListener('touchend', (e) => handleTouch('left', false, e), {passive: false});
+        rZone.addEventListener('touchstart', (e) => handleTouch('right', true, e), {passive: false});
+        rZone.addEventListener('touchend', (e) => handleTouch('right', false, e), {passive: false});
+
+        startBtn.addEventListener('click', resetGame);
+
+        function spawnObstacle() {
+            const now = Date.now();
+            const spawnRate = Math.max(700, 1600 - (state.speed * 40));
+            if (now - state.lastObstacleTime > spawnRate + Math.random() * 1500) {
+                state.obstacles.push({
+                    x: canvas.width + 100,
+                    width: 70 + Math.random() * 100,
+                    depth: 18
+                });
+                state.lastObstacleTime = now;
+            }
+        }
+
+        function resetGame() {
+            state.angle = 0;
+            state.angularVelocity = 0;
+            state.distance = 0;
+            state.isGameOver = false;
+            state.speed = 7;
+            state.obstacles = [];
+            state.nightMode = false;
+            overlay.classList.add('hidden');
+            requestAnimationFrame(gameLoop);
+        }
+
+        function update() {
+            if (state.isGameOver) return;
+
+            if (state.keys.right) state.angularVelocity += config.torque;
+            if (state.keys.left) state.angularVelocity -= config.torque;
+
+            const gravityEffect = config.gravity * Math.cos(state.angle * Math.PI / 180);
+            state.angularVelocity -= gravityEffect;
+            
+            state.angularVelocity *= config.friction;
+            state.angle += state.angularVelocity;
+
+            if (state.angle < 0) {
+                state.angle = 0;
+                state.angularVelocity = Math.abs(state.angularVelocity) * 0.1;
+            }
+
+            if (state.angle > 110) triggerGameOver("FLIPPED!");
+
+            state.distance += state.speed / 10;
+            state.speed += config.speedIncrease;
+            state.groundOffset = (state.groundOffset + state.speed) % 100;
+            
+            scoreEl.innerText = Math.floor(state.distance).toString().padStart(5, '0');
+            state.nightMode = Math.floor(state.distance / 1200) % 2 === 1;
+
+            spawnObstacle();
+            
+            const rearWheelX = canvas.width * 0.3;
+            const groundY = canvas.height * config.groundY + 22;
+
+            const frontWheelX = rearWheelX + Math.cos(-state.angle * Math.PI / 180) * config.bikeLength;
+            const frontWheelY = groundY + Math.sin(-state.angle * Math.PI / 180) * config.bikeLength;
+
+            state.obstacles.forEach((obs, index) => {
+                obs.x -= state.speed;
+                if (frontWheelX > obs.x && frontWheelX < obs.x + obs.width) {
+                    if (frontWheelY >= groundY - 5) { 
+                        triggerGameOver("FRONT WHEEL HIT!");
+                    }
+                }
+                if (obs.x < -300) state.obstacles.splice(index, 1);
+            });
+        }
+
+        function triggerGameOver(reason) {
+            state.isGameOver = true;
+            if (state.distance > state.highScore) {
+                state.highScore = Math.floor(state.distance);
+                highScoreEl.innerText = `HI ${state.highScore.toString().padStart(5, '0')}`;
+            }
+            overlayTitle.innerText = reason;
+            overlayMsg.innerText = `Keep that front wheel in the air!`;
+            overlay.classList.remove('hidden');
+        }
+
+        function drawBike(ctx, x, y, angle) {
+            const color = state.nightMode ? '#f7f7f7' : '#535353';
+            ctx.save();
+            ctx.translate(x, y + 20); 
+            ctx.rotate(-angle * Math.PI / 180);
+            ctx.fillStyle = color;
+            ctx.fillRect(-24, -24, 48, 48);
+            ctx.clearRect(-16, -16, 32, 32);
+            ctx.fillRect(-6, -6, 12, 12);
+            ctx.fillRect(0, -10, 40, 6);
+            ctx.fillRect(30, -35, 45, 30);
+            ctx.beginPath();
+            ctx.moveTo(25, -35);
+            ctx.lineTo(40, -50);
+            ctx.lineTo(70, -50);
+            ctx.lineTo(80, -35);
+            ctx.fill();
+            ctx.beginPath();
+            ctx.moveTo(0, -35);
+            ctx.lineTo(30, -35);
+            ctx.lineTo(20, -45);
+            ctx.lineTo(-5, -45);
+            ctx.fill();
+            ctx.beginPath();
+            ctx.moveTo(75, -50);
+            ctx.lineTo(105, -50);
+            ctx.lineTo(100, -15);
+            ctx.lineTo(80, -35);
+            ctx.fill();
+            ctx.save();
+            ctx.translate(95, -40);
+            ctx.rotate(15 * Math.PI / 180);
+            ctx.fillRect(-4, 0, 8, 55);
+            ctx.restore();
+            ctx.fillRect(80, -52, 15, 4);
+            ctx.translate(config.bikeLength, 0);
+            ctx.fillRect(-22, -22, 44, 44);
+            ctx.clearRect(-14, -14, 28, 28);
+            ctx.fillRect(-5, -5, 10, 10);
+
+            ctx.restore();
+        }
+
+        function draw() {
+            const mainColor = state.nightMode ? '#f7f7f7' : '#535353';
+            const bgColor = state.nightMode ? '#202124' : '#f7f7f7';
+            
+            ctx.fillStyle = bgColor;
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            const groundBaseY = canvas.height * config.groundY + 22;
+
+            ctx.strokeStyle = mainColor;
+            ctx.lineWidth = 3;
+            ctx.beginPath();
+            let currentX = 0;
+            const sortedObs = [...state.obstacles].sort((a,b) => a.x - b.x);
+            
+            sortedObs.forEach(obs => {
+                if (obs.x > currentX) {
+                    ctx.moveTo(currentX, groundBaseY);
+                    ctx.lineTo(obs.x, groundBaseY);
+                }
+                ctx.lineTo(obs.x, groundBaseY + 22);
+                ctx.lineTo(obs.x + obs.width, groundBaseY + 22);
+                ctx.lineTo(obs.x + obs.width, groundBaseY);
+                currentX = obs.x + obs.width;
+            });
+            
+            ctx.moveTo(currentX, groundBaseY);
+            ctx.lineTo(canvas.width, groundBaseY);
+            ctx.stroke();
+
+            ctx.fillStyle = mainColor;
+            for (let i = 0; i < 20; i++) {
+                const tx = (state.groundOffset * -2.5 + (i * canvas.width / 10)) % canvas.width;
+                if (tx > 0) ctx.fillRect(tx, groundBaseY + 30, 10, 2);
+            }
+
+            drawBike(ctx, canvas.width * 0.3, groundBaseY - 22, state.angle);
+        }
+
+        function gameLoop() {
+            update();
+            draw();
+            if (!state.isGameOver) {
+                requestAnimationFrame(gameLoop);
+            }
+        }
+
+        draw();
+    </script>
+</body>
+</html>

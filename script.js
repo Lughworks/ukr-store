@@ -63,10 +63,10 @@ window.MODEL_MAP = {
             default: './assets/models/sunstrip.glb'
         }
     },
-    'stickers': {
-        label: 'Stickers',
+    'plate': {
+        label: 'Plate Holder',
         variants: {
-            default: './assets/models/stickers.glb'
+            default: './assets/models/plate.glb',
         }
     }
 };
@@ -415,7 +415,8 @@ const PRICE_TABLE = {
             '150': 24.00
         },
         defaultPack: '50'
-    }
+    },
+    'plate': { unit: 15.00 },
 };
 
 window.computeUnitPriceFromTable = (item) => {
@@ -683,6 +684,7 @@ async function openProduct(rawName) {
         'gallery': 'gallery',
         'team': 'team',
         'sunstrip': 'sunstrips',
+        'plate': 'plate',
     };
 
     if (fileMap[pageName]) pageName = fileMap[pageName];
@@ -1004,6 +1006,7 @@ window.updateLandingPrices = () => {
     set('price-balaclavas', priceFor('balaclavas'));
     set('price-sunstrips', priceFor('sunstrips'));
     set('price-stickers', priceFor('stickers', { quantity: '50' }));
+    set('price-plate', priceFor('plate'));
 
     document.querySelectorAll('[data-shipping-info]').forEach(el => {
         el.textContent = window.getShippingInfoLabel();

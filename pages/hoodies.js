@@ -62,7 +62,7 @@ export function render() {
     <div class="min-h-screen bg-black text-white p-4 md:p-12 relative">
       <div class="flex flex-col md:flex-row md:justify-between md:items-center gap-6 mb-10">
         <div>
-          <span class="text-[10px] text-purple-500 font-bold tracking-[0.3em] uppercase italic">Apparel / Studio</span>
+          <span class="text-[10px] text-purple-500 font-bold tracking-[0.3em] uppercase italic">Apparel / Empire</span>
           <h1 class="heading-font text-4xl md:text-6xl font-black uppercase tracking-tighter mt-2">Custom Hoodies</h1>
           <div class="inline-flex items-center gap-3 px-4 py-2 rounded-full border border-zinc-800 bg-zinc-900/40 mt-3">
             <span class="text-[8px] uppercase tracking-[0.4em] font-black text-zinc-500">Price</span>
