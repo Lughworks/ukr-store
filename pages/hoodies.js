@@ -23,7 +23,9 @@ export function render() {
   const frontPrintTint = s.frontPrintTint || '#FFFFFF';
   const frontLabel = s.frontLabel || 'None';
 
-  const bodyColor = s.bodyColor || '#000000';
+  const EMB_BODY_COLOR = '#000000';
+
+  const bodyColor = isPrint ? (s.bodyColor || EMB_BODY_COLOR) : EMB_BODY_COLOR;
 
   const BODY_COLORS = [
     '#000000', '#FFFFFF', '#4B5563', '#991B1B', '#1E3A8A', '#166534', '#EAB308', '#D946EF',
@@ -33,6 +35,8 @@ export function render() {
     '#7C2D12', '#9A3412', '#C2410C', '#EA580C', '#FB923C', '#FDBA74', '#FED7AA', '#78350F',
     '#92400E', '#B45309', '#D97706'
   ];
+
+  const ACTIVE_BODY_COLORS = isPrint ? BODY_COLORS : [EMB_BODY_COLOR];
 
   setTimeout(() => {
     if (typeof window.enable3DViewer === 'function') {
@@ -392,7 +396,7 @@ export function render() {
                 <div class="${HR}"></div>
 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div class="${SECTION} overflow-hidden">
+                  <div id="section-hoodie-colour" class="${SECTION} overflow-hidden ${isPrint ? '' : 'hidden'}">
                     <div class="${SECTION_HEAD}">
                       <div>
                         <div class="${TITLE}">Hoodie Colour</div>
@@ -401,7 +405,7 @@ export function render() {
                     </div>
                     <div class="${SECTION_BODY}">
                       <div class="${SWATCH_GRID}">
-                        ${BODY_COLORS.map((color) => `
+                        ${ACTIVE_BODY_COLORS.map((color) => `
                           <div
                             onclick="window.setHoodieBodyColor('${color}', this)"
                             data-color="${color}"
@@ -897,6 +901,17 @@ window.setHoodieMode = (mode) => {
     backImageSection.classList.toggle('hidden', !isPrint);
   }
 
+  const hoodieColourSection = document.getElementById('section-hoodie-colour');
+  if (hoodieColourSection) {
+    hoodieColourSection.classList.toggle('hidden', !isPrint);
+  }
+
+  if (!isPrint) {
+    try { window.setHoodieBodyColor('#000000', document.querySelector('[data-color="#000000"]'), true); }
+    catch (_) {
+      window.HOODIE_STATE.bodyColor = '#000000';
+    }
+  }
   window.__syncHoodieFront2D?.();
   window.__updateHoodieBackPreview?.();
 
@@ -972,7 +987,9 @@ window.clearHoodieFrontPrintPreset = () => {
   window.applyHoodieTo3D?.();
 };
 
-window.setHoodieBodyColor = (hex, btn) => {
+window.setHoodieBodyColor = (hex, btn, force = false) => {
+  const mode = (window.HOODIE_STATE?.mode === 'embroidered') ? 'embroidered' : 'print';
+  if (mode === 'embroidered' && !force) hex = '#000000';
   document.querySelectorAll('.active-hoodie-color').forEach(el => el.classList.remove('active-hoodie-color'));
   btn?.classList.add('active-hoodie-color');
 
@@ -1210,7 +1227,9 @@ window.saveHoodieConfig = () => {
     return;
   }
   const size = document.querySelector('.active-size')?.innerText || 'L';
-  const color = window.HOODIE_STATE.bodyColor || document.querySelector('.active-hoodie-color')?.dataset?.color || '#000000';
+  const color = (window.HOODIE_STATE.mode === 'embroidered')
+    ? '#000000'
+    : (window.HOODIE_STATE.bodyColor || document.querySelector('.active-hoodie-color')?.dataset?.color || '#000000');
 
   const config = {
     mode: window.HOODIE_STATE.mode,
@@ -1270,6 +1289,8 @@ window.on3DModelReady = (slug, mv) => {
 window.validateHoodieConfig = () => {
   const s = window.HOODIE_STATE || {};
   const mode = (s.mode === 'embroidered') ? 'embroidered' : 'print';
+
+  if (mode === 'embroidered') s.bodyColor = '#000000';
 
   if (!window.__trim(s.bodyColor)) return window.__hardFail('Please choose a hoodie colour.', 'bodyColor');
 
